@@ -585,7 +585,6 @@ def setup_commands(app):
     def insert_test_data():
         pass
 
-    @app.cli.command("insert-fleet")
     def insert_fleet():
         print("Creating models")
         for model in models:
@@ -625,7 +624,6 @@ def setup_commands(app):
             db.session.commit()
             print("Airplane {} added to the fleet".format(plane["model"]))
     
-    @app.cli.command("insert-plane-prices")
     def insert_plane_prices():
         print("Creating prices")
         for price in prices:
@@ -644,7 +642,6 @@ def setup_commands(app):
             db.session.commit()
             print("Airplane {} costs {}€ per day".format(price["model"], price["price"]))
 
-    @app.cli.command("insert-roles")
     def insert_roles():
         print("Creating enterprise roles")
         for role in roles:
@@ -654,7 +651,6 @@ def setup_commands(app):
             db.session.commit()
             print("Role {} added to the enterprise".format(role))
 
-    @app.cli.command("insert-countries")
     def insert_countries():
         print("Creating list of Countries")
         for country in countries:
@@ -664,7 +660,6 @@ def setup_commands(app):
             db.session.commit()
             print("Country {} added to DataBase".format(country))
 
-    @app.cli.command("insert-nationalities")
     def insert_nationalities():
         print("Creating list of Nationalities")
         for nationality in nationalities:
@@ -674,7 +669,6 @@ def setup_commands(app):
             db.session.commit()
             print("Nationality {} added to DataBase".format(nationality))
     
-    @app.cli.command("insert-worldwide-states")
     def insert_worldwide_states():
         print("Creating list of States around the World")
         for state in states:
