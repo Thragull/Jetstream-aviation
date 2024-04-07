@@ -584,8 +584,8 @@ def setup_commands(app):
     @app.cli.command("insert-test-data")
     def insert_test_data():
         pass
-
-    def insert_fleet():
+    
+    def insert_models():
         print("Creating models")
         for model in models:
             model_table = Models()
@@ -593,9 +593,9 @@ def setup_commands(app):
             db.session.add(model_table)
             db.session.commit()
             print(f"Model {model} created")
-        
-        print("Creating configurations")
 
+    def insert_configurations():
+        print("Creating configurations")
         for configuration in configurations:
             config_table = Configurations()
             model = Models.query.filter_by(model_name=configuration["model"]).first()
@@ -606,9 +606,9 @@ def setup_commands(app):
             db.session.add(config_table)
             db.session.commit()
             print("Configuration created for model {}".format(configuration['model']))
-        
-        print("Creating Fleet")
 
+    def insert_fleet():
+        print("Creating Fleet")
         for plane in fleet:
             aeroplane = Fleet()
             model = Models.query.filter_by(model_name=plane["model"]).first()
@@ -682,6 +682,8 @@ def setup_commands(app):
     
     @app.cli.command("insert-data")
     def insert_data():
+        insert_models()
+        insert_configurations()
         insert_fleet()
         insert_plane_prices()
         insert_roles()
