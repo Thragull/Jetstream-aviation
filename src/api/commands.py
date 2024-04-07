@@ -685,3 +685,12 @@ def setup_commands(app):
             db.session.add(state_table)
             db.session.commit()
             print("{} from {} added to DataBase".format(state["state"], state["country"]))
+    
+    @app.cli.command("insert-data")
+    def insert_data():
+        insert_fleet()
+        insert_plane_prices()
+        insert_roles()
+        insert_countries()
+        insert_nationalities()
+        insert_worldwide_states()
