@@ -1,0 +1,43 @@
+.rbc-btn-group{
+
+    border-radius: 30vh;
+    color: white;
+}
+
+.rbc-header {
+    background: rgba(21, 39, 53,0.95);
+    color: white;
+}
+
+.rbc-active{
+    color: white;
+    background: rgba(21, 39, 53,0.95);
+}
+
+.rbc-day-bg{
+    background-color: rgb(255,255,255,0.5);
+    border: 0.5px solid black;
+    border-width: 1px;
+    margin: 0px;
+    
+}
+
+.rbc-off-range-bg{
+    background-color: grey;
+}
+
+.rbc-row-content{
+    font-size: 1vh;
+    font-weight: bold;
+}
+
+.rbc-today{
+  background-color: lightblue;
+}
+
+.accordion-header {
+    background: blue;
+}
+
+
+
