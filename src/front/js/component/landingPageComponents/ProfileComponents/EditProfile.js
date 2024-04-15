@@ -1,8 +1,6 @@
 import React, { useContext, useEffect, useRef } from "react";
 import { Context } from "../../../store/appContext";
 import InputComponent from "../reusableComponents/InputComponent";
-import 'air-datepicker/air-datepicker.css';
-import AirDatepicker from 'air-datepicker';
 <script src="https://cdnjs.cloudflare.com/ajax/libs/air-datepicker/2.2.3/js/i18n/datepicker.en.js"></script>
 
 
