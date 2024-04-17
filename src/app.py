@@ -3,13 +3,16 @@ This module takes care of starting the API Server, Loading the DB and Adding the
 """
 import os
 from flask import Flask, request, jsonify, url_for, send_from_directory
+from flask_cors import CORS, cross_origin
 from flask_migrate import Migrate
 from flask_swagger import swagger
 from api.utils import APIException, generate_sitemap
-from api.models import db
+from api.models import db, Countries, States, Nationalities, Roles
 from api.routes import api
 from api.admin import setup_admin
 from api.commands import setup_commands
+
+
 
 # from models import Person
 
@@ -18,6 +21,7 @@ static_file_dir = os.path.join(os.path.dirname(
     os.path.realpath(__file__)), '../public/')
 app = Flask(__name__)
 app.url_map.strict_slashes = False
+CORS(app, support_credentials=True)
 
 # database condiguration
 db_url = os.getenv("DATABASE_URL")
@@ -66,6 +70,47 @@ def serve_any_other_file(path):
     response = send_from_directory(static_file_dir, path)
     response.cache_control.max_age = 0  # avoid cache memory
     return response
+
+
+@app.route('/api/countries', methods=['GET'])
+@cross_origin(supports_credentials=True)
+def getCountries():
+    countries = Countries.query.all()
+    serialized_countries = [country.serialize() for country in countries]
+    return jsonify(serialized_countries), 200
+
+
+@app.route('/api/nationalities', methods=['GET'])
+@cross_origin(supports_credentials=True)
+def getNationalities():
+    nationalities = Nationalities.query.all()
+    serialized_countries = [nationality.serialize() for nationality in nationalities]
+    return jsonify(serialized_countries), 200
+
+
+
+@app.route('/api/states', methods=['GET'])
+def getStates():
+    country_id = request.args.get('country_id')
+    if country_id is None: 
+        return jsonify({'msg': 'You must specify a country id'}), 400
+    states = States.query.filter_by(country_id=country_id).all()
+    serialized_states = [state.serialize() for state in states]
+    return jsonify(serialized_states), 200
+
+@app.route('/api/roles', methods=['GET'])
+@cross_origin(supports_credentials=True)
+def getRoles():
+    roles = Roles.query.all()
+    serialized_roles = [role.serialize() for role in roles]
+    return jsonify(serialized_roles), 200
+
+
+
+
+
+
+
 
 
 # this only runs if `$ python src/main.py` is executed
