@@ -3,7 +3,7 @@ import os
 from flask_admin import Admin
 from .models import (db, Models, Configurations, Fleet, Prices, Projects, Assignations, Budgets, Roles, Countries,
                     Nationalities, States, Employees, Airports, Inflight, Duties, Flights, Hotels, Rosters, Salary_Prices,
-                    Bank_Details, Payslips, Documents, Visibility)
+                    Bank_Details, Payslips, Documents, Visibility, Departments)
 from flask_admin.contrib.sqla import ModelView
 
 def setup_admin(app):
@@ -24,9 +24,10 @@ def setup_admin(app):
     admin.add_view(ModelView(Countries, db.session))
     admin.add_view(ModelView(Nationalities, db.session))
     admin.add_view(ModelView(States, db.session))
+    admin.add_view(ModelView(Departments, db.session))    
     admin.add_view(ModelView(Employees, db.session))
-    admin.add_view(ModelView(Airports, db.session))
     admin.add_view(ModelView(Inflight, db.session))
+    admin.add_view(ModelView(Airports, db.session))
     admin.add_view(ModelView(Duties, db.session))
     admin.add_view(ModelView(Flights, db.session))
     admin.add_view(ModelView(Hotels, db.session))
