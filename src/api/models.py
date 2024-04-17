@@ -211,6 +211,20 @@ class States(db.Model):
             "state": self.state
         }
 
+class Departments(db.Model):
+    __tablename__ = 'departments'
+    id = db.Column(db.Integer, primary_key=True)
+    department = db.Column(db.String(50), unique=True, nullable=False)
+
+    def __repr__(self):
+        return f"{self.department}"
+
+    def serialize(self):
+        return {
+            "id": self.id,
+            "department": self.department
+        }
+
 class Employees(db.Model):
     __tablename__ = 'employees'
     id = db.Column(db.Integer, primary_key=True)
@@ -221,7 +235,8 @@ class Employees(db.Model):
     password = db.Column(db.String(50), nullable=False)
     role_id = db.Column(db.Integer, db.ForeignKey('roles.id'), nullable=False)
     role = db.relationship(Roles)
-    department = db.Column(db.String(50), nullable=False)
+    department_id = db.Column(db.Integer, db.ForeignKey('departments.id'), nullable=False)
+    department = db.relationship(Departments)
     gender = db.Column(db.String(10), nullable=False)
     nationality_id = db.Column(db.Integer, db.ForeignKey('nationalities.id'))
     nationality = db.relationship(Nationalities)
@@ -294,13 +309,17 @@ class Inflight(db.Model):
     license = db.Column(db.String(10), unique=True, nullable=False)
     passport = db.Column(db.String(10), unique=True, nullable=False)
     pass_expiration = db.Column(db.DateTime, nullable=False)
-    certificate = db.Column(db.String(10), nullable=False)
+    certificate_id = db.Column(db.Integer, db.ForeignKey('models.id'), nullable=False)
+    certificate = db.relationship(Models, foreign_keys=certificate_id)
     cert_expiration = db.Column(db.DateTime)
-    certificate2 = db.Column(db.String(10))
+    certificate2_id = db.Column(db.Integer, db.ForeignKey('models.id'))
+    certificate2 = db.relationship(Models, foreign_keys=certificate2_id)
     cert_expiration2 = db.Column(db.DateTime)
-    certificate3 = db.Column(db.String(10))
+    certificate3_id = db.Column(db.Integer, db.ForeignKey('models.id'))
+    certificate3 = db.relationship(Models, foreign_keys=certificate3_id)
     cert_expiration3 = db.Column(db.DateTime)
-    certificate4 = db.Column(db.String(10))
+    certificate4_id = db.Column(db.Integer, db.ForeignKey('models.id'))
+    certificate4 = db.relationship(Models, foreign_keys=certificate4_id)
     cert_expiration4 = db.Column(db.DateTime)
     home_base_id = db.Column(db.Integer, db.ForeignKey('airports.id'), nullable=False)
     home_base = db.relationship(Airports)
@@ -418,7 +437,7 @@ class Flights(db.Model):
 class Hotels(db.Model):
     __tablename__ = 'hotels'
     id = db.Column(db.Integer, primary_key=True)
-    name = db.Column(db.String(100), nullable=False)
+    name = db.Column(db.String(150), nullable=False)
     base_id = db.Column(db.Integer, db.ForeignKey('airports.id'), nullable=False)
     base = db.relationship(Airports)
 
@@ -491,20 +510,20 @@ class Salary_Prices(db.Model):
     role_id = db.Column(db.Integer, db.ForeignKey('roles.id'))
     role = db.relationship(Roles)
     basic = db.Column(db.Integer, nullable=False)
-    main_service = db.Column(db.Integer, nullable=False)
-    instruction = db.Column(db.Integer, nullable=False)
-    sec_bonus = db.Column(db.Integer, nullable=False)
-    per_diem = db.Column(db.Integer, nullable=False)
-    cleaning_serv = db.Column(db.Integer, nullable=False)
-    birthday_bonus = db.Column(db.Integer, nullable=False)
-    additional_bonus = db.Column(db.Integer, nullable=False)
-    special_project_bonus = db.Column(db.Integer, nullable=False)
-    bought_days = db.Column(db.Integer, nullable=False)
-    standby_days = db.Column(db.Integer, nullable=False)
-    theory_bonus = db.Column(db.Integer, nullable=False)
-    sick_leave = db.Column(db.Integer, nullable=False)
-    office_day = db.Column(db.Integer, nullable=False)
-    office_day_holidays = db.Column(db.Integer, nullable=False)
+    main_service = db.Column(db.Float, nullable=False)
+    instruction = db.Column(db.Float, nullable=False)
+    sec_bonus = db.Column(db.Float, nullable=False)
+    per_diem = db.Column(db.Float, nullable=False)
+    cleaning_serv = db.Column(db.Float, nullable=False)
+    birthday_bonus = db.Column(db.Float, nullable=False)
+    additional_bonus = db.Column(db.Float, nullable=False)
+    special_project_bonus = db.Column(db.Float, nullable=False)
+    bought_days = db.Column(db.Float, nullable=False)
+    standby_days = db.Column(db.Float, nullable=False)
+    theory_bonus = db.Column(db.Float, nullable=False)
+    sick_leave = db.Column(db.Float, nullable=False)
+    office_day = db.Column(db.Float, nullable=False)
+    office_day_holidays = db.Column(db.Float, nullable=False)
 
     def __repr__(self):
         return f'Salary table for {self.role}'
