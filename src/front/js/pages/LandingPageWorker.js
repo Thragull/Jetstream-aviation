@@ -16,6 +16,7 @@ import DocumentComponent from "../component/landingPageComponents/DocumentCompon
 import MoodelsComponent from "../component/landingPageComponents/MoodelsComponent.js"
 import HolidaysComponent from "../component/landingPageComponents/HolidayComponent.js"
 import RosterComponent from "../component/landingPageComponents/RosterComponent.js";
+import ManagementComponent from "../component/landingPageComponents/ManagementComponent.js";
 
 
 
@@ -25,6 +26,7 @@ import RosterComponent from "../component/landingPageComponents/RosterComponent.
 
 export const LandingPageWorker = () => {
 
+    const [manager, setManager] = useState(false)
     const [activeComponent, setActiveComponent] = useState('Roster')
     const [colorProfile, setColorProfile] = useState('transparent')
     const [colorDashboard, setColorDashboard] = useState('transparent')
@@ -108,7 +110,8 @@ export const LandingPageWorker = () => {
             case 'Holidays': 
                 return <HolidaysComponent/>
             case 'Roster': 
-                return <RosterComponent/>
+           if (manager == false) { 
+                return <RosterComponent/>} else{ return <ManagementComponent/>}
             default: 
                 return <DashboardComponent/>
 
@@ -118,72 +121,76 @@ export const LandingPageWorker = () => {
 
 	return (
 		<div className="text-center" style={{backgroundImage: `url(${airplanebackground})`, backgroundSize: "100% 100%"}}>
-    <div className="row" id="board">
-        <div className="col-3" id="verticalNavbar" >
-            <div className="py-2" style={{backgroundColor: `${inactiveColor}`, borderTopLeftRadius: "50px" }}>
-                <div className="py-3 mx-auto ProfileImageContainer">
-                    <p>Image</p>
-                </div>
+            <div className="row">
+                <div type="button" className="col-4 btn btn-primary" onClick={()=> setManager(true)}>Manager</div>
+                <div type="button" className="col-4 btn btn-secondary" onClick={()=> setManager(false)}>Inflight</div>
             </div>
-            <p className="infoUser" style={{margin: "0", fontSize: "3vh", backgroundColor: `${inactiveColor}` }}>Jose Luis Llacer</p>
-            <p className="py-2 infoUser" style={{margin: "0", backgroundColor: `${inactiveColor}`, borderBottomRightRadius: `${dashboardRadius}` }}>josellaib@gmail.com</p>
-            <div style={{display: "inline-block", width: "100%", margin: "0"}}>
-                <div className="navbarComponent" style={{color: `${textColorDashboard}`, backgroundColor: `${colorDashboard}`, borderBottomRightRadius: `${profileRadius}` }} onClick={() => setActiveComponent('Dashboard')}>
-                    <div className="mx-auto navbar-icon-text col-2" >
-                        <FontAwesomeIcon icon={faHouse} />
-                        <div className="mx-1"></div>
-                        <p>Dashboard</p>
-                    </div>
-                </div>
-                <div className="navbarComponent" style={{color: `${textColorProfile}`, backgroundColor: `${colorProfile}`, borderTopRightRadius:`${dashboardRadius}`, borderBottomRightRadius: `${roosterRadius}`}} onClick={() => setActiveComponent('Profile')}>
-                    <div className="mx-auto navbar-icon-text">
-                        <FontAwesomeIcon icon={faUser} />
-                        <div className="mx-1"></div>
-                        <p>Profile</p>
-                    </div>
-                </div>
-                <div className="navbarComponent" style={{color: `${textColorRoster}`, backgroundColor: `${colorRoster}`, borderTopRightRadius: `${profileRadius}`, borderBottomRightRadius: `${payslipRadius}`} } onClick={() => setActiveComponent('Roster')}>
-                    <div className="mx-auto navbar-icon-text">
-                        <FontAwesomeIcon icon={faCalendarCheck} />
-                        <div className="mx-1"></div>
-                        <p>Roster</p>
-                    </div>
-                </div>
-                <div className="navbarComponent" style={{color: `${textColorPayslip}`, backgroundColor: `${colorPayslip}`, borderTopRightRadius: `${roosterRadius}`, borderBottomRightRadius: `${documentsRadius}` }} onClick={() => setActiveComponent('Payslip')}>
-                    <div className="mx-auto navbar-icon-text">
-                        <FontAwesomeIcon icon={faMoneyBills} />
-                        <div className="mx-1"></div>
-                        <p>Payslip</p>
-                    </div>
-                </div>
-                <div className="navbarComponent" style={{color: `${textColorDocuments}`,backgroundColor: `${colorDocuments}`, borderTopRightRadius: `${payslipRadius}`, borderBottomRightRadius: `${moodelsRadius}`}} onClick={() => setActiveComponent('Documents')}>
-                    <div className="mx-auto navbar-icon-text">
-                        <FontAwesomeIcon icon={faFile} />
-                        <div className="mx-1"></div>
-                        <p>Documents</p>
-                    </div>
-                </div>
-                <div className="navbarComponent" style={{color: `${textColorMoodels}`,backgroundColor: `${colorMoodels}`, borderTopRightRadius: `${documentsRadius}`, borderBottomRightRadius: `${holidaysRadius}`}} onClick={() => setActiveComponent('Moodels')}>
-                    <div className="mx-auto navbar-icon-text">
-                        <FontAwesomeIcon icon={faUserGraduate} />
-                        <div className="mx-1"></div>
-                        <p>Moodels</p>
-                    </div>
-                </div>
-                <div className="navbarComponent" style={{color: `${textColorHolidays}`,backgroundColor: `${colorHolidays}`, borderTopRightRadius: `${moodelsRadius}`, borderBottomRightRadius: `${inactiveRadius}`}} onClick={() => setActiveComponent('Holidays')}>
-                    <div className="mx-auto navbar-icon-text">
-                        <FontAwesomeIcon icon={faUmbrellaBeach} />
-                        <div className="mx-1"></div>
-                        <p>Holidays</p>
-                    </div>
-                </div>
-            </div>
+             <div className="row" id="board">
+                 <div className="col-3" id="verticalNavbar" >
+                     <div className="py-2" style={{backgroundColor: `${inactiveColor}`, borderTopLeftRadius: "50px" }}>
+                         <div className="py-3 mx-auto ProfileImageContainer">
+                             <p>Image</p>
+                         </div>
+                     </div>
+                     <p className="infoUser" style={{margin: "0", fontSize: "3vh", backgroundColor: `${inactiveColor}` }}>Jose Luis Llacer</p>
+                     <p className="py-2 infoUser" style={{margin: "0", backgroundColor: `${inactiveColor}`, borderBottomRightRadius: `${dashboardRadius}` }}>josellaib@gmail.com</p>
+                     <div style={{display: "inline-block", width: "100%", margin: "0"}}>
+                         <div className="navbarComponent" style={{color: `${textColorDashboard}`, backgroundColor: `${colorDashboard}`, borderBottomRightRadius: `${profileRadius}` }} onClick={() => setActiveComponent('Dashboard')}>
+                             <div className="mx-auto navbar-icon-text col-2" >
+                                 <FontAwesomeIcon icon={faHouse} />
+                                 <div className="mx-1"></div>
+                                 <p>Dashboard</p>
+                             </div>
+                         </div>
+                         <div className="navbarComponent" style={{color: `${textColorProfile}`, backgroundColor: `${colorProfile}`, borderTopRightRadius:`${dashboardRadius}`, borderBottomRightRadius: `${roosterRadius}`}} onClick={() => setActiveComponent('Profile')}>
+                             <div className="mx-auto navbar-icon-text">
+                                 <FontAwesomeIcon icon={faUser} />
+                                 <div className="mx-1"></div>
+                                 <p>Profile</p>
+                             </div>
+                         </div>
+                         <div className="navbarComponent" style={{color: `${textColorRoster}`, backgroundColor: `${colorRoster}`, borderTopRightRadius: `${profileRadius}`, borderBottomRightRadius: `${payslipRadius}`} } onClick={() => setActiveComponent('Roster')}>
+                             <div className="mx-auto navbar-icon-text">
+                                 <FontAwesomeIcon icon={faCalendarCheck} />
+                                 <div className="mx-1"></div>
+                                 {manager ? <p>Management</p> :  <p>Roster</p>}
+                             </div>
+                         </div>
+                         <div className="navbarComponent" style={{color: `${textColorPayslip}`, backgroundColor: `${colorPayslip}`, borderTopRightRadius: `${roosterRadius}`, borderBottomRightRadius: `${documentsRadius}` }} onClick={() => setActiveComponent('Payslip')}>
+                             <div className="mx-auto navbar-icon-text">
+                                 <FontAwesomeIcon icon={faMoneyBills} />
+                                 <div className="mx-1"></div>
+                                 <p>Payslip</p>
+                             </div>
+                         </div>
+                         <div className="navbarComponent" style={{color: `${textColorDocuments}`,backgroundColor: `${colorDocuments}`, borderTopRightRadius: `${payslipRadius}`, borderBottomRightRadius: `${moodelsRadius}`}} onClick={() => setActiveComponent('Documents')}>
+                             <div className="mx-auto navbar-icon-text">
+                                 <FontAwesomeIcon icon={faFile} />
+                                 <div className="mx-1"></div>
+                                 <p>Documents</p>
+                             </div>
+                         </div>
+                         <div className="navbarComponent" style={{color: `${textColorMoodels}`,backgroundColor: `${colorMoodels}`, borderTopRightRadius: `${documentsRadius}`, borderBottomRightRadius: `${holidaysRadius}`}} onClick={() => setActiveComponent('Moodels')}>
+                             <div className="mx-auto navbar-icon-text">
+                                 <FontAwesomeIcon icon={faUserGraduate} />
+                                 <div className="mx-1"></div>
+                                 <p>Moodels</p>
+                             </div>
+                         </div>
+                         <div className="navbarComponent" style={{color: `${textColorHolidays}`,backgroundColor: `${colorHolidays}`, borderTopRightRadius: `${moodelsRadius}`, borderBottomRightRadius: `${inactiveRadius}`}} onClick={() => setActiveComponent('Holidays')}>
+                             <div className="mx-auto navbar-icon-text">
+                                 <FontAwesomeIcon icon={faUmbrellaBeach} />
+                                 <div className="mx-1"></div>
+                                 <p>Holidays</p>
+                             </div>
+                         </div>
+                     </div>
+                 </div>
+                 <div className="col-8 component">
+                     {renderComponent()}
+                 </div>
+             </div>
         </div>
-        <div className="col-8 component">
-            {renderComponent()}
-        </div>
-    </div>
-</div>
 	);
 };
 
