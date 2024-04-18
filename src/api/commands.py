@@ -892,7 +892,7 @@ hotels = [
     {'name': 'Tampa Seaside Resort', 'base': 'TPA'}
 ]
 
-prices = [
+prices_salaries = [
     {
         'role': 'Manager',
         'basic': 5000,
@@ -2053,7 +2053,7 @@ def setup_commands(app):
 
     def insert_salary_prices():
         print("Creating lists of salaries by roles")
-        for price in prices:
+        for price in prices_salaries:
             price_token=Salary_Prices()
             role = Roles.query.filter_by(role=price["role"]).first()
             price_token.role_id = role.id
