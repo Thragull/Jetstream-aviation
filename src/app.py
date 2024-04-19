@@ -7,7 +7,7 @@ from flask_cors import CORS, cross_origin
 from flask_migrate import Migrate
 from flask_swagger import swagger
 from api.utils import APIException, generate_sitemap
-from api.models import db, Countries, States, Nationalities, Roles, Models
+from api.models import db, Countries, States, Nationalities, Roles, Models, Configurations
 from api.routes import api
 from api.admin import setup_admin
 from api.commands import setup_commands
@@ -77,6 +77,17 @@ def getModels():
     models = Models.query.all()
     serialized_models = [model_name.serialize() for model_name in models]
     return jsonify(serialized_models), 200
+
+@app.route('/api/configurations', methods=['GET'])
+def getConfigurations():
+    model = request.json.get("model")
+    print(model)
+    print(type(model))
+    if model is None: 
+        return jsonify({'msg': 'You must specify a model id'}), 400
+    configurations = Configurations.query.filter_by(model_id=model).all()
+    serialized_configurations = [configuration.serialize() for configuration in configurations]
+    return jsonify(serialized_configurations), 200    
 
 
 @app.route('/api/countries', methods=['GET'])
