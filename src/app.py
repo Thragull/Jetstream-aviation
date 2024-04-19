@@ -7,7 +7,7 @@ from flask_cors import CORS, cross_origin
 from flask_migrate import Migrate
 from flask_swagger import swagger
 from api.utils import APIException, generate_sitemap
-from api.models import db, Countries, States, Nationalities, Roles
+from api.models import db, Countries, States, Nationalities, Roles, Airports
 from api.routes import api
 from api.admin import setup_admin
 from api.commands import setup_commands
@@ -105,7 +105,11 @@ def getRoles():
     serialized_roles = [role.serialize() for role in roles]
     return jsonify(serialized_roles), 200
 
-
+@app.route('/api/airports', methods=['GET'])
+def get_airports():
+    airports = Airports.query.all()
+    serialized_airports = list(map(lambda airport: airport.serialize(), airports))
+    return jsonify(serialized_airports)
 
 
 
