@@ -7,7 +7,7 @@ from flask_cors import CORS, cross_origin
 from flask_migrate import Migrate
 from flask_swagger import swagger
 from api.utils import APIException, generate_sitemap
-from api.models import db, Countries, States, Nationalities, Roles, Airports
+from api.models import db, Countries, States, Nationalities, Roles, Models, Airports
 from api.routes import api
 from api.admin import setup_admin
 from api.commands import setup_commands
@@ -70,6 +70,13 @@ def serve_any_other_file(path):
     response = send_from_directory(static_file_dir, path)
     response.cache_control.max_age = 0  # avoid cache memory
     return response
+
+@app.route('/api/models', methods=['GET'])
+@cross_origin(supports_credentials=True)
+def getModels():
+    models = Models.query.all()
+    serialized_models = [model_name.serialize() for model_name in models]
+    return jsonify(serialized_models), 200
 
 
 @app.route('/api/countries', methods=['GET'])
