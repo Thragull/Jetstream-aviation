@@ -1,0 +1,10 @@
+.NavbarHome {
+  height: 121px;
+  background-color: #7cb9e8;
+  background-image: linear-gradient(to right, #7cb9e8, white);
+  border-bottom-right-radius: 95%;
+}
+
+.ContactButton {
+  text-decoration-line: none;
+}
