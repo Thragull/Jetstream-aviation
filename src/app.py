@@ -82,7 +82,7 @@ def getModels():
 
 @app.route('/api/configurations', methods=['GET'])
 def getConfigurations():
-    model = request.json.get("model")
+    model = request.args.get("model")
     print(model)
     print(type(model))
     if model is None: 
@@ -120,13 +120,13 @@ def getStates():
 
 @app.route('/api/prices', methods=['GET'])
 def getPrices():
-    model_id = request.json.get('model_id')
+    model_id = request.args.get('model_id')
     if model_id is None:
         return jsonify({'msg': 'You must specify a model ID'}), 400
-    configuration_id = request.json.get('configuration_id')
+    configuration_id = request.args.get('configuration_id')
     if configuration_id is None:
         return jsonify({'msg': 'You must specify a configuration ID'}), 400
-    crew = request.json.get('crew')
+    crew = request.args.get('crew')
     if crew is None:
         return jsonify({'msg': 'You must specify if there is or there is not crew'}), 400
     prices = Prices.query.filter_by(model_id=model_id, configuration_id=configuration_id, crew=crew).all()
@@ -150,7 +150,7 @@ def get_airports():
 
 @app.route('/api/hotels', methods=['GET'])
 def get_hotels():
-    base_id = request.json.get('base_id')
+    base_id = request.args.get('base_id')
     if base_id is None:
         return jsonify({'msg': 'You must specify a base ID'}), 400
     hotels = Hotels.query.filter_by(base_id=base_id).all()
