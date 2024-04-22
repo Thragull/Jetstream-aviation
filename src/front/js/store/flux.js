@@ -37,7 +37,7 @@ const getState = ({ getStore, getActions, setStore }) => {
 				let allCountries = [];
 				try{ 
 					const resp = await fetch(
-						process.env.BACKEND_URL + "api/countries")
+						process.env.BACKEND_URL + "/api/countries")
 					const data = await resp.json()
  					allCountries = data; 
  					console.log(allCountries)
@@ -48,11 +48,12 @@ const getState = ({ getStore, getActions, setStore }) => {
 			},
 			getStates: async (countryId) => {
 				try {
-					const resp = await fetch(`${process.env.BACKEND_URL}api/states?country_id=${countryId}`, {
+					const resp = await fetch(`${process.env.BACKEND_URL}/api/states?country_id=${countryId}`, {
 						method: 'GET',
 						headers: {
 							'Content-Type': 'application/json'
 						}
+						
 					});
 					const data = await resp.json();
 					console.log(data);
@@ -65,13 +66,40 @@ const getState = ({ getStore, getActions, setStore }) => {
 				let allRoles = [];
 				try{ 
 					const resp = await fetch(
-						process.env.BACKEND_URL + "api/roles")
+						process.env.BACKEND_URL + "/api/roles")
 					const data = await resp.json()
  					allRoles = data; 
- 					console.log(allRoles)
+ 					/* console.log(allRoles) */
 					return allRoles;   
 				} catch(error) {
 					console.log(error)
+				}
+			},
+			getDepartments: async() => {
+				let allDepartments = []
+				try{
+					const resp = await fetch(
+						process.env.BACKEND_URL + "/api/departments")
+						const data = await resp.json()
+						allDepartments = data; 
+						/* console.log(allDepartments) */
+						return allDepartments;
+					
+				} catch(error) {
+					console.log(error)
+				}
+			},
+			getEmployeesByCrewId: async() => {
+				let allEmployees = []
+				try {
+					const resp = await fetch(
+						process.env.BACKEND_URL + "/api/employees")
+						const data = await resp.json()
+						allEmployees = data; 
+						console.log(allEmployees)
+						return allEmployees;
+				} catch (error) {
+					
 				}
 			},
 			changeColor: (index, color) => {
