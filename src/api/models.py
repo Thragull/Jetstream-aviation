@@ -58,7 +58,7 @@ class Fleet(db.Model):
             "registration": self.registration,
             "model": self.model_id,
             "configuration": self.configuration_id,
-            "assigned": self.assigned
+            "asigned": self.asigned
         }
 
 class Prices(db.Model):
