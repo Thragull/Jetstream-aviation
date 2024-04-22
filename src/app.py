@@ -7,7 +7,9 @@ from flask_cors import CORS, cross_origin
 from flask_migrate import Migrate
 from flask_swagger import swagger
 from api.utils import APIException, generate_sitemap
-from api.models import db, Countries, States, Nationalities, Roles, Models, Configurations, Airports
+from api.models import (db, Models, Configurations, Fleet, Prices, Projects, Assignations, Budgets, Roles, Countries,
+                    Nationalities, States, Employees, Airports, Inflight, Duties, Flights, Hotels, Rosters, Salary_Prices,
+                    Bank_Details, Payslips, Documents, Visibility, Departments)
 from api.routes import api
 from api.admin import setup_admin
 from api.commands import setup_commands
@@ -129,6 +131,16 @@ def get_airports():
     serialized_airports = list(map(lambda airport: airport.serialize(), airports))
     return jsonify(serialized_airports)
 
+@app.route('/api/hotels', methods=['GET'])
+def get_hotels():
+    base_id = request.json.get('base_id')
+    if base_id is None:
+        return jsonify({'msg': 'You must specify a base ID'}), 400
+    hotels = Hotels.query.filter_by(base_id=base_id).all()
+    if hotels == []:
+        return jsonify({'msg': 'There are no Hotels for the specific Aiport Base'}), 404
+    serialized_hotels = list(map(lambda hotel: hotel.serialize(), hotels))
+    return jsonify(serialized_hotels), 200
 
 
 
