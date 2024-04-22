@@ -5,3 +5,58 @@
     one more css for each page that will contain the selected used 
     on that page only (the ones not reused in other pages).
 */
+.NavbarHome {
+  height: 121px;
+  background-color: #7cb9e8;
+  background-image: linear-gradient(to right, #7cb9e8, white);
+  border-bottom-right-radius: 95%;
+}
+
+.LogoJetstream {
+  display: flex;
+  float: right;
+}
+
+#tittle {
+  color: white;
+  font-size: 110px;
+}
+
+/* }
+.welcome {
+    height: 150px;
+    background-color: #0066b2;
+    background-image: linear-gradient(to right, #0066b2, white);
+    width: 1200px;
+    border: none;
+    border-top-left-radius: 20%;
+    border-bottom-left-radius: 20%;
+    
+} */
+
+#titulo {
+  color: white;
+}
+
+#subtitulo {
+  color: #012169;
+  text-decoration-line: overline;
+}
+
+.btn1 {
+  background-color: white;
+  color: #6cb4ee;
+  position: center;
+}
+
+.btn2 {
+  background-color: white;
+  color: #6cb4ee;
+  position: center;
+}
+
+.btn3 {
+  background-color: white;
+  color: #6cb4ee;
+  position: center;
+}
