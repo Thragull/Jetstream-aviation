@@ -7,10 +7,15 @@ from flask_cors import CORS, cross_origin
 from flask_migrate import Migrate
 from flask_swagger import swagger
 from api.utils import APIException, generate_sitemap
-from api.models import db, Countries, States, Nationalities, Roles
+from api.models import db, Countries, States, Nationalities, Roles, Departments, Employees, Configurations, Models
 from api.routes import api
 from api.admin import setup_admin
 from api.commands import setup_commands
+from flask_jwt_extended import create_access_token
+from flask_jwt_extended import get_jwt_identity
+from flask_jwt_extended import jwt_required
+from flask_jwt_extended import JWTManager
+from flask_bcrypt import Bcrypt
 
 
 
@@ -22,6 +27,10 @@ static_file_dir = os.path.join(os.path.dirname(
 app = Flask(__name__)
 app.url_map.strict_slashes = False
 CORS(app, support_credentials=True)
+
+app.config["JWT_SECRET_KEY"] = "super-secret"  # Change this!
+jwt = JWTManager(app)
+bcrypt = Bcrypt(app)
 
 # database condiguration
 db_url = os.getenv("DATABASE_URL")
@@ -88,12 +97,9 @@ def getNationalities():
     return jsonify(serialized_countries), 200
 
 
-
 @app.route('/api/states', methods=['GET'])
 def getStates():
     country_id = request.args.get('country_id')
-    if country_id is None: 
-        return jsonify({'msg': 'You must specify a country id'}), 400
     states = States.query.filter_by(country_id=country_id).all()
     serialized_states = [state.serialize() for state in states]
     return jsonify(serialized_states), 200
@@ -105,11 +111,85 @@ def getRoles():
     serialized_roles = [role.serialize() for role in roles]
     return jsonify(serialized_roles), 200
 
+@app.route('/api/departments', methods=['GET'])
+@cross_origin(supports_credentials=True)
+def getDepartments():
+    departments = Departments.query.all()
+    serialized_departments = [department.serialize() for department in departments]
+    return jsonify(serialized_departments), 200
+
+
+@app.route('/api/employees', methods=['GET'])
+@cross_origin(supports_credentials=True)
+def getEmployees():
+    employees = Employees.query.with_entities(Employees.id, Employees.crew_id).all()
+    serialized_employees = [{'id': employee.id, 'crew_id': employee.crew_id} for employee in employees]
+    return jsonify(serialized_employees), 200
+
+
+
+@app.route('/api/signupEmployee', methods=['POST'])
+@cross_origin(supports_credentials=True)
+def signupUser():
+    body = request.get_json(silent=True)
+    if body is None:
+        return jsonify({'msg': "You can not send empty info"}), 400
+    if 'email' not in body: 
+        return jsonify({'msg': "The email field is mandatory"}), 400
+    if 'password' not in body: 
+        return jsonify({'msg': "You must specify a password"}), 400
+    if 'surname' not in body:
+        return jsonify({'msg': "The surname field is mandatory"}), 400
+    if 'name' not in body:
+        return jsonify({'msg': "The name field is mandatory"}), 400
+    if 'crew_id' not in body: 
+        return jsonify({'msg': "The id field is mandatory"}), 400
+    if 'role_id' not in body: 
+        return jsonify({'msg': "The role field is mandatory"}), 400
+    if 'department_id' not in body: 
+        return jsonify({'msg': "The department field is mandatory"}), 400
+
+    new_employee = Employees()
+    new_employee.email = body['email']
+    new_employee.password = body['password']
+    new_employee.surname = body['surname']
+    new_employee.name = body['name']
+    new_employee.crew_id = body['crew_id']
+    new_employee.gender = body['gender']
+    new_employee.department_id = body['department_id']
+    new_employee.role_id = body['role_id']
+    db.session.add(new_employee)
+    db.session.commit()
+    return jsonify({'msg': "Employee successfully added to database"}), 200
+ 
+@app.route('/api/login', methods=['POST'])
+def login():
+    body = request.get_json(silent=True)
+    if body is None: 
+        return jsonify({'msg': "You must send info of login and password"})
+    if 'crew_id' not in body: 
+        return jsonify({'msg': "You must specify your Id"}), 400
+    if 'password' not in body: 
+        return jsonify({'msg': 'You must write your password'}), 400
+#Necesitamos hacer un query para ver si el usuario existe, y luego comprobar que la contraseña coincida
+    user = Employees.query.filter_by(crew_id = body["crew_id"]).first()
+    if user is None:
+        return jsonify({'msg': "The user does not exist"})
+    if user.password != body['password']: 
+        return jsonify({'msg': 'wrong password'})
+    
+    access_token = create_access_token(identity=user.crew_id)
+    return jsonify({'msg': 'Login successful', 'token': access_token})
 
 
 
 
-
+@app.route("/protected", methods=["GET"])
+@jwt_required() #Esto sirve para proteger el enlace
+def protected():
+    # Access the identity of the current user with get_jwt_identity
+    current_user = get_jwt_identity() #Este método me devuelve la identidad con el que fue creado
+    return jsonify(logged_in_as=current_user), 200
 
 
 

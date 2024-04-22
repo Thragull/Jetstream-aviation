@@ -86,7 +86,9 @@ export const EditProfile = (props) => {
                  <InputComponent label="City" placeholder="city"/> 
             </div>
             <div className="my-5">
-                <button onClick={props.saveChangesFunction} type="button" className="btn btn-warning">Save changes</button>
+                <button onClick={()=> {
+                    props.saveChangesFunction}} 
+                    type="button" className="btn btn-warning">Save changes</button>
             </div>
         </div>
     );

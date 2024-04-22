@@ -8,7 +8,12 @@ export const InputComponent = (props) => {
 	return (
      <div className="input-group mb-3 mx-3">
         <span className="input-group-text" id="basic-addon1">{props.label}</span>
-        <input type="text" className="form-control" placeholder={props.placeholder} aria-label="Username" aria-describedby="basic-addon1"></input>
+        <input type="text" className="form-control" placeholder={props.placeholder} 
+               aria-label="Username" aria-describedby="basic-addon1"
+               name={props.name}
+               onChange={props.handleScript}
+               >
+               </input>
      </div>
 	);
 };
