@@ -118,6 +118,23 @@ def getStates():
     serialized_states = [state.serialize() for state in states]
     return jsonify(serialized_states), 200
 
+@app.route('/api/prices', methods=['GET'])
+def getPrices():
+    model_id = request.json.get('model_id')
+    if model_id is None:
+        return jsonify({'msg': 'You must specify a model ID'}), 400
+    configuration_id = request.json.get('configuration_id')
+    if configuration_id is None:
+        return jsonify({'msg': 'You must specify a configuration ID'}), 400
+    crew = request.json.get('crew')
+    if crew is None:
+        return jsonify({'msg': 'You must specify if there is or there is not crew'}), 400
+    prices = Prices.query.filter_by(model_id=model_id, configuration_id=configuration_id, crew=crew).all()
+    if prices == []:
+        return jsonify({'msg': 'There is no price for the selected options.'}), 404
+    serialized_prices =list(map(lambda price: price.serialize(), prices))
+    return jsonify(serialized_prices), 200
+
 @app.route('/api/roles', methods=['GET'])
 @cross_origin(supports_credentials=True)
 def getRoles():
