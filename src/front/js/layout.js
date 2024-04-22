@@ -6,6 +6,7 @@ import { BackendURL } from "./component/backendURL";
 import { Home } from "./pages/Home";
 import { Demo } from "./pages/demo";
 import { Single } from "./pages/single";
+import {LandingPageWorker} from "./pages/LandingPageWorker"
 import injectContext from "./store/appContext";
 
 import Contact from "./component/Contact";
@@ -37,6 +38,7 @@ const Layout = () => {
             <Route element={<Single />} path="/single/:theid" />
             <Route element={<h1>Not found!</h1>} />
             <Route element={<LandingPageCliente />} path="/client" />
+            <Route element={<LandingPageWorker/>} path="/worker"/>
             <Route element={<Contact />} path="/contact" />
             <Route element={<AboutUs />} path="/aboutUs" />
             <Route element={<Fleet />} path="/fleet" />
@@ -48,6 +50,7 @@ const Layout = () => {
       </BrowserRouter>
     </div>
   );
+
 };
 
 export default injectContext(Layout);
