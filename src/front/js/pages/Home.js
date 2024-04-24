@@ -59,10 +59,12 @@ export const Home = () => {
               className="img2 img-fluid rounded-pill w-100 h-75"
             />
             <div className="d-grid mx-auto">
-              <button className="btn2 btn" type="button">
-                <i class="fa-regular fa-circle-user"></i>
-                <b> Employee</b>
-              </button>
+              <Link to="/login">
+                <button className="btn2 btn" type="button">
+                  <i class="fa-regular fa-circle-user"></i>
+                  <b> Employee</b>
+                </button>
+              </Link>
             </div>
           </div>
 
