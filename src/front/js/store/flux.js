@@ -93,7 +93,7 @@ const getState = ({ getStore, getActions, setStore }) => {
 				let allEmployees = []
 				try {
 					const resp = await fetch(
-						process.env.BACKEND_URL + "/api/employees")
+						process.env.BACKEND_URL + "/api/crew_id")
 						const data = await resp.json()
 						allEmployees = data; 
 						console.log(allEmployees)

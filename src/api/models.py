@@ -263,7 +263,7 @@ class Employees(db.Model):
             "surname": self.surname,
             "email": self.email,
             "role": self.role_id,
-            "department": self.department,
+            "department": self.department_id,
             "gender": self.gender,
             "nationality": self.nationality_id,
             "address": self.address,

@@ -158,9 +158,9 @@ def getDepartments():
     serialized_departments = [department.serialize() for department in departments]
     return jsonify(serialized_departments), 200
 
-@app.route('/api/employees', methods=['GET'])
+@app.route('/api/crew_id', methods=['GET'])
 @cross_origin(supports_credentials=True)
-def getEmployees():
+def getCrewId():
     employees = Employees.query.with_entities(Employees.id, Employees.crew_id).all()
     serialized_employees = [{'id': employee.id, 'crew_id': employee.crew_id} for employee in employees]
     return jsonify(serialized_employees), 200
@@ -181,6 +181,19 @@ def get_hotels():
         return jsonify({'msg': 'There are no Hotels for the specific Aiport Base'}), 404
     serialized_hotels = list(map(lambda hotel: hotel.serialize(), hotels))
     return jsonify(serialized_hotels), 200
+
+@app.route('/api/employee', methods=['GET'])
+def getEmployeeByCrewID():
+    crew_id = request.args.get('crew_id')
+    if crew_id is None:
+        return jsonify({'msn': 'You must specify a employee ID'}), 400
+    employee = Employees.query.filter_by(crew_id=crew_id).first()
+    if employee == []:
+        return jsonify({'msg': 'The employee does not exists'}), 404
+    
+    print(jsonify(employee.serialize()))
+    return jsonify(employee.serialize()), 200
+
 
 @app.route('/api/signupEmployee', methods=['POST'])
 @cross_origin(supports_credentials=True)
