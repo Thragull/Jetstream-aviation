@@ -119,10 +119,13 @@ def getNationalities():
 
 @app.route('/api/states', methods=['GET'])
 def getStates():
+
     country_id = request.args.get('country_id')
     states = States.query.filter_by(country_id=country_id).all()
     serialized_states = [state.serialize() for state in states]
     return jsonify(serialized_states), 200
+
+
 
 @app.route('/api/prices', methods=['GET'])
 def getPrices():
@@ -214,24 +217,25 @@ def signupUser():
     return jsonify({'msg': "Employee successfully added to database"}), 200
  
 @app.route('/api/login', methods=['POST'])
+@cross_origin(supports_credentials=True)
 def login():
     body = request.get_json(silent=True)
     if body is None: 
-        return jsonify({'msg': "You must send info of login and password"})
+        return jsonify({'msg': "You must send info of login and password"}), 400
     if 'crew_id' not in body: 
         return jsonify({'msg': "You must specify your Id"}), 400
     if 'password' not in body: 
         return jsonify({'msg': 'You must write your password'}), 400
-#Necesitamos hacer un query para ver si el usuario existe, y luego comprobar que la contraseña coincida
-    user = Employees.query.filter_by(crew_id = body["crew_id"]).first()
+
+    # Necesitamos hacer un query para ver si el usuario existe, y luego comprobar que la contraseña coincida
+    user = Employees.query.filter_by(crew_id=body["crew_id"]).first()
     if user is None:
-        return jsonify({'msg': "The user does not exist"})
+        return jsonify({'msg': "The user does not exist"}), 400
     if user.password != body['password']: 
-        return jsonify({'msg': 'wrong password'})
+        return jsonify({'msg': 'wrong password'}), 400
     
     access_token = create_access_token(identity=user.crew_id)
-    return jsonify({'msg': 'Login successful', 'token': access_token})
-
+    return jsonify({'msg': 'Login successful', 'token': access_token}), 200
 
 
 

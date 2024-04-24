@@ -15,6 +15,7 @@ import LandingPageCliente from "./component/LandingPageCliente";
 import AboutUs from "./component/AboutUs";
 import Fleet from "./component/Fleet";
 import Services from "./component/Services";
+import LoginPage from "./pages/LoginPage";
 
 
 
@@ -43,7 +44,7 @@ const Layout = () => {
             <Route element={<AboutUs />} path="/aboutUs" />
             <Route element={<Fleet />} path="/fleet" />
             <Route element={<Services />} path="/services" />
-
+            <Route element={<LoginPage/>} path="/login" />
           </Routes>
           {/* <Footer /> */}
         </ScrollToTop>
