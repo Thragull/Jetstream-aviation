@@ -135,6 +135,72 @@ def getPrices():
     serialized_prices =list(map(lambda price: price.serialize(), prices))
     return jsonify(serialized_prices), 200
 
+@app.route('/api/projects', methods=['GET'])
+def getProjects():
+    projects = Projects.query.all()
+    serialized_projects = list(map(lambda project: project.serialize(), projects))
+    return jsonify(serialized_projects), 200
+
+@app.route('/api/projects', methods=['POST'])
+def createProject():
+    body = request.get_json(silent=True)
+    if body is None:
+        return jsonify({'msg': 'Body must contain something'}), 400
+    if ('project' not in body or
+        'start' not in body or
+        'end' not in body):
+        return jsonify({'msg': 'One or more of the following is missing: Project name, Start date, End date'}), 400
+    
+    project = Projects()
+    project.project = body['project']
+    project.start_date = body['start']
+    project.end_date = body['end']
+
+    db.session.add(project)
+    db.session.commit()
+
+    return jsonify({'msg': 'New project created'}), 200
+
+@app.route('/api/projects', methods=['PUT'])
+def modifyProject():
+    project_id = request.args.get('id')
+    if project_id is None:
+        return jsonify({'msg': 'You must specify a project ID'})
+    body = request.get_json(silent=True)
+    if body is None:
+        return jsonify({'msg': 'Body must contain something'}), 400
+    if ('project' not in body and
+        'start' not in body and
+        'end' not in body):
+        return jsonify({'msg': 'You must specify at least one of the following fields: Project name, Start date, End date'}), 400
+    project = Projects.query.get(project_id)
+    if 'project' in body:
+        project.project = body['project']
+    if 'start' in body:
+        project.start_date = body['start']
+    if 'end' in body:
+        project.end_date = body['end']
+
+    db.session.commit()
+
+    return jsonify({'msg': 'Project with name {} has been succesfully modified'.format(project.project)}), 200
+
+@app.route('/api/projects', methods=['DELETE'])
+def deleteProject():
+    project_id = request.args.get('id')
+    if project_id is None:
+        return jsonify({'msg': 'You must specify a project ID'}), 400
+    assignations = Assignations.query.filter_by(project_id=project_id).all()
+    if len(assignations)>0:
+        return jsonify({'msg': 'Project can\'t be deleted if it has aircrafts assigned'}), 400
+    project = Projects.query.filter_by(id=project_id).first()
+    if project is None:
+        return jsonify({'msg': 'Project not found'}), 404
+    
+    db.session.delete(project)
+    db.session.commit()
+    return jsonify({'msg': 'Project {} has been succesfully deleted'.format(project.project)})
+
 @app.route('/api/roles', methods=['GET'])
 @cross_origin(supports_credentials=True)
 def getRoles():
