@@ -183,6 +183,7 @@ def get_hotels():
     return jsonify(serialized_hotels), 200
 
 @app.route('/api/employee', methods=['GET'])
+#@jwt_required()
 def getEmployeeByCrewID():
     crew_id = request.args.get('crew_id')
     if crew_id is None:

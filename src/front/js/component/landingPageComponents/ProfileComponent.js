@@ -50,13 +50,13 @@ export const ProfileComponent = () => {
             {seeinflight ? <InflightProfile/> : 
                 <div>
                     <div style={{display: "flex"}}>
-                        <InfoComponent label="Name" name="Jose Luis"/>
-                        <InfoComponent label="Sirname" name="Llacer Ibañez"/>
+                        <InfoComponent label="Name" name={store.loggedInEmployee.name}/>
+                        <InfoComponent label="Sirname" name={store.loggedInEmployee.surname}/>
                         <InfoComponent label="Birthday" name="13/06/1996"/>
                     </div>
                     <Divider/>
                     <div style={{display: "flex"}}>
-                        <InfoComponent label="Email" name="josellaib@gmail.com"/>
+                        <InfoComponent label="Email" name={store.loggedInEmployee.email}/>
                         <InfoComponent label="Phone Number" name="+34 678932436"/>
                     </div>
                     <Divider/>

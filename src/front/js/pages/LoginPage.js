@@ -12,35 +12,23 @@ export const LoginPage = () => {
     const { store, actions } = useContext(Context);
     const [departments, setDepartments] = useState([])
     const [employee, setEmployee] = useState({
-        department_id: 0,
         crew_id: "",
         password: ""
     })
     const navigate = useNavigate();
-
-
-    useEffect(()=>{
-        const fetchDepartments = async() => {
-            const departmentsData = await actions.getDepartments()
-            setDepartments(departmentsData)
-        }
-
-        fetchDepartments();
-    }, [])
 
     const handleInputChange = (event) => {
         const {name, value} = event.target; 
         setEmployee({...employee, [name]: value})
     }
 
-    const handleSelectChange = (event) => {
-        const {name, value} = event.target
-        setEmployee({...employee, [name]: parseInt(value, 10)})
-    }
+    
+
 
     useEffect(()=>{
         console.log(employee);
     }, [employee])
+
 
 
 
@@ -60,10 +48,19 @@ export const LoginPage = () => {
             //Guarda el token en el local Storage
             //También deberías almacenar el usuario en la store utilizando la función setItem
             localStorage.setItem("jwt-token", data.token);
-    
+
             console.log("Login successful")
             console.log(`${data.token}`)
+
+            console.log(employee.crew_id)
+
+            const authToken = localStorage.getItem("jwt-token");
+            const loggedEmployee =  await actions.getEmployee(employee.crew_id, authToken);
+            
+            //console.log(loggedEmployee)
+            store.loggedInEmployee = loggedEmployee;
             navigate("/worker")
+            console.log(store.loggedInEmployee);
     
             return data
         } catch (error) {
@@ -76,7 +73,8 @@ export const LoginPage = () => {
             });
         }
     }
-    
+
+
 
 
     return (
