@@ -207,7 +207,7 @@ def deleteProject():
     db.session.delete(project)
     db.session.commit()
     return jsonify({'msg': 'Project {} has been succesfully deleted'.format(project.project)})
-'''
+''''''
 @app.route('/api/assignations', methods=['GET'])
 def getAssignations():
     assignations = Assignations.query.all()
@@ -228,6 +228,8 @@ def createAssignations():
     assignation.aircraft_id = body['aircraft_id']
 
     aircraft = Fleet.query.filter_by(id=assignation.aircraft_id).first()
+    if aircraft.assigned:
+        return jsonify({'msg', 'The aircraft {} is already assigned to another project'.format(aircraft.registration)}), 400
     aircraft.assigned = True
 
     db.session.add(assignation)
@@ -250,7 +252,14 @@ def modifyAssignations():
     if 'project_id' in body:
         assignation.project_id = body['project_id']
     if 'aircraft_id' in body:
+        old_aircraft = Fleet.query.filter_by(id=assignation.aircraft_id).first()
+        new_aircraft = Fleet.query.filter_by(id=body['aircraft_id']).first()
+        if new_aircraft.assigned:
+            return jsonify({'msg': 'The aircraft {} is already assigned to another project'.format(new_aircraft.registration)}), 400
         assignation.aircraft_id = body['aircraft_id']
+        old_aircraft.assigned=False
+        new_aircraft.assigned=True
+        
 
     db.session.commit()
 
@@ -261,14 +270,16 @@ def deleteAssignation():
     assignation_id = request.args.get('id')
     if assignation_id is None:
         return jsonify({'msg': 'You must specify an assignation ID'}), 400
-    assignation = Projects.query.filter_by(id=assignation_id).first()
+    assignation = Assignations.query.filter_by(id=assignation_id).first()
     if assignation is None:
         return jsonify({'msg': 'Assignation not found'}), 404
-    
+    aircraft= Fleet.query.filter_by(id=assignation.aircraft_id).first()
+    aircraft.assigned=False
+
     db.session.delete(assignation)
     db.session.commit()
     return jsonify({'msg': 'Assignation with ID {} has been succesfully deleted'.format(assignation.id)})
-'''
+
 @app.route('/api/roles', methods=['GET'])
 @cross_origin(supports_credentials=True)
 def getRoles():
