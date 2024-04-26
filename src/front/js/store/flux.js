@@ -34,6 +34,53 @@ const getState = ({ getStore, getActions, setStore }) => {
 					console.log("Error loading message from backend", error)
 				}
 			}, 
+
+			getModels: async () => {
+				let allModels = [];
+				try{ 
+					const resp = await fetch(
+						process.env.BACKEND_URL + "api/models")
+					const data = await resp.json()
+ 					allModels = data; 
+ 					console.log(allModels)
+					return allModels;   
+				} catch(error) {
+					console.log(error)
+				}
+			},
+
+			getConfigurations: async (modelyId) => {
+				try {
+					const resp = await fetch(`${process.env.BACKEND_URL}api/configurations?model_id=${modelId}`, {
+						method: 'GET',
+						headers: {
+							'Content-Type': 'application/json'
+						}
+					});
+					const data = await resp.json();
+					console.log(data);
+					return data;
+				} catch(error) {
+					console.log(error);
+				}
+			},
+
+			getFleet: async (modelyId) => {
+				try {
+					const resp = await fetch(`${process.env.BACKEND_URL}api/fleet?model_id=${modelId}`, {
+						method: 'GET',
+						headers: {
+							'Content-Type': 'application/json'
+						}
+					});
+					const data = await resp.json();
+					console.log(data);
+					return data;
+				} catch(error) {
+					console.log(error);
+				}
+			},
+
 			getCountries: async () => {
 				let allCountries = [];
 				try{ 
