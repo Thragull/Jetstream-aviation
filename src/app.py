@@ -85,38 +85,57 @@ def serve_any_other_file(path):
 @app.route('/api/models', methods=['GET'])
 @cross_origin(supports_credentials=True)
 def getModels():
-    models = Models.query.all()
+    id = request.args.get('id')
+    if id is None:
+        models = Models.query.all()
+        serialized_models = [model_name.serialize() for model_name in models]
+        return jsonify(serialized_models), 200
+    models = Models.query.filter_by(id=id).all()
     serialized_models = [model_name.serialize() for model_name in models]
     return jsonify(serialized_models), 200
 
 @app.route('/api/configurations', methods=['GET'])
 def getConfigurations():
     model = request.args.get("model")
-    print(model)
-    print(type(model))
+    id = request.args.get('id')
     if model is None: 
         return jsonify({'msg': 'You must specify a model id'}), 400
-    configurations = Configurations.query.filter_by(model_id=model).all()
+    if id is None:
+        configurations = Configurations.query.filter_by(model_id=model).all()
+        serialized_configurations = [configuration.serialize() for configuration in configurations]
+        return jsonify(serialized_configurations), 200
+    configurations = Configurations.query.filter_by(model_id=model, id=id).all()
     serialized_configurations = [configuration.serialize() for configuration in configurations]
-    return jsonify(serialized_configurations), 200    
-
-# @app.route('/api/fleet', methods=['GET'])
-# def getFleet():
-#     model = request.json.get("model_id")
-#     if model is None: 
-#         return jsonify({'msg': 'You must specify a model id'}), 400
-#     fleet = Fleet.query.filter_by(model_id=model).all()
-#     serialized_fleet = list(map(lambda plane: plane.serialize(), fleet))
-#     return jsonify(serialized_fleet), 200    
+    return jsonify(serialized_configurations), 200
 
 @app.route('/api/fleet', methods=['GET'])
 def getFleet():
-    configuration = request.json.get("configuration_id")
-    if configuration is None: 
-        return jsonify({'msg': 'You must specify a configuration id'}), 400
-    fleet = Fleet.query.filter_by(configuration_id=configuration).all()
+    model_id = request.args.get("model_id")
+    configuration_id = request.args.get("configuration_id")
+    if model_id is None and configuration_id is None:
+        fleet = Fleet.query.all()
+        if fleet == []:
+            return jsonify({'msg': 'There are no aircrafts in Database'}), 404
+        serialized_fleet = list(map(lambda plane: plane.serialize(), fleet))
+        return jsonify(serialized_fleet), 200
+    if model_id is None:
+        fleet = Fleet.query.filter_by(configuration_id=configuration_id).all()
+        if fleet == []:
+            return jsonify({'msg': 'There are no aircrafts in Database with this configuration'}), 404
+        serialized_fleet = list(map(lambda plane: plane.serialize(), fleet))
+        return jsonify(serialized_fleet), 200
+    if configuration_id is None:
+        fleet = Fleet.query.filter_by(model_id=model_id).all()
+        if fleet == []:
+            return jsonify({'msg': 'There are no aircrafts in Database with this model'}), 404
+        serialized_fleet = list(map(lambda plane: plane.serialize(), fleet))
+        return jsonify(serialized_fleet), 200
+    fleet = Fleet.query.filter_by(model_id=model_id, configuration_id=configuration_id).all()
+    if fleet == []:
+        return jsonify({'msg': 'There are no aircrafts in Database with this model and configuration'}), 404
     serialized_fleet = list(map(lambda plane: plane.serialize(), fleet))
-    return jsonify(serialized_fleet), 200    
+    return jsonify(serialized_fleet), 200
+
 
 @app.route('/api/prices', methods=['GET'])
 def getPrices():
@@ -276,14 +295,24 @@ def deleteAssignation():
 @app.route('/api/roles', methods=['GET'])
 @cross_origin(supports_credentials=True)
 def getRoles():
-    roles = Roles.query.all()
+    id = request.args.get('id')
+    if id is None:
+        roles = Roles.query.all()
+        serialized_roles = [role.serialize() for role in roles]
+        return jsonify(serialized_roles), 200
+    roles = Roles.query.filter_by(id=id).all()
     serialized_roles = [role.serialize() for role in roles]
     return jsonify(serialized_roles), 200
 
 @app.route('/api/countries', methods=['GET'])
 @cross_origin(supports_credentials=True)
 def getCountries():
-    countries = Countries.query.all()
+    id = request.args.get('id')
+    if id is None:
+        countries = Countries.query.all()
+        serialized_countries = [country.serialize() for country in countries]
+        return jsonify(serialized_countries), 200
+    countries = Countries.query.filter_by(id=id).all()
     serialized_countries = [country.serialize() for country in countries]
     return jsonify(serialized_countries), 200
 
@@ -291,23 +320,41 @@ def getCountries():
 @app.route('/api/nationalities', methods=['GET'])
 @cross_origin(supports_credentials=True)
 def getNationalities():
-    nationalities = Nationalities.query.all()
+    id = request.args.get('id')
+    if id is None:
+        nationalities = Nationalities.query.all()
+        serialized_countries = [nationality.serialize() for nationality in nationalities]
+        return jsonify(serialized_countries), 200
+    nationalities = Nationalities.query.filter_by(id=id).all()
     serialized_countries = [nationality.serialize() for nationality in nationalities]
     return jsonify(serialized_countries), 200
 
 
 @app.route('/api/states', methods=['GET'])
 def getStates():
-
+    id = request.args.get('id')
     country_id = request.args.get('country_id')
-    states = States.query.filter_by(country_id=country_id).all()
+    if id is None and country_id is None:
+        states = States.query.all()
+        serialized_states = [state.serialize() for state in states]
+        return jsonify(serialized_states), 200
+    if id is None:
+        states = States.query.filter_by(country_id=country_id).all()
+        serialized_states = [state.serialize() for state in states]
+        return jsonify(serialized_states), 200
+    states = States.query.filter_by(id=id).all()
     serialized_states = [state.serialize() for state in states]
     return jsonify(serialized_states), 200
 
 @app.route('/api/departments', methods=['GET'])
 @cross_origin(supports_credentials=True)
 def getDepartments():
-    departments = Departments.query.all()
+    id = request.args.get('id')
+    if id is None:
+        departments = Departments.query.all()
+        serialized_departments = [department.serialize() for department in departments]
+        return jsonify(serialized_departments), 200
+    departments = Departments.query.filter_by(id=id).all()
     serialized_departments = [department.serialize() for department in departments]
     return jsonify(serialized_departments), 200
 
@@ -434,7 +481,12 @@ def deleteEmployee():
 
 @app.route('/api/airports', methods=['GET'])
 def get_airports():
-    airports = Airports.query.all()
+    id = request.args.get('id')
+    if id is None:
+        airports = Airports.query.all()
+        serialized_airports = list(map(lambda airport: airport.serialize(), airports))
+        return jsonify(serialized_airports) 
+    airports = Airports.query.filter_by(id=id).all()
     serialized_airports = list(map(lambda airport: airport.serialize(), airports))
     return jsonify(serialized_airports)
 
