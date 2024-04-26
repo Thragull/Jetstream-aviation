@@ -91,14 +91,25 @@ def getConfigurations():
     serialized_configurations = [configuration.serialize() for configuration in configurations]
     return jsonify(serialized_configurations), 200    
 
+# @app.route('/api/fleet', methods=['GET'])
+# def getFleet():
+#     model = request.json.get("model_id")
+#     if model is None: 
+#         return jsonify({'msg': 'You must specify a model id'}), 400
+#     fleet = Fleet.query.filter_by(model_id=model).all()
+#     serialized_fleet = list(map(lambda plane: plane.serialize(), fleet))
+#     return jsonify(serialized_fleet), 200    
+
 @app.route('/api/fleet', methods=['GET'])
 def getFleet():
-    model = request.json.get("model_id")
-    if model is None: 
-        return jsonify({'msg': 'You must specify a model id'}), 400
-    fleet = Fleet.query.filter_by(model_id=model).all()
+    configuration = request.json.get("configuration_id")
+    if configuration is None: 
+        return jsonify({'msg': 'You must specify a configuration id'}), 400
+    fleet = Fleet.query.filter_by(configuration_id=configuration).all()
     serialized_fleet = list(map(lambda plane: plane.serialize(), fleet))
     return jsonify(serialized_fleet), 200    
+
+
 
 
 @app.route('/api/countries', methods=['GET'])
