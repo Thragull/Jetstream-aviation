@@ -20,11 +20,15 @@ import ManagementComponent from "../component/landingPageComponents/ManagementCo
 
 
 
-//Acordarse de instalar el DatePicker globalmente
+
+
+
 
 
 
 export const LandingPageWorker = () => {
+
+    const { store, actions } = useContext(Context);
 
     const [manager, setManager] = useState(false)
     const [activeComponent, setActiveComponent] = useState('Roster')
@@ -132,8 +136,7 @@ export const LandingPageWorker = () => {
                              <p>Image</p>
                          </div>
                      </div>
-                     <p className="infoUser" style={{margin: "0", fontSize: "3vh", backgroundColor: `${inactiveColor}` }}>Jose Luis Llacer</p>
-                     <p className="py-2 infoUser" style={{margin: "0", backgroundColor: `${inactiveColor}`, borderBottomRightRadius: `${dashboardRadius}` }}>josellaib@gmail.com</p>
+                     <p className="infoUser" style={{margin: "0", fontSize: "3vh", backgroundColor: `${inactiveColor}` }}>{store.loggedInEmployee.name}</p>
                      <div style={{display: "inline-block", width: "100%", margin: "0"}}>
                          <div className="navbarComponent" style={{color: `${textColorDashboard}`, backgroundColor: `${colorDashboard}`, borderBottomRightRadius: `${profileRadius}` }} onClick={() => setActiveComponent('Dashboard')}>
                              <div className="mx-auto navbar-icon-text col-2" >

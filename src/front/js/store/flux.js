@@ -1,6 +1,7 @@
 const getState = ({ getStore, getActions, setStore }) => {
 	return {
 		store: {
+			loggedInEmployee: null,
 			message: null,
 			demo: [
 				{
@@ -100,6 +101,24 @@ const getState = ({ getStore, getActions, setStore }) => {
 						return allEmployees;
 				} catch (error) {
 					
+				}
+			},
+			getEmployee: async(crew_id, auth_token) => {
+				let employee = {}
+				try{
+					const resp = await fetch(
+						process.env.BACKEND_URL + `/api/employee?crew_id=${crew_id}`,{
+							headers: {
+								Authorization: `Bearer ${auth_token}`
+							}
+						}
+					)
+					const data = await resp.json()
+					employee = data
+					console.log('employee')
+					return employee
+				} catch (error) {
+
 				}
 			},
 			changeColor: (index, color) => {
