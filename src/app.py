@@ -307,10 +307,11 @@ def getEmployeeByCrewID():
     if crew_id is None:
         return jsonify({'msn': 'You must specify a employee ID'}), 400
     employee = Employees.query.filter_by(crew_id=crew_id).first()
-    if employee == []:
+    if employee is None:
+        return jsonify({'msg': 'The employee does not exists'}), 404
+    if not employee.is_active:
         return jsonify({'msg': 'The employee does not exists'}), 404
     
-    print(jsonify(employee.serialize()))
     return jsonify(employee.serialize()), 200
 
 @app.route('/api/signupEmployee', methods=['POST'])
@@ -334,18 +335,28 @@ def signupUser():
     if 'department_id' not in body: 
         return jsonify({'msg': "The department field is mandatory"}), 400
 
-    new_employee = Employees()
-    new_employee.email = body['email']
-    new_employee.password = body['password']
-    new_employee.surname = body['surname']
-    new_employee.name = body['name']
-    new_employee.crew_id = body['crew_id']
-    new_employee.gender = body['gender']
-    new_employee.department_id = body['department_id']
-    new_employee.role_id = body['role_id']
-    db.session.add(new_employee)
-    db.session.commit()
-    return jsonify({'msg': "Employee successfully added to database"}), 200
+    employee = Employees.query.filter_by(crew_id=body['crew_id']).first()
+    if employee is None:
+        new_employee = Employees()
+        new_employee.email = body['email']
+        new_employee.password = body['password']
+        new_employee.surname = body['surname']
+        new_employee.name = body['name']
+        new_employee.crew_id = body['crew_id']
+        new_employee.gender = body['gender']
+        new_employee.department_id = body['department_id']
+        new_employee.role_id = body['role_id']
+
+        db.session.add(new_employee)
+        db.session.commit()
+        return jsonify({'msg': "Employee successfully added to database"}), 200
+    if employee.is_active:
+        return jsonify({'msg': 'Employee {} already exist'.format(employee.crew_id)}), 400
+    if not employee.is_active:
+        employee.is_active = True
+        
+        db.session.commit()
+        return jsonify({'msg': 'Employee succesfully added to database'}), 200
 
 @app.route('/api/employee', methods=['PUT'])
 def modifyEmployee():
@@ -375,6 +386,10 @@ def modifyEmployee():
         return jsonify({'msg': 'None of the fields introduced can be modified'}), 400
 
     employee = Employees.query.filter_by(id=employee_id).first()
+    if employee is None:
+        return jsonify({'msg': 'Employee does not exist'}), 404
+    if not employee.is_active:
+        return jsonify({'msg': 'Employee does not exist'}), 404
     for key, value in body.items():
         if hasattr(employee, key):
             setattr(employee, key, value)
@@ -383,6 +398,21 @@ def modifyEmployee():
 
     db.session.commit()
     return jsonify({'msg': "Employee {} successfully modified".format(employee.crew_id)}), 200
+
+@app.route('/api/employee', methods=['DELETE'])
+def deleteEmployee():
+    employee_id = request.args.get('id')
+    if employee_id is None:
+        return jsonify({'msg': 'You must specify an Employee ID'}), 400
+    employee = Employees.query.filter_by(id=employee_id).first()
+    if employee is None:
+        return jsonify({'msg': 'Employee does not exist'}), 404
+    if not employee.is_active:
+        return jsonify({'msg': 'Employee does not exist'}), 404
+    employee.is_active = False
+
+    db.session.commit()
+    return jsonify({'msg': 'Employee {} has been deleted'.format(employee.crew_id)})
 
 @app.route('/api/airports', methods=['GET'])
 def get_airports():
