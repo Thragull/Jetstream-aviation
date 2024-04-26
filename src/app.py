@@ -125,8 +125,6 @@ def getStates():
     serialized_states = [state.serialize() for state in states]
     return jsonify(serialized_states), 200
 
-
-
 @app.route('/api/prices', methods=['GET'])
 def getPrices():
     model_id = request.args.get('model_id')
@@ -174,7 +172,7 @@ def createProject():
 def modifyProject():
     project_id = request.args.get('id')
     if project_id is None:
-        return jsonify({'msg': 'You must specify a project ID'})
+        return jsonify({'msg': 'You must specify a project ID'}),400
     body = request.get_json(silent=True)
     if body is None:
         return jsonify({'msg': 'Body must contain something'}), 400
@@ -209,7 +207,68 @@ def deleteProject():
     db.session.delete(project)
     db.session.commit()
     return jsonify({'msg': 'Project {} has been succesfully deleted'.format(project.project)})
+'''
+@app.route('/api/assignations', methods=['GET'])
+def getAssignations():
+    assignations = Assignations.query.all()
+    serialized_assignations = list(map(lambda assignation: assignation.serialize(), assignations))
+    return jsonify(serialized_assignations), 200
 
+@app.route('/api/assignations', methods=['POST'])
+def createAssignations():
+    body = request.get_json(silent=True)
+    if body is None:
+        return jsonify({'msg': 'Body must contain something'}), 400
+    if ('project_id' not in body or
+        'aircraft_id' not in body):
+        return jsonify({'msg': 'One or more of the following is missing: Project ID, Aircraft ID'}), 400
+    
+    assignation = Assignations()
+    assignation.project_id = body['project_id']
+    assignation.aircraft_id = body['aircraft_id']
+
+    aircraft = Fleet.query.filter_by(id=assignation.aircraft_id).first()
+    aircraft.assigned = True
+
+    db.session.add(assignation)
+    db.session.commit()
+
+    return jsonify({'msg': 'New assignation created'}), 200
+
+@app.route('/api/assignations', methods=['PUT'])
+def modifyAssignations():
+    assignation_id = request.args.get('id')
+    if assignation_id is None:
+        return jsonify({'msg': 'You must specify an assignation ID'}),400
+    body = request.get_json(silent=True)
+    if body is None:
+        return jsonify({'msg': 'Body must contain something'}), 400
+    if ('project_id' not in body and
+        'aircraft_id' not in body):
+        return jsonify({'msg': 'You must specify at least one of the following fields: Project ID, Aircraft ID'}), 400
+    assignation = Assignations.query.get(assignation_id)
+    if 'project_id' in body:
+        assignation.project_id = body['project_id']
+    if 'aircraft_id' in body:
+        assignation.aircraft_id = body['aircraft_id']
+
+    db.session.commit()
+
+    return jsonify({'msg': 'Assignation succesfully modified'}), 200
+
+@app.route('/api/assignations', methods=['DELETE'])
+def deleteAssignation():
+    assignation_id = request.args.get('id')
+    if assignation_id is None:
+        return jsonify({'msg': 'You must specify an assignation ID'}), 400
+    assignation = Projects.query.filter_by(id=assignation_id).first()
+    if assignation is None:
+        return jsonify({'msg': 'Assignation not found'}), 404
+    
+    db.session.delete(assignation)
+    db.session.commit()
+    return jsonify({'msg': 'Assignation with ID {} has been succesfully deleted'.format(assignation.id)})
+'''
 @app.route('/api/roles', methods=['GET'])
 @cross_origin(supports_credentials=True)
 def getRoles():

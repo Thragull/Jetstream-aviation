@@ -2125,13 +2125,13 @@ def setup_commands(app):
                 model = Models.query.filter_by(model_name='A320').first()
                 details_token.certificate_id = model.id
                 details_token.cert_expiration = datetime.now()+ timedelta(days=random.randint(60, 365))
-                models_asigned = ['A320']
+                models_assigned = ['A320']
                 number_of_licenses=1
                 random_cert = random.randint(0,len(models)-1)
                 certificates = []
-                while models[random_cert] not in models_asigned and number_of_licenses < 4:
+                while models[random_cert] not in models_assigned and number_of_licenses < 4:
                     model = Models.query.filter_by(model_name=models[random_cert]).first()
-                    models_asigned.append(models[random_cert])
+                    models_assigned.append(models[random_cert])
                     certificates.append(model.id)
                     random_cert = random.randint(0,len(models)-1)
                     number_of_licenses+=1
@@ -2146,7 +2146,7 @@ def setup_commands(app):
                     details_token.cert_expiration4 = datetime.now()+ timedelta(days=random.randint(60, 365))
                 base = Airports.query.filter_by(IATA_code=airports[random.randint(0,107)]['IATA_code']).first()
                 details_token.home_base_id = base.id
-                details_token.roster_asigned = random.randint(1,3)
+                details_token.roster_assigned = random.randint(1,3)
                 details_token.monthly_BH = random.randint(0,100)
                 details_token.monthly_DH = details_token.monthly_BH + details_token.monthly_BH*0.25
                 details_token.yearly_BH = random.randint(details_token.monthly_BH,900)

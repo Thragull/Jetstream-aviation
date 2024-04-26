@@ -47,7 +47,7 @@ class Fleet(db.Model):
     model = db.relationship(Models)
     configuration_id = db.Column(db.Integer, db.ForeignKey('configurations.id'), nullable=False)
     configuration = db.relationship(Configurations)
-    asigned = db.Column(db.Boolean, default=False)
+    assigned = db.Column(db.Boolean, default=False)
 
     def __repr__(self):
         return f'Aircraft: {self.registration}'
@@ -58,7 +58,7 @@ class Fleet(db.Model):
             "registration": self.registration,
             "model": self.model_id,
             "configuration": self.configuration_id,
-            "asigned": self.asigned
+            "assigned": self.assigned
         }
 
 class Prices(db.Model):
@@ -109,7 +109,7 @@ class Assignations(db.Model):
     project_id = db.Column(db.Integer,db.ForeignKey('projects.id'), nullable=False)
     project = db.relationship(Projects)
     aircraft_id = db.Column(db.Integer, db.ForeignKey('fleet.id'), nullable=False)
-    aircraft = db.relationship(Fleet)
+    aircraft = db.relationship(Fleet, foreign_keys=[aircraft_id])
 
     def __repr__(self):
         return 'Aircraft {} is assigned to project {}'.format(self.aircraft.registration, self.project.project)
@@ -323,7 +323,7 @@ class Inflight(db.Model):
     cert_expiration4 = db.Column(db.DateTime)
     home_base_id = db.Column(db.Integer, db.ForeignKey('airports.id'), nullable=False)
     home_base = db.relationship(Airports)
-    roster_asigned = db.Column(db.Integer, nullable=False)
+    roster_assigned = db.Column(db.Integer, nullable=False)
     monthly_BH = db.Column(db.Integer, nullable=False)
     monthly_DH = db.Column(db.Integer, nullable=False)
     yearly_BH = db.Column(db.Integer, nullable=False)
@@ -349,7 +349,7 @@ class Inflight(db.Model):
             "certificate4": self.certificate4,
             "cert_expiration4": self.cert_expiration4,
             "home_base": self.home_base_id,
-            "roster_asigned": self.roster_asigned,
+            "roster_assigned": self.roster_assigned,
             "monthly_BH": self.monthly_BH,
             "monthly_DH": self.monthly_DH,
             "yearly_BH": self.yearly_BH,
