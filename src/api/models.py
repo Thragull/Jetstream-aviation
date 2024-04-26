@@ -251,6 +251,7 @@ class Employees(db.Model):
     zipcode = db.Column(db.Integer)
     birthday = db.Column(db.DateTime)
     entry_date = db.Column(db.DateTime, nullable=False, default=datetime.now(timezone.utc))
+    is_active = db.Column(db.Boolean, nullable=False, default=True)
 
     def __repr__(self):
         return "{} {} with code ({})".format(self.name, self.surname, self.crew_id)
@@ -274,7 +275,8 @@ class Employees(db.Model):
             "city": self.city,
             "zipcode": self.zipcode,
             "birthday": self.birthday,
-            "entry_date": self.entry_date
+            "entry_date": self.entry_date,
+            "is_active": self.is_active
         }
 
 class Airports(db.Model):
