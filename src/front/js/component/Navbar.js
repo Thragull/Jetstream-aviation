@@ -6,11 +6,11 @@ const Navbar = () => {
   return (
     <nav className="NavbarHome navbar navbar-expand-lg text-white">
       <div className="container-fluid text-white fs-5 mt-5">
-        
-        <a className="navbar-brand" href="https://special-space-couscous-q77qrp54p9vwf4g77-3000.app.github.dev/">
-          <h1 className="text-white fs-1 mb-4">JetStream</h1>
-        </a>
-        
+        <Link to='/'>
+          <a className="navbar-brand" href="https://special-space-couscous-q77qrp54p9vwf4g77-3000.app.github.dev/">
+            <h1 className="text-white fs-1 mb-4">JetStream</h1>
+          </a>
+        </Link>
         <button
           className="navbar-toggler"
           type="button"

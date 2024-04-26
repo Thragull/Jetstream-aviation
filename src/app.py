@@ -118,33 +118,6 @@ def getFleet():
     serialized_fleet = list(map(lambda plane: plane.serialize(), fleet))
     return jsonify(serialized_fleet), 200    
 
-
-
-
-@app.route('/api/countries', methods=['GET'])
-@cross_origin(supports_credentials=True)
-def getCountries():
-    countries = Countries.query.all()
-    serialized_countries = [country.serialize() for country in countries]
-    return jsonify(serialized_countries), 200
-
-
-@app.route('/api/nationalities', methods=['GET'])
-@cross_origin(supports_credentials=True)
-def getNationalities():
-    nationalities = Nationalities.query.all()
-    serialized_countries = [nationality.serialize() for nationality in nationalities]
-    return jsonify(serialized_countries), 200
-
-
-@app.route('/api/states', methods=['GET'])
-def getStates():
-
-    country_id = request.args.get('country_id')
-    states = States.query.filter_by(country_id=country_id).all()
-    serialized_states = [state.serialize() for state in states]
-    return jsonify(serialized_states), 200
-
 @app.route('/api/prices', methods=['GET'])
 def getPrices():
     model_id = request.args.get('model_id')
