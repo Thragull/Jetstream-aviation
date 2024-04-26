@@ -17,7 +17,8 @@ import MoodelsComponent from "../component/landingPageComponents/MoodelsComponen
 import HolidaysComponent from "../component/landingPageComponents/HolidayComponent.js"
 import RosterComponent from "../component/landingPageComponents/RosterComponent.js";
 import ManagementComponent from "../component/landingPageComponents/ManagementComponent.js";
-
+import Lottie from "react-lottie";
+import animationData from "../../img/animation_data.json";
 
 
 
@@ -27,6 +28,18 @@ import ManagementComponent from "../component/landingPageComponents/ManagementCo
 
 
 export const LandingPageWorker = () => {
+
+
+  
+    const defaultOptions = {
+            loop: true,
+            autoplay: true,
+            animationData: animationData, 
+            renderSettings: {
+                preserveAspectRatio: "xMidYMid slice"
+            }
+    }
+    
 
     const { store, actions } = useContext(Context);
 
@@ -126,7 +139,14 @@ export const LandingPageWorker = () => {
 
     return (
         <>
-            {store.loggedInEmployee == null ? <h1>Cargando...</h1> :
+            {store.loggedInEmployee == null ? 
+            <div>
+                <Lottie
+                    options={defaultOptions}
+                    height={400}
+                    width={400}
+                />
+            </div> :
                 <div className="text-center" style={{ backgroundImage: `url(${airplanebackground})`, backgroundSize: "100% 100%" }}>
                     <div className="row">
                         <div type="button" className="col-4 btn btn-primary" onClick={() => setManager(true)}>Manager</div>

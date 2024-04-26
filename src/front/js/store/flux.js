@@ -2,6 +2,8 @@ const getState = ({ getStore, getActions, setStore }) => {
 	return {
 		store: {
 			loggedInEmployee: null,
+			roles: null,
+			departments: null, 
 			message: null,
 			demo: [
 				{
@@ -169,7 +171,9 @@ const getState = ({ getStore, getActions, setStore }) => {
 						const data = await resp.json()
 						employee = data
 						console.log('employee')
-						setStore({ loggedInEmployee: employee })
+						setTimeout(() => {
+							setStore({ loggedInEmployee: employee });
+						}, 5000);
 						return employee
 					} catch (error) {
 

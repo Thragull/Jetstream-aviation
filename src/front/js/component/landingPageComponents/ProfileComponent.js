@@ -17,10 +17,9 @@ export const ProfileComponent = () => {
     const activeInsightColor = seeinflight ? activeTabColor : inactiveTabColor
     const activeTabProfileTextColor = seeinflight ?  'rgba(21, 39, 53,0.95)' : 'white'
     const activeTabInsightTextColor = seeinflight ? 'white' : 'rgba(21, 39, 53,0.95)'
+
     
-
-
-
+    
 
     const Divider = ({ width, height, color, margin }) => {
         const dividerStyle = {
@@ -52,12 +51,12 @@ export const ProfileComponent = () => {
                     <div style={{display: "flex"}}>
                         <InfoComponent label="Name" name={store.loggedInEmployee.name}/>
                         <InfoComponent label="Sirname" name={store.loggedInEmployee.surname}/>
-                        <InfoComponent label="Birthday" name="13/06/1996"/>
+                        { store.loggedInEmployee.birthday != null ? 
+                        <InfoComponent label="Birthday" name={store.loggedInEmployee.birthday}/> : <></>}
                     </div>
                     <Divider/>
                     <div style={{display: "flex"}}>
                         <InfoComponent label="Email" name={store.loggedInEmployee.email}/>
-                        <InfoComponent label="Phone Number" name="+34 678932436"/>
                     </div>
                     <Divider/>
                     <div style={{display: "flex"}}>
