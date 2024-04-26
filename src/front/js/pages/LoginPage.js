@@ -54,13 +54,12 @@ export const LoginPage = () => {
 
             console.log(employee.crew_id)
 
-            const authToken = localStorage.getItem("jwt-token");
-            const loggedEmployee =  await actions.getEmployee(employee.crew_id, authToken);
             
-            //console.log(loggedEmployee)
-            store.loggedInEmployee = loggedEmployee;
+            const loggedEmployee =  await actions.getEmployee(employee.crew_id);
+            
+
             navigate("/worker")
-            console.log(store.loggedInEmployee);
+
     
             return data
         } catch (error) {

@@ -21,29 +21,32 @@ const getState = ({ getStore, getActions, setStore }) => {
 			exampleFunction: () => {
 				getActions().changeColor(0, "green");
 			},
+			checkToken: () => {
+
+			},
 
 			getMessage: async () => {
-				try{
+				try {
 					// fetching data from the backend
 					const resp = await fetch(process.env.BACKEND_URL + "api/hello")
 					const data = await resp.json()
 					setStore({ message: data.message })
 					// don't forget to return something, that is how the async resolves
 					return data;
-				}catch(error){
+				} catch (error) {
 					console.log("Error loading message from backend", error)
 				}
-			}, 
+			},
 			getCountries: async () => {
 				let allCountries = [];
-				try{ 
+				try {
 					const resp = await fetch(
 						process.env.BACKEND_URL + "/api/countries")
 					const data = await resp.json()
- 					allCountries = data; 
- 					console.log(allCountries)
-					return allCountries;   
-				} catch(error) {
+					allCountries = data;
+					console.log(allCountries)
+					return allCountries;
+				} catch (error) {
 					console.log(error)
 				}
 			},
@@ -54,71 +57,75 @@ const getState = ({ getStore, getActions, setStore }) => {
 						headers: {
 							'Content-Type': 'application/json'
 						}
-						
+
 					});
 					const data = await resp.json();
 					console.log(data);
 					return data;
-				} catch(error) {
+				} catch (error) {
 					console.log(error);
 				}
 			},
 			getRoles: async () => {
 				let allRoles = [];
-				try{ 
+				try {
 					const resp = await fetch(
 						process.env.BACKEND_URL + "/api/roles")
 					const data = await resp.json()
- 					allRoles = data; 
- 					/* console.log(allRoles) */
-					return allRoles;   
-				} catch(error) {
+					allRoles = data;
+					/* console.log(allRoles) */
+					return allRoles;
+				} catch (error) {
 					console.log(error)
 				}
 			},
-			getDepartments: async() => {
+			getDepartments: async () => {
 				let allDepartments = []
-				try{
+				try {
 					const resp = await fetch(
 						process.env.BACKEND_URL + "/api/departments")
-						const data = await resp.json()
-						allDepartments = data; 
-						/* console.log(allDepartments) */
-						return allDepartments;
-					
-				} catch(error) {
+					const data = await resp.json()
+					allDepartments = data;
+					/* console.log(allDepartments) */
+					return allDepartments;
+
+				} catch (error) {
 					console.log(error)
 				}
 			},
-			getEmployeesByCrewId: async() => {
+			getEmployeesByCrewId: async () => {
 				let allEmployees = []
 				try {
 					const resp = await fetch(
 						process.env.BACKEND_URL + "/api/crew_id")
-						const data = await resp.json()
-						allEmployees = data; 
-						console.log(allEmployees)
-						return allEmployees;
-				} catch (error) {
-					
-				}
-			},
-			getEmployee: async(crew_id, auth_token) => {
-				let employee = {}
-				try{
-					const resp = await fetch(
-						process.env.BACKEND_URL + `/api/employee?crew_id=${crew_id}`,{
-							headers: {
-								Authorization: `Bearer ${auth_token}`
-							}
-						}
-					)
 					const data = await resp.json()
-					employee = data
-					console.log('employee')
-					return employee
+					allEmployees = data;
+					console.log(allEmployees)
+					return allEmployees;
 				} catch (error) {
 
+				}
+			},
+			getEmployee: async () => {
+				let employee = {}
+				const authToken = localStorage.getItem("jwt-token");
+				if (authToken != null) {
+					try {
+						const resp = await fetch(
+							process.env.BACKEND_URL + `/api/employee`, {
+							headers: {
+								Authorization: `Bearer ${authToken}`
+							}
+						}
+						)
+						const data = await resp.json()
+						employee = data
+						console.log('employee')
+						setStore({ loggedInEmployee: employee })
+						return employee
+					} catch (error) {
+
+					}
 				}
 			},
 			changeColor: (index, color) => {
