@@ -100,31 +100,6 @@ def getConfigurations():
     serialized_configurations = [configuration.serialize() for configuration in configurations]
     return jsonify(serialized_configurations), 200    
 
-
-@app.route('/api/countries', methods=['GET'])
-@cross_origin(supports_credentials=True)
-def getCountries():
-    countries = Countries.query.all()
-    serialized_countries = [country.serialize() for country in countries]
-    return jsonify(serialized_countries), 200
-
-
-@app.route('/api/nationalities', methods=['GET'])
-@cross_origin(supports_credentials=True)
-def getNationalities():
-    nationalities = Nationalities.query.all()
-    serialized_countries = [nationality.serialize() for nationality in nationalities]
-    return jsonify(serialized_countries), 200
-
-
-@app.route('/api/states', methods=['GET'])
-def getStates():
-
-    country_id = request.args.get('country_id')
-    states = States.query.filter_by(country_id=country_id).all()
-    serialized_states = [state.serialize() for state in states]
-    return jsonify(serialized_states), 200
-
 @app.route('/api/prices', methods=['GET'])
 def getPrices():
     model_id = request.args.get('model_id')
@@ -207,7 +182,7 @@ def deleteProject():
     db.session.delete(project)
     db.session.commit()
     return jsonify({'msg': 'Project {} has been succesfully deleted'.format(project.project)})
-''''''
+
 @app.route('/api/assignations', methods=['GET'])
 def getAssignations():
     assignations = Assignations.query.all()
@@ -287,6 +262,30 @@ def getRoles():
     serialized_roles = [role.serialize() for role in roles]
     return jsonify(serialized_roles), 200
 
+@app.route('/api/countries', methods=['GET'])
+@cross_origin(supports_credentials=True)
+def getCountries():
+    countries = Countries.query.all()
+    serialized_countries = [country.serialize() for country in countries]
+    return jsonify(serialized_countries), 200
+
+
+@app.route('/api/nationalities', methods=['GET'])
+@cross_origin(supports_credentials=True)
+def getNationalities():
+    nationalities = Nationalities.query.all()
+    serialized_countries = [nationality.serialize() for nationality in nationalities]
+    return jsonify(serialized_countries), 200
+
+
+@app.route('/api/states', methods=['GET'])
+def getStates():
+
+    country_id = request.args.get('country_id')
+    states = States.query.filter_by(country_id=country_id).all()
+    serialized_states = [state.serialize() for state in states]
+    return jsonify(serialized_states), 200
+
 @app.route('/api/departments', methods=['GET'])
 @cross_origin(supports_credentials=True)
 def getDepartments():
@@ -301,23 +300,6 @@ def getCrewId():
     serialized_employees = [{'id': employee.id, 'crew_id': employee.crew_id} for employee in employees]
     return jsonify(serialized_employees), 200
   
-@app.route('/api/airports', methods=['GET'])
-def get_airports():
-    airports = Airports.query.all()
-    serialized_airports = list(map(lambda airport: airport.serialize(), airports))
-    return jsonify(serialized_airports)
-
-@app.route('/api/hotels', methods=['GET'])
-def get_hotels():
-    base_id = request.args.get('base_id')
-    if base_id is None:
-        return jsonify({'msg': 'You must specify a base ID'}), 400
-    hotels = Hotels.query.filter_by(base_id=base_id).all()
-    if hotels == []:
-        return jsonify({'msg': 'There are no Hotels for the specific Aiport Base'}), 404
-    serialized_hotels = list(map(lambda hotel: hotel.serialize(), hotels))
-    return jsonify(serialized_hotels), 200
-
 @app.route('/api/employee', methods=['GET'])
 #@jwt_required()
 def getEmployeeByCrewID():
@@ -330,7 +312,6 @@ def getEmployeeByCrewID():
     
     print(jsonify(employee.serialize()))
     return jsonify(employee.serialize()), 200
-
 
 @app.route('/api/signupEmployee', methods=['POST'])
 @cross_origin(supports_credentials=True)
@@ -365,6 +346,60 @@ def signupUser():
     db.session.add(new_employee)
     db.session.commit()
     return jsonify({'msg': "Employee successfully added to database"}), 200
+
+@app.route('/api/employee', methods=['PUT'])
+def modifyEmployee():
+    employee_id = request.args.get('id')
+    if employee_id is None:
+        return jsonify({'msg': 'You must specify an Employee ID'}), 400
+    body = request.get_json(silent=True)
+    if body is None:
+        return jsonify({'msg': "You can not send empty info"}), 400
+    if ("crew_id" not in body and
+        "name" not in body and
+        "surname" not in body and
+        "email" not in body and
+        "role" not in body and
+        "department_id" not in body and
+        "gender" not in body and
+        "nationality_id" not in body and
+        "address" not in body and
+        "address2" not in body and
+        "address3" not in body and
+        "country_id" not in body and
+        "state_id" not in body and
+        "city" not in body and
+        "zipcode" not in body and
+        "birthday" not in body and
+        "entry_date" not in body):
+        return jsonify({'msg': 'None of the fields introduced can be modified'}), 400
+
+    employee = Employees.query.filter_by(id=employee_id).first()
+    for key, value in body.items():
+        if hasattr(employee, key):
+            setattr(employee, key, value)
+        else:
+            return jsonify({'msg': 'Invalid field: {}'.format(key)}), 400
+
+    db.session.commit()
+    return jsonify({'msg': "Employee {} successfully modified".format(employee.crew_id)}), 200
+
+@app.route('/api/airports', methods=['GET'])
+def get_airports():
+    airports = Airports.query.all()
+    serialized_airports = list(map(lambda airport: airport.serialize(), airports))
+    return jsonify(serialized_airports)
+
+@app.route('/api/hotels', methods=['GET'])
+def get_hotels():
+    base_id = request.args.get('base_id')
+    if base_id is None:
+        return jsonify({'msg': 'You must specify a base ID'}), 400
+    hotels = Hotels.query.filter_by(base_id=base_id).all()
+    if hotels == []:
+        return jsonify({'msg': 'There are no Hotels for the specific Aiport Base'}), 404
+    serialized_hotels = list(map(lambda hotel: hotel.serialize(), hotels))
+    return jsonify(serialized_hotels), 200
  
 @app.route('/api/login', methods=['POST'])
 @cross_origin(supports_credentials=True)
@@ -383,6 +418,8 @@ def login():
         return jsonify({'msg': "The user does not exist"}), 400
     if user.password != body['password']: 
         return jsonify({'msg': 'wrong password'}), 400
+    if not user.is_active:
+        return jsonify({'msg': 'User {} is not active'.format(user.crew_id)})
     
     access_token = create_access_token(identity=user.crew_id)
     return jsonify({'msg': 'Login successful', 'token': access_token}), 200
