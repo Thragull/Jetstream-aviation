@@ -155,12 +155,14 @@ def getPrices():
     return jsonify(serialized_prices), 200
 
 @app.route('/api/projects', methods=['GET'])
+@jwt_required()
 def getProjects():
     projects = Projects.query.all()
     serialized_projects = list(map(lambda project: project.serialize(), projects))
     return jsonify(serialized_projects), 200
 
 @app.route('/api/projects', methods=['POST'])
+@jwt_required()
 def createProject():
     body = request.get_json(silent=True)
     if body is None:
@@ -181,6 +183,7 @@ def createProject():
     return jsonify({'msg': 'New project created'}), 200
 
 @app.route('/api/projects', methods=['PUT'])
+@jwt_required()
 def modifyProject():
     project_id = request.args.get('id')
     if project_id is None:
@@ -205,6 +208,7 @@ def modifyProject():
     return jsonify({'msg': 'Project with name {} has been succesfully modified'.format(project.project)}), 200
 
 @app.route('/api/projects', methods=['DELETE'])
+@jwt_required()
 def deleteProject():
     project_id = request.args.get('id')
     if project_id is None:
@@ -218,15 +222,17 @@ def deleteProject():
     
     db.session.delete(project)
     db.session.commit()
-    return jsonify({'msg': 'Project {} has been succesfully deleted'.format(project.project)})
+    return jsonify({'msg': 'Project {} has been succesfully deleted'.format(project.project)}), 200
 
 @app.route('/api/assignations', methods=['GET'])
+@jwt_required()
 def getAssignations():
     assignations = Assignations.query.all()
     serialized_assignations = list(map(lambda assignation: assignation.serialize(), assignations))
     return jsonify(serialized_assignations), 200
 
 @app.route('/api/assignations', methods=['POST'])
+@jwt_required()
 def createAssignations():
     body = request.get_json(silent=True)
     if body is None:
@@ -250,6 +256,7 @@ def createAssignations():
     return jsonify({'msg': 'New assignation created'}), 200
 
 @app.route('/api/assignations', methods=['PUT'])
+@jwt_required()
 def modifyAssignations():
     assignation_id = request.args.get('id')
     if assignation_id is None:
@@ -278,6 +285,7 @@ def modifyAssignations():
     return jsonify({'msg': 'Assignation succesfully modified'}), 200
 
 @app.route('/api/assignations', methods=['DELETE'])
+@jwt_required()
 def deleteAssignation():
     assignation_id = request.args.get('id')
     if assignation_id is None:
@@ -290,9 +298,10 @@ def deleteAssignation():
 
     db.session.delete(assignation)
     db.session.commit()
-    return jsonify({'msg': 'Assignation with ID {} has been succesfully deleted'.format(assignation.id)})
+    return jsonify({'msg': 'Assignation with ID {} has been succesfully deleted'.format(assignation.id)}), 200
 
 @app.route('/api/roles', methods=['GET'])
+@jwt_required()
 @cross_origin(supports_credentials=True)
 def getRoles():
     id = request.args.get('id')
@@ -347,6 +356,7 @@ def getStates():
     return jsonify(serialized_states), 200
 
 @app.route('/api/departments', methods=['GET'])
+@jwt_required()
 @cross_origin(supports_credentials=True)
 def getDepartments():
     id = request.args.get('id')
@@ -359,6 +369,7 @@ def getDepartments():
     return jsonify(serialized_departments), 200
 
 @app.route('/api/crew_id', methods=['GET'])
+@jwt_required()
 @cross_origin(supports_credentials=True)
 def getCrewId():
     employees = Employees.query.with_entities(Employees.id, Employees.crew_id).all()
@@ -415,17 +426,18 @@ def signupUser():
 
         db.session.add(new_employee)
         db.session.commit()
-        return jsonify({'msg': "Employee successfully added to database"}), 200
+        return jsonify({'msg': "Employee successfully added to database"}), 201
     if employee.is_active:
         return jsonify({'msg': 'Employee {} already exist'.format(employee.crew_id)}), 400
     if not employee.is_active:
         employee.is_active = True
         
         db.session.commit()
-        return jsonify({'msg': 'Employee succesfully added to database'}), 200
+        return jsonify({'msg': 'Employee succesfully added to database'}), 201
 
 @app.route('/api/employee', methods=['PUT'])
 @cross_origin(supports_credentials=True)
+@jwt_required()
 def modifyEmployee():
     employee_id = request.args.get('id')
     if employee_id is None:
@@ -437,6 +449,7 @@ def modifyEmployee():
         "name" not in body and
         "surname" not in body and
         "email" not in body and
+        "phone" not in body and
         "role" not in body and
         "department_id" not in body and
         "gender" not in body and
@@ -467,6 +480,7 @@ def modifyEmployee():
     return jsonify({'msg': "Employee {} successfully modified".format(employee.crew_id)}), 200
 
 @app.route('/api/employee', methods=['DELETE'])
+@jwt_required()
 def deleteEmployee():
     employee_id = request.args.get('id')
     if employee_id is None:
@@ -479,7 +493,119 @@ def deleteEmployee():
     employee.is_active = False
 
     db.session.commit()
-    return jsonify({'msg': 'Employee {} has been deleted'.format(employee.crew_id)})
+    return jsonify({'msg': 'Employee {} has been deleted'.format(employee.crew_id)}), 200
+
+@app.route('/api/inflight', methods=['GET'])
+@jwt_required()
+def getInflight():
+    employee_id = request.args.get('employee_id')
+    if employee_id is None:
+        return jsonify({'msg': 'You must specify the Employee ID'}), 400
+    employee = Employees.query.filter_by(id=employee_id).first()
+    department = Departments.query.filter_by(department='Inflight').first()
+    if employee is None:
+        return jsonify({'msg': 'The employee does not exist'}), 404
+    if not employee.is_active:
+        return jsonify({'msg': 'The employee does not exist'}), 404
+    if employee.department_id != department.id:  # Acceder al atributo id del departamento
+        return jsonify({'msg': 'This employee is not from Inflight Department'}), 400
+    inflight_data = Inflight.query.filter_by(employee_id=employee_id).first()
+    if inflight_data is None:
+        return jsonify({'msg': 'There is no inflight data Yet'}), 404
+    return jsonify(inflight_data.serialize()), 200
+
+@app.route('/api/inflight', methods=['POST'])
+@jwt_required()
+def postInflight():
+    body = request.get_json(silent=True)
+    if body is None:
+        return jsonify({'msg': 'Body must contain something'}), 400
+    if ('employee_id' not in body or
+        'license' not in body or
+        'passport' not in body or
+        'pass_expiration' not in body or
+        'certificate_id' not in body or
+        'cert_expiration' not in body or
+        'home_base_id' not in body):
+        return jsonify({'msg': 'There are mandatory fields missing in body'}), 400
+    inflight_data = Inflight()
+    for key, value in body.items():
+        if hasattr(inflight_data, key):
+            setattr(inflight_data, key, value)
+        else:
+            return jsonify({'msg': 'Invalid field: {}'.format(key)}), 400
+    #Añadir Roster en base a los ya creados
+    actual_employee = Employees.query.filter_by(id=body['employee_id']).first()
+    employees_with_same_role = Employees.query.filter_by(role_id=actual_employee.role_id).all()
+    count={
+        1: 0,
+        2: 0,
+        3: 0
+    }
+    for employee in employees_with_same_role:
+        employee_roster = Inflight.query.filter_by(employee_id=employee.id).first()
+        if employee_roster:
+            count[employee_roster.roster_assigned]+=1
+    min_roster = min(count, key=count.get)
+    print(min_roster)
+    inflight_data.roster_assigned = min_roster
+    db.session.add(inflight_data)
+    db.session.commit()
+    return jsonify({'msg': 'Inflight data created succesfully'}), 201
+
+@app.route('/api/inflight', methods=['PUT'])
+@jwt_required()
+def editInflight():
+    id = request.args.get('id')
+    if id is None: 
+        return jsonify({'msg': 'You must specify an ID'}), 400
+    body = request.get_json(silent=True)
+    if body is None:
+        return jsonify({'msg': 'Body must contain something'}), 400
+    if ('license' not in body and
+        'passport' not in body and
+        'pass_expiration' not in body and
+        'certificate_id' not in body and
+        'cert_expiration' not in body and
+        'certificate_id2' not in body and
+        'cert_expiration2' not in body and
+        'certificate_id3' not in body and
+        'cert_expiration3' not in body and
+        'certificate_id4' not in body and
+        'cert_expiration4' not in body and
+        'home_base_id' not in body and
+        'roster_assigned' not in body and
+        "monthly_BH" not in body and
+        "monthly_DH" not in body and
+        "yearly_BH" not in body and
+        "yearly_DH" not in body and
+        "total_BH" not in body):
+        return jsonify({'msg': 'None of the fields included in body can be modified'}), 400
+    inflight_data = Inflight.query.filter_by(id=id).first()
+    if inflight_data is None:
+        return jsonify({'msg': 'The ID is incorrect.'}), 400
+    for key, value in body.items():
+        if hasattr(inflight_data, key):
+            setattr(inflight_data, key, value)
+        else:
+            return jsonify({'msg': 'Invalid field: {}'.format(key)}), 400
+    
+    db.session.commit()
+    return jsonify({'msg': 'Data updated succesfully'}), 200
+
+@app.route('/api/inflight', methods=['DELETE'])
+@jwt_required()
+def delete_inflight():
+    inflight_id = request.args.get('id')
+    if inflight_id is None:
+        return jsonify({'msg': 'You must specify an ID'}), 400
+    inflight_data = Inflight.query.filter_by(id=inflight_id).first()
+    if inflight_data is None:
+        return jsonify({'msg': 'There is no data in Database'}), 404
+    
+    db.session.delete(inflight_data)
+    db.session.commit()
+    return jsonify({'msg': 'Inflight data has been deleted'}), 200
 
 @app.route('/api/airports', methods=['GET'])
 def get_airports():
@@ -487,10 +613,10 @@ def get_airports():
     if id is None:
         airports = Airports.query.all()
         serialized_airports = list(map(lambda airport: airport.serialize(), airports))
-        return jsonify(serialized_airports) 
+        return jsonify(serialized_airports), 200
     airports = Airports.query.filter_by(id=id).all()
     serialized_airports = list(map(lambda airport: airport.serialize(), airports))
-    return jsonify(serialized_airports)
+    return jsonify(serialized_airports), 200
 
 @app.route('/api/hotels', methods=['GET'])
 def get_hotels():
@@ -533,7 +659,7 @@ def login():
     if user.password != body['password']: 
         return jsonify({'msg': 'wrong password'}), 400
     if not user.is_active:
-        return jsonify({'msg': 'User {} is not active'.format(user.crew_id)})
+        return jsonify({'msg': 'User {} is not active'.format(user.crew_id)}), 400
     
     access_token = create_access_token(identity=user.crew_id)
     return jsonify({'msg': 'Login successful', 'token': access_token}), 200
