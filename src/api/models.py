@@ -313,24 +313,24 @@ class Inflight(db.Model):
     pass_expiration = db.Column(db.DateTime, nullable=False)
     certificate_id = db.Column(db.Integer, db.ForeignKey('models.id'), nullable=False)
     certificate = db.relationship(Models, foreign_keys=certificate_id)
-    cert_expiration = db.Column(db.DateTime)
-    certificate2_id = db.Column(db.Integer, db.ForeignKey('models.id'))
+    cert_expiration = db.Column(db.DateTime, nullable=False)
+    certificate_id2 = db.Column(db.Integer, db.ForeignKey('models.id'))
     certificate2 = db.relationship(Models, foreign_keys=certificate2_id)
     cert_expiration2 = db.Column(db.DateTime)
-    certificate3_id = db.Column(db.Integer, db.ForeignKey('models.id'))
+    certificate_id3 = db.Column(db.Integer, db.ForeignKey('models.id'))
     certificate3 = db.relationship(Models, foreign_keys=certificate3_id)
     cert_expiration3 = db.Column(db.DateTime)
-    certificate4_id = db.Column(db.Integer, db.ForeignKey('models.id'))
+    certificate_id4 = db.Column(db.Integer, db.ForeignKey('models.id'))
     certificate4 = db.relationship(Models, foreign_keys=certificate4_id)
     cert_expiration4 = db.Column(db.DateTime)
     home_base_id = db.Column(db.Integer, db.ForeignKey('airports.id'), nullable=False)
     home_base = db.relationship(Airports)
     roster_assigned = db.Column(db.Integer, nullable=False)
-    monthly_BH = db.Column(db.Integer, nullable=False)
-    monthly_DH = db.Column(db.Integer, nullable=False)
-    yearly_BH = db.Column(db.Integer, nullable=False)
-    yearly_DH = db.Column(db.Integer, nullable=False)
-    total_BH = db.Column(db.Integer, nullable=False)
+    monthly_BH = db.Column(db.Integer, nullable=False, default=0)
+    monthly_DH = db.Column(db.Integer, nullable=False, default=0)
+    yearly_BH = db.Column(db.Integer, nullable=False, default=0)
+    yearly_DH = db.Column(db.Integer, nullable=False, default=0)
+    total_BH = db.Column(db.Integer, nullable=False, default=0)
 
     def __repr__(self):
         return "Employee {}".format(self.employee.crew_id)
@@ -342,13 +342,13 @@ class Inflight(db.Model):
             "license": self.license,
             "passport": self.passport,
             "pass_expiration": self.pass_expiration,
-            "certificate": self.certificate,
+            "certificate_id": self.certificate_id,
             "cert_expiration": self.cert_expiration,
-            "certificate2": self.certificate2,
+            "certificate_id2": self.certificate_id2,
             "cert_expiration2": self.cert_expiration2,
-            "certificate3": self.certificate3,
+            "certificate_id3": self.certificate_id3,
             "cert_expiration3": self.cert_expiration3,
-            "certificate4": self.certificate4,
+            "certificate_id4": self.certificate_id4,
             "cert_expiration4": self.cert_expiration4,
             "home_base": self.home_base_id,
             "roster_assigned": self.roster_assigned,
