@@ -30,7 +30,7 @@ app = Flask(__name__)
 app.url_map.strict_slashes = False
 CORS(app, support_credentials=True)
 
-app.config["JWT_SECRET_KEY"] = "super-secret"  # Change this!
+app.config["JWT_SECRET_KEY"] = "J3t$r34m-$up3r-P0w3r"  # Change this!
 jwt = JWTManager(app)
 bcrypt = Bcrypt(app)
 
@@ -390,6 +390,17 @@ def getEmployeeByCrewID():
     
     return jsonify(employee.serialize()), 200
 
+@app.route('/api/filterEmployees', methods=['GET'])
+@jwt_required()
+def filter_employees():
+    role_id = request.args.get('role_id')
+    if role_id is None:
+        return jsonify({'msg': 'You must specify a role ID'})
+    employees = Employees.query.filter_by(role_id=role_id).all()
+    serialized_employees = list(map(lambda employee: employee.serialize(), employees))
+    return jsonify(serialized_employees)
+
+
 @app.route('/api/signupEmployee', methods=['POST'])
 @jwt_required
 @cross_origin(supports_credentials=True)
@@ -534,7 +545,6 @@ def postInflight():
             setattr(inflight_data, key, value)
         else:
             return jsonify({'msg': 'Invalid field: {}'.format(key)}), 400
-    #Añadir Roster en base a los ya creados
     actual_employee = Employees.query.filter_by(id=body['employee_id']).first()
     employees_with_same_role = Employees.query.filter_by(role_id=actual_employee.role_id).all()
     count={
@@ -617,6 +627,107 @@ def get_airports():
     airports = Airports.query.filter_by(id=id).all()
     serialized_airports = list(map(lambda airport: airport.serialize(), airports))
     return jsonify(serialized_airports), 200
+
+@app.route('/api/flights', methods=['GET'])
+@jwt_required()
+def get_flights():
+    id = request.args.get('id')
+    flight_number = request.args.get('flight_number')
+    if id is None and flight_number is None:
+        flights = Flights.query.all()
+        serialized_flights = list(map(lambda flight: flight.serialize(), flights))
+        return jsonify(serialized_flights), 200
+    if id is None:
+        flights = Flights.query.filter_by(flight_number=flight_number).all()
+        serialized_flights = list(map(lambda flight: flight.serialize(), flights))
+        return jsonify(serialized_flights), 200
+    flight = Flights.query.filter_by(id=id).first()
+    return jsonify(flight.serialize()), 200
+
+@app.route('/api/flights', methods=['POST'])
+@jwt_required()
+def post_flights():
+    body = request.get_json(silent=True)
+    if body is None:
+        return jsonify({'msg': 'Body must contain something'}), 400
+    if ('flight_number' not in body or
+        'date' not in body or
+        'departure_id' not in body or
+        'arrival_id' not in body or
+        'departure_UTC' not in body or
+        'departure_LT' not in body or
+        'arrival_UTC' not in body or
+        'arrival_LT' not in body or
+        'aircraft_id' not in body or
+        'cpt_id' not in body or
+        'fo_id' not in body or
+        'sccm_id' not in body or
+        'cc2_id' not in body or
+        'cc3_id' not in body or
+        'cc4_id' not in body):
+        return jsonify({'msg': 'At least one of the mandatory fields is missing'}), 400
+    flight = Flights()
+    for key, value in body.items():
+        if hasattr(flight, key):
+            setattr(flight, key, value)
+        else:
+            return jsonify({'msg': 'Invalid field: {}'.format(key)}), 400
+    db.session.add(flight)
+    db.session.commit()
+    return jsonify({'msg': 'Flight added succesfully'}), 201
+
+@app.route('/api/flights', methods=['PUT'])
+@jwt_required()
+def update_flights():
+    flight_id = request.args.get('id')
+    if flight_id is None:
+        return jsonify({'msg': 'Yoy must specify a Flight ID'}), 400
+    body = request.get_json(silent=True)
+    if body is None:
+        return jsonify({'msg': 'Body must contain something'}), 400
+    if ('flight_number' not in body and
+        'date' not in body and
+        'departure_id' not in body and
+        'arrival_id' not in body and
+        'departure_UTC' not in body and
+        'departure_LT' not in body and
+        'arrival_UTC' not in body and
+        'arrival_LT' not in body and
+        'aircraft_id' not in body and
+        'cpt_id' not in body and
+        'fo_id' not in body and
+        'sccm_id' not in body and
+        'cc2_id' not in body and
+        'cc3_id' not in body and
+        'cc4_id' not in body and
+        'cc5_id' not in body and
+        'cc6_id' not in body and
+        'cc7_id' not in body and
+        'cc8_id' not in body):
+        return jsonify({'msg': 'You must specify at least one field to be updated'}), 400
+    flight = Flights.query.filter_by(id=flight_id).first()
+    if flight is None:
+        return jsonify({'msg': 'Flight does not exist'}), 404
+    for key, value in body.items():
+        if hasattr(flight, key):
+            setattr(flight, key, value)
+        else:
+            return jsonify({'msg': 'Invalid field: {}'.format(key)}), 400
+    db.session.commit()
+    return jsonify({'msg': 'Flight {} succesfully updated'.format(flight.flight_number)})
+
+@app.route('/api/flights', methods=['DELETE'])
+@jwt_required()
+def delete_flight():
+    flight_id = request.args.get('id')
+    if flight_id is None:
+        return jsonify({'msg': 'You must specify a Flight ID'}), 400
+    flight = Flights.query.filter_by(id=flight_id).first()
+    if flight is None:
+        return jsonify({'msg': 'The flight does not exist in DB'}), 404
+    db.session.delete(flight)
+    db.session.commit()
+    return jsonify({'msg': 'The flight {} has been succesfully deleted'.format(flight.flight_number)}), 200
 
 @app.route('/api/hotels', methods=['GET'])
 def get_hotels():

@@ -1906,7 +1906,7 @@ employees = [
     }
 ]
 
-duties=['OFFH', 'OFFD', 'HOL', 'SBYM', 'SBYA', 'SBYN', 'RES', 'POS', 'GTR']
+duties=['OFFH', 'OFFD', 'HOL', 'SBYM', 'SBYA', 'SBYN', 'RES', 'POS', 'GTR', 'FLT']
 
 
 
