@@ -380,6 +380,7 @@ def getEmployeeByCrewID():
     return jsonify(employee.serialize()), 200
 
 @app.route('/api/signupEmployee', methods=['POST'])
+@jwt_required
 @cross_origin(supports_credentials=True)
 def signupUser():
     body = request.get_json(silent=True)
@@ -424,6 +425,7 @@ def signupUser():
         return jsonify({'msg': 'Employee succesfully added to database'}), 200
 
 @app.route('/api/employee', methods=['PUT'])
+@cross_origin(supports_credentials=True)
 def modifyEmployee():
     employee_id = request.args.get('id')
     if employee_id is None:
@@ -431,7 +433,7 @@ def modifyEmployee():
     body = request.get_json(silent=True)
     if body is None:
         return jsonify({'msg': "You can not send empty info"}), 400
-    if ("crew_id" not in body and
+    if( "crew_id" not in body and
         "name" not in body and
         "surname" not in body and
         "email" not in body and
@@ -500,6 +502,18 @@ def get_hotels():
         return jsonify({'msg': 'There are no Hotels for the specific Aiport Base'}), 404
     serialized_hotels = list(map(lambda hotel: hotel.serialize(), hotels))
     return jsonify(serialized_hotels), 200
+
+
+@app.route('/api/duties', methods=['GET'])
+def get_duties():
+    id = request.args.get('id')
+    if id is None: 
+        duties = Duties.query.all()
+        serialized_duties = list(map(lambda duty: duty.serialize(), duties))
+        return jsonify(serialized_duties), 200
+    duties = Duties.query.filter_by(id=id).all()
+    serialized_duties = list(map(lambda duty: duty.serialize, duties))
+    return jsonify (serialized_duties), 200
  
 @app.route('/api/login', methods=['POST'])
 @cross_origin(supports_credentials=True)

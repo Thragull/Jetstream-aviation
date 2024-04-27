@@ -127,7 +127,7 @@ export const LandingPageWorker = () => {
             case 'Holidays':
                 return <HolidaysComponent />
             case 'Roster':
-                if (manager == false) {
+                if (store.loggedInEmployee.department == 3) {
                     return <RosterComponent />
                 } else { return <ManagementComponent /> }
             default:
@@ -148,10 +148,6 @@ export const LandingPageWorker = () => {
                 />
             </div> :
                 <div className="text-center" style={{ backgroundImage: `url(${airplanebackground})`, backgroundSize: "100% 100%" }}>
-                    <div className="row">
-                        <div type="button" className="col-4 btn btn-primary" onClick={() => setManager(true)}>Manager</div>
-                        <div type="button" className="col-4 btn btn-secondary" onClick={() => setManager(false)}>Inflight</div>
-                    </div>
                     <div className="row" id="board">
                         <div className="col-3" id="verticalNavbar" >
                             <div className="py-2" style={{ backgroundColor: `${inactiveColor}`, borderTopLeftRadius: "50px" }}>
@@ -179,7 +175,7 @@ export const LandingPageWorker = () => {
                                     <div className="mx-auto navbar-icon-text">
                                         <FontAwesomeIcon icon={faCalendarCheck} />
                                         <div className="mx-1"></div>
-                                        {manager ? <p>Management</p> : <p>Roster</p>}
+                                        {store.loggedInEmployee.department !=3 ? <p>Management</p> : <p>Roster</p>}
                                     </div>
                                 </div>
                                 <div className="navbarComponent" style={{ color: `${textColorPayslip}`, backgroundColor: `${colorPayslip}`, borderTopRightRadius: `${roosterRadius}`, borderBottomRightRadius: `${documentsRadius}` }} onClick={() => setActiveComponent('Payslip')}>

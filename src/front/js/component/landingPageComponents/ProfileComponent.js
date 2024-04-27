@@ -1,4 +1,4 @@
-import React, { useContext, useState } from "react";
+import React, { useContext, useEffect, useState } from "react";
 import { Context } from "../../store/appContext";
 import InfoComponent from "./reusableComponents/InfoComponent";
 import EditProfile from "./ProfileComponents/EditProfile";
@@ -14,10 +14,58 @@ export const ProfileComponent = () => {
     const activeTabColor = 'rgba(21, 39, 53,0.95)'
     const inactiveTabColor = 'rgba(255,255,255,0.5)'
     const activeProfileColor = seeinflight ? 'rgba(255,255,255,0.5)' : activeTabColor
-    const activeInsightColor = seeinflight ? activeTabColor : inactiveTabColor
+    const activeInflightColor = seeinflight ? activeTabColor : inactiveTabColor
     const activeTabProfileTextColor = seeinflight ?  'rgba(21, 39, 53,0.95)' : 'white'
-    const activeTabInsightTextColor = seeinflight ? 'white' : 'rgba(21, 39, 53,0.95)'
+    const activeTabInflightTextColor = seeinflight ? 'white' : 'rgba(21, 39, 53,0.95)'
+    const [department, setDepartment] = useState(null)
+    const [role, setRole] = useState(null)
+    const [country, setCountry] = useState(null)
+    const [state, setState] = useState(null)
 
+
+    useEffect(() => {
+        const fetchDepartment = async () => {
+            try {
+                const departmentData = await actions.getDepartmentById(store.loggedInEmployee.department);
+                setDepartment(departmentData);
+            } catch (error) {
+                console.error('Error fetching department:', error);
+            }
+        };
+        const fetchRole = async() => {
+            try{
+                const roleData = await actions.getRoleById(store.loggedInEmployee.role);
+                setRole(roleData);
+                
+            } catch (error) {
+                console.error('Error fetching department:', error);
+            }
+        }
+        const fetchCountry = async() => {
+            try{
+                const countryData = await actions.getCountryById(store.loggedInEmployee.country)
+                setCountry(countryData)
+
+            } catch (error) {
+                console.log(error)
+            }
+        }
+        const fetchState = async ()=>{
+            try {
+                const countryData = await actions.getStateById(store.loggedInEmployee.state)
+                setState(stateData)
+            } catch (error) {
+                console.log(error)
+            }
+        }
+    
+        fetchDepartment();
+        fetchRole();
+        fetchCountry();
+        fetchState();
+
+
+    }, []);
     
     
 
@@ -42,8 +90,8 @@ export const ProfileComponent = () => {
                 <div className="tab col-6" style={{background: `${activeProfileColor}`, color: `${activeTabProfileTextColor}`  }} onClick={()=> setSeeInflight(false)}>
                     Profile
                 </div>
-                <div onClick={()=> setSeeInflight(true)}  className="tab col-6" style={{background: `${activeInsightColor}`, color: `${activeTabInsightTextColor}`  }} >
-                    Insight
+                <div onClick={()=> setSeeInflight(true)}  className="tab col-6" style={{background: `${activeInflightColor}`, color: `${activeTabInflightTextColor}`  }} >
+                    Inflight
                 </div>
             </div>
             {seeinflight ? <InflightProfile/> : 
@@ -60,22 +108,23 @@ export const ProfileComponent = () => {
                     </div>
                     <Divider/>
                     <div style={{display: "flex"}}>
-                        <InfoComponent label="Department" name="Cabin Crew"/>
+                        <InfoComponent label="Department" name={department ? department : ''}/>
+                        <InfoComponent label="Role" name={role ? role : ''}/>
                     </div>
                     <Divider/>
                     <div style={{display: "flex"}}>
-                        <InfoComponent label="Nationality" name="Spanish"/>
+                        <InfoComponent label="Nationality" name={store.loggedInEmployee.nationality ? store.loggedInEmployee.nationality : '' }/>
                     </div>
                     <Divider/>
                     <div style={{display: "flex"}}>
-                        <InfoComponent label="Adress" name="C/Finlandia 14, 14"/>
-                        <InfoComponent label="ZipCode" name="46002"/>
+                        <InfoComponent label="Adress" name={store.loggedInEmployee.address ? store.loggedInEmployee.address : '' }/>
+                        <InfoComponent label="ZipCode" name={store.loggedInEmployee.zipcode ? store.loggedInEmployee.zipcode : '' }/>
                     </div>
                     <Divider/>
                     <div style={{display: "flex"}}>
-                        <InfoComponent label="Country" name="Spain"/>
-                        <InfoComponent label="State" name="C.Valencia"/>
-                        <InfoComponent label="City" name="Valencia"/>
+                        <InfoComponent label="Country" name={country ? country : ''}/>
+                        <InfoComponent label="State" name={state ? state : ''}/>
+                        <InfoComponent label="City" name={store.loggedInEmployee.city ? store.loggedInEmployee.city : '' }/>
                     </div>
                     <Divider/> 
                     <div className="my-5">
