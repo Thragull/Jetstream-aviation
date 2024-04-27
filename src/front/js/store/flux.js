@@ -39,7 +39,6 @@ const getState = ({ getStore, getActions, setStore }) => {
 					console.log("Error loading message from backend", error)
 				}
 			}, 
-
 			getModels: async () => {
 				let allModels = [];
 				try{ 
@@ -53,7 +52,6 @@ const getState = ({ getStore, getActions, setStore }) => {
 					console.log(error)
 				}
 			},
-
 			getConfigurations: async (modelyId) => {
 				try {
 					const resp = await fetch(`${process.env.BACKEND_URL}api/configurations?model_id=${modelId}`, {
@@ -69,8 +67,7 @@ const getState = ({ getStore, getActions, setStore }) => {
 					console.log(error);
 				}
 			},
-
-			getFleet: async (modelyId) => {
+			getFleet: async (modelId) => {
 				try {
 					const resp = await fetch(`${process.env.BACKEND_URL}api/fleet?model_id=${modelId}`, {
 						method: 'GET',
@@ -85,8 +82,6 @@ const getState = ({ getStore, getActions, setStore }) => {
 					console.log(error);
 				}
 			},
-
-
 			getCountries: async () => {
 				let allCountries = [];
 				try {
@@ -100,6 +95,20 @@ const getState = ({ getStore, getActions, setStore }) => {
 					console.log(error)
 				}
 			},
+			getCountryById: async (country_id) => {
+				let country
+				try{
+					const resp = await fetch(
+						process.env.BACKEND_URL + `/api/countries?id=${country_id}`
+					)
+					const data = await resp.json()
+					const country = data[0].country
+					return country
+				} catch(error) {
+					console.log(error)
+				}
+
+			},
 			getStates: async (countryId) => {
 				try {
 					const resp = await fetch(`${process.env.BACKEND_URL}/api/states?country_id=${countryId}`, {
@@ -110,12 +119,34 @@ const getState = ({ getStore, getActions, setStore }) => {
 
 					});
 					const data = await resp.json();
-					console.log(data);
 					return data;
 				} catch (error) {
 					console.log(error);
 				}
 			},
+			getStateById: async (stateId) => {
+				let state
+				try {
+					const resp = await fetch(process.env.BACKEND_URL + `/api/states?id=${stateId}`)
+					const data = await resp.json()
+					state = data[0].state
+					return state; 
+				} catch (error) {
+					console.log(error)
+				}
+			},
+			getNationalities: async () => {
+				let allNationalities
+				try {
+					const resp = await fetch(process.env.BACKEND_URL + `/api/nationalities`)
+					const data = await resp.json()
+					allNationalities = data
+					return allNationalities
+				} catch (error) {
+					console.log(error)
+					
+				}
+			}, 
 			getRoles: async () => {
 				let allRoles = [];
 				try {
@@ -129,6 +160,20 @@ const getState = ({ getStore, getActions, setStore }) => {
 					console.log(error)
 				}
 			},
+			getRoleById: async(role_id) => {
+				let role
+				try{
+					const resp = await fetch(
+						process.env.BACKEND_URL + `/api/roles?id=${role_id}`
+					)
+					const data = await resp.json()
+					console.log(JSON.stringify(data))
+					role = data[0].role
+					return role; 
+				} catch(error) {
+					console.log(error)
+				}
+			},
 			getDepartments: async () => {
 				let allDepartments = []
 				try {
@@ -139,6 +184,18 @@ const getState = ({ getStore, getActions, setStore }) => {
 					/* console.log(allDepartments) */
 					return allDepartments;
 
+				} catch (error) {
+					console.log(error)
+				}
+			},
+			getDepartmentById: async (department_id) => {
+				let department
+				try {
+					const resp = await fetch(
+						process.env.BACKEND_URL + `/api/departments?id=${department_id}`)
+					const data = await resp.json()
+					department = data[0].department; 
+					return department; 
 				} catch (error) {
 					console.log(error)
 				}
