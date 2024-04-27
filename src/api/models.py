@@ -232,6 +232,7 @@ class Employees(db.Model):
     name = db.Column(db.String(50), nullable=False)
     surname = db.Column(db.String(50), nullable=False)
     email = db.Column(db.String(50), nullable=False)
+    phone = db.Column(db.BigInteger)
     password = db.Column(db.String(50), nullable=False)
     role_id = db.Column(db.Integer, db.ForeignKey('roles.id'), nullable=False)
     role = db.relationship(Roles)
@@ -263,6 +264,7 @@ class Employees(db.Model):
             "name": self.name,
             "surname": self.surname,
             "email": self.email,
+            "phone": self.phone,
             "role": self.role_id,
             "department": self.department_id,
             "gender": self.gender,
@@ -315,13 +317,13 @@ class Inflight(db.Model):
     certificate = db.relationship(Models, foreign_keys=certificate_id)
     cert_expiration = db.Column(db.DateTime, nullable=False)
     certificate_id2 = db.Column(db.Integer, db.ForeignKey('models.id'))
-    certificate2 = db.relationship(Models, foreign_keys=certificate2_id)
+    certificate2 = db.relationship(Models, foreign_keys=certificate_id2)
     cert_expiration2 = db.Column(db.DateTime)
     certificate_id3 = db.Column(db.Integer, db.ForeignKey('models.id'))
-    certificate3 = db.relationship(Models, foreign_keys=certificate3_id)
+    certificate3 = db.relationship(Models, foreign_keys=certificate_id3)
     cert_expiration3 = db.Column(db.DateTime)
     certificate_id4 = db.Column(db.Integer, db.ForeignKey('models.id'))
-    certificate4 = db.relationship(Models, foreign_keys=certificate4_id)
+    certificate4 = db.relationship(Models, foreign_keys=certificate_id4)
     cert_expiration4 = db.Column(db.DateTime)
     home_base_id = db.Column(db.Integer, db.ForeignKey('airports.id'), nullable=False)
     home_base = db.relationship(Airports)

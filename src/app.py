@@ -155,12 +155,14 @@ def getPrices():
     return jsonify(serialized_prices), 200
 
 @app.route('/api/projects', methods=['GET'])
+@jwt_required()
 def getProjects():
     projects = Projects.query.all()
     serialized_projects = list(map(lambda project: project.serialize(), projects))
     return jsonify(serialized_projects), 200
 
 @app.route('/api/projects', methods=['POST'])
+@jwt_required()
 def createProject():
     body = request.get_json(silent=True)
     if body is None:
@@ -181,6 +183,7 @@ def createProject():
     return jsonify({'msg': 'New project created'}), 200
 
 @app.route('/api/projects', methods=['PUT'])
+@jwt_required()
 def modifyProject():
     project_id = request.args.get('id')
     if project_id is None:
@@ -205,6 +208,7 @@ def modifyProject():
     return jsonify({'msg': 'Project with name {} has been succesfully modified'.format(project.project)}), 200
 
 @app.route('/api/projects', methods=['DELETE'])
+@jwt_required()
 def deleteProject():
     project_id = request.args.get('id')
     if project_id is None:
@@ -221,12 +225,14 @@ def deleteProject():
     return jsonify({'msg': 'Project {} has been succesfully deleted'.format(project.project)}), 200
 
 @app.route('/api/assignations', methods=['GET'])
+@jwt_required()
 def getAssignations():
     assignations = Assignations.query.all()
     serialized_assignations = list(map(lambda assignation: assignation.serialize(), assignations))
     return jsonify(serialized_assignations), 200
 
 @app.route('/api/assignations', methods=['POST'])
+@jwt_required()
 def createAssignations():
     body = request.get_json(silent=True)
     if body is None:
@@ -250,6 +256,7 @@ def createAssignations():
     return jsonify({'msg': 'New assignation created'}), 200
 
 @app.route('/api/assignations', methods=['PUT'])
+@jwt_required()
 def modifyAssignations():
     assignation_id = request.args.get('id')
     if assignation_id is None:
@@ -278,6 +285,7 @@ def modifyAssignations():
     return jsonify({'msg': 'Assignation succesfully modified'}), 200
 
 @app.route('/api/assignations', methods=['DELETE'])
+@jwt_required()
 def deleteAssignation():
     assignation_id = request.args.get('id')
     if assignation_id is None:
@@ -293,6 +301,7 @@ def deleteAssignation():
     return jsonify({'msg': 'Assignation with ID {} has been succesfully deleted'.format(assignation.id)}), 200
 
 @app.route('/api/roles', methods=['GET'])
+@jwt_required()
 @cross_origin(supports_credentials=True)
 def getRoles():
     id = request.args.get('id')
@@ -347,6 +356,7 @@ def getStates():
     return jsonify(serialized_states), 200
 
 @app.route('/api/departments', methods=['GET'])
+@jwt_required()
 @cross_origin(supports_credentials=True)
 def getDepartments():
     id = request.args.get('id')
@@ -359,6 +369,7 @@ def getDepartments():
     return jsonify(serialized_departments), 200
 
 @app.route('/api/crew_id', methods=['GET'])
+@jwt_required()
 @cross_origin(supports_credentials=True)
 def getCrewId():
     employees = Employees.query.with_entities(Employees.id, Employees.crew_id).all()
@@ -380,6 +391,7 @@ def getEmployeeByCrewID():
     return jsonify(employee.serialize()), 200
 
 @app.route('/api/signupEmployee', methods=['POST'])
+@jwt_required()
 @cross_origin(supports_credentials=True)
 def signupUser():
     body = request.get_json(silent=True)
@@ -424,6 +436,7 @@ def signupUser():
         return jsonify({'msg': 'Employee succesfully added to database'}), 201
 
 @app.route('/api/employee', methods=['PUT'])
+@jwt_required()
 def modifyEmployee():
     employee_id = request.args.get('id')
     if employee_id is None:
@@ -435,6 +448,7 @@ def modifyEmployee():
         "name" not in body and
         "surname" not in body and
         "email" not in body and
+        "phone" not in body and
         "role" not in body and
         "department_id" not in body and
         "gender" not in body and
@@ -465,6 +479,7 @@ def modifyEmployee():
     return jsonify({'msg': "Employee {} successfully modified".format(employee.crew_id)}), 200
 
 @app.route('/api/employee', methods=['DELETE'])
+@jwt_required()
 def deleteEmployee():
     employee_id = request.args.get('id')
     if employee_id is None:
@@ -480,6 +495,7 @@ def deleteEmployee():
     return jsonify({'msg': 'Employee {} has been deleted'.format(employee.crew_id)}), 200
 
 @app.route('/api/inflight', methods=['GET'])
+@jwt_required()
 def getInflight():
     employee_id = request.args.get('employee_id')
     if employee_id is None:
@@ -498,6 +514,7 @@ def getInflight():
     return jsonify(inflight_data.serialize()), 200
 
 @app.route('/api/inflight', methods=['POST'])
+@jwt_required()
 def postInflight():
     body = request.get_json(silent=True)
     if body is None:
@@ -536,6 +553,7 @@ def postInflight():
     return jsonify({'msg': 'Inflight data created succesfully'}), 201
 
 @app.route('/api/inflight', methods=['PUT'])
+@jwt_required()
 def editInflight():
     id = request.args.get('id')
     if id is None: 
@@ -574,8 +592,19 @@ def editInflight():
     db.session.commit()
     return jsonify({'msg': 'Data updated succesfully'}), 200
 
-
+@app.route('/api/inflight', methods=['DELETE'])
+@jwt_required()
+def delete_inflight():
+    inflight_id = request.args.get('id')
+    if inflight_id is None:
+        return jsonify({'msg': 'You must specify an ID'}), 400
+    inflight_data = Inflight.query.filter_by(id=inflight_id).first()
+    if inflight_data is None:
+        return jsonify({'msg': 'There is no data in Database'}), 404
     
+    db.session.delete(inflight_data)
+    db.session.commit()
+    return jsonify({'msg': 'Inflight data has been deleted'}), 200
 
 @app.route('/api/airports', methods=['GET'])
 def get_airports():
