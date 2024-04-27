@@ -2088,6 +2088,7 @@ def setup_commands(app):
             employee_token.name = employee['name']
             employee_token.surname = employee['surname']
             employee_token.email = employee['email']
+            employee_token.phone = random.randint(100000000, 999999999)
             employee_token.password = employee['password']
             employee_token.gender = employee['gender']
             db.session.add(employee_token)
@@ -2136,13 +2137,13 @@ def setup_commands(app):
                     random_cert = random.randint(0,len(models)-1)
                     number_of_licenses+=1
                 if number_of_licenses > 1:
-                    details_token.certificate2_id = certificates[0]
+                    details_token.certificate_id2 = certificates[0]
                     details_token.cert_expiration2 = datetime.now()+ timedelta(days=random.randint(60, 365))
                 if number_of_licenses > 2:
-                    details_token.certificate3_id = certificates[1]
+                    details_token.certificate_id3 = certificates[1]
                     details_token.cert_expiration3 = datetime.now()+ timedelta(days=random.randint(60, 365))
                 if number_of_licenses > 3:
-                    details_token.certificate4_id = certificates[2]
+                    details_token.certificate_id4 = certificates[2]
                     details_token.cert_expiration4 = datetime.now()+ timedelta(days=random.randint(60, 365))
                 base = Airports.query.filter_by(IATA_code=airports[random.randint(0,107)]['IATA_code']).first()
                 details_token.home_base_id = base.id
