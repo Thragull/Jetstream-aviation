@@ -61,6 +61,7 @@ export const EditProfile = (props) => {
 
 
     const editEmployee = async () => {
+        const authToken = localStorage.getItem("jwt-token");
         try {
             const token = localStorage.getItem("jwt_token");
             console.log(token);
@@ -68,7 +69,7 @@ export const EditProfile = (props) => {
                 method: "PUT",
                 headers: {
                     "Content-Type": "application/json",
-                    "Authorization": `Bearer ${token}`
+                    Authorization: `Bearer ${authToken}`
                 },
                 body: JSON.stringify(editedProfile),
             });
@@ -125,7 +126,7 @@ export const EditProfile = (props) => {
                         <select 
                             className="form-select form-select-lg mb-3" 
                             aria-label="Large select example" 
-                            style={{height: '6vh', fontSize: '2vh'}}
+                            style={{height: '6vh', fontSize: '1vw'}}
                             value={selectedCountry}
                             onChange={(event)=> {
                                 handleCountryChange(event)

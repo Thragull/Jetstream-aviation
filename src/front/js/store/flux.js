@@ -1,6 +1,7 @@
 const getState = ({ getStore, getActions, setStore }) => {
 	return {
 		store: {
+			inflightEmployee: null,
 			loggedInEmployee: null,
 			roles: null,
 			departments: null, 
@@ -26,7 +27,6 @@ const getState = ({ getStore, getActions, setStore }) => {
 			checkToken: () => {
 
 			},
-
 			getMessage: async () => {
 				try {
 					// fetching data from the backend
@@ -52,6 +52,18 @@ const getState = ({ getStore, getActions, setStore }) => {
 					console.log(error)
 				}
 			},
+			getModelById: async(model_id) => {
+				try{
+					const resp = await fetch(
+						process.env.BACKEND_URL + `/api/models?id=${model_id}`
+					)
+					const data = await resp.json()
+					const model = data[0].model
+					return model
+				} catch(error) {
+					console.log(error)
+				}
+			},
 			getConfigurations: async (modelyId) => {
 				try {
 					const resp = await fetch(`${process.env.BACKEND_URL}/api/configurations?model_id=${modelId}`, {
@@ -65,6 +77,26 @@ const getState = ({ getStore, getActions, setStore }) => {
 					return data;
 				} catch(error) {
 					console.log(error);
+				}
+			},
+			getInflight: async (employee_id) => {
+				let inflight; 
+				const authToken = localStorage.getItem("jwt-token");
+				try {
+					const resp = await fetch(`${process.env.BACKEND_URL}/api/inflight?employee_id=${employee_id}`, {
+						method: 'GET', 
+						headers: {
+							'Content-Type': 'application/json',
+							Authorization: `Bearer ${authToken}`
+						}
+
+					})
+					const data = await resp.json()
+					inflight = data
+					setStore({inflightEmployee: inflight})
+					return inflight; 
+				} catch (error) {
+					console.log(error)
 				}
 			},
 			getFleet: async (modelId) => {
@@ -96,7 +128,6 @@ const getState = ({ getStore, getActions, setStore }) => {
 				}
 			},
 			getCountryById: async (country_id) => {
-				let country
 				try{
 					const resp = await fetch(
 						process.env.BACKEND_URL + `/api/countries?id=${country_id}`
@@ -108,6 +139,30 @@ const getState = ({ getStore, getActions, setStore }) => {
 					console.log(error)
 				}
 
+			},
+			getAirports: async() => {
+				try {
+					const resp = await fetch(
+						process.env.BACKEND_URL + "/api/airports"
+					)
+					const data = await resp.json()
+					const airports = data
+					return airports
+				} catch (error) {
+					console.log(error)
+				}
+			},
+			getAirportById: async (airport_id) => {
+				try{
+					const resp = await fetch(
+						process.env.BACKEND_URL + `/api/airports?id=${airport_id}`
+					)
+					const data = await resp.json()
+					const airport = data[0].airport
+					return airport
+				} catch(error) {
+					console.log(error)
+				}
 			},
 			getStates: async (countryId) => {
 				try {
@@ -149,9 +204,13 @@ const getState = ({ getStore, getActions, setStore }) => {
 			}, 
 			getRoles: async () => {
 				let allRoles = [];
+				const authToken = localStorage.getItem("jwt-token");
 				try {
 					const resp = await fetch(
-						process.env.BACKEND_URL + "/api/roles")
+						process.env.BACKEND_URL + "/api/roles" , {headers: {
+							Authorization: `Bearer ${authToken}`
+						}}
+					)
 					const data = await resp.json()
 					allRoles = data;
 					/* console.log(allRoles) */
@@ -162,9 +221,13 @@ const getState = ({ getStore, getActions, setStore }) => {
 			},
 			getRoleById: async(role_id) => {
 				let role
+				const authToken = localStorage.getItem("jwt-token");
 				try{
 					const resp = await fetch(
-						process.env.BACKEND_URL + `/api/roles?id=${role_id}`
+						process.env.BACKEND_URL + `/api/roles?id=${role_id}`, {headers: {
+							Authorization: `Bearer ${authToken}`
+						}}
+
 					)
 					const data = await resp.json()
 					console.log(JSON.stringify(data))
@@ -176,23 +239,31 @@ const getState = ({ getStore, getActions, setStore }) => {
 			},
 			getDepartments: async () => {
 				let allDepartments = []
+				const authToken = localStorage.getItem("jwt-token");
+				console.log(authToken)
 				try {
 					const resp = await fetch(
-						process.env.BACKEND_URL + "/api/departments")
+						process.env.BACKEND_URL + "/api/departments", {
+							headers: {
+								Authorization: `Bearer ${authToken}`
+							}})
 					const data = await resp.json()
 					allDepartments = data;
 					/* console.log(allDepartments) */
 					return allDepartments;
-
 				} catch (error) {
 					console.log(error)
 				}
 			},
 			getDepartmentById: async (department_id) => {
 				let department
+				const authToken = localStorage.getItem("jwt-token");
 				try {
 					const resp = await fetch(
-						process.env.BACKEND_URL + `/api/departments?id=${department_id}`)
+						process.env.BACKEND_URL + `/api/departments?id=${department_id}`, {
+							headers: {
+								Authorization: `Bearer ${authToken}`
+							}})
 					const data = await resp.json()
 					department = data[0].department; 
 					return department; 
@@ -202,9 +273,13 @@ const getState = ({ getStore, getActions, setStore }) => {
 			},
 			getEmployeesByCrewId: async () => {
 				let allEmployees = []
+				const authToken = localStorage.getItem("jwt-token");
 				try {
 					const resp = await fetch(
-						process.env.BACKEND_URL + "/api/crew_id")
+						process.env.BACKEND_URL + "/api/crew_id", {
+							headers: {
+								Authorization: `Bearer ${authToken}`
+							}})
 					const data = await resp.json()
 					allEmployees = data;
 					console.log(allEmployees)

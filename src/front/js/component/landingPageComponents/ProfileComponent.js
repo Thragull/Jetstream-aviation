@@ -25,6 +25,7 @@ export const ProfileComponent = () => {
 
     useEffect(() => {
         const fetchDepartment = async () => {
+            console.log('departmemts')
             try {
                 const departmentData = await actions.getDepartmentById(store.loggedInEmployee.department);
                 setDepartment(departmentData);
@@ -52,17 +53,30 @@ export const ProfileComponent = () => {
         }
         const fetchState = async ()=>{
             try {
-                const countryData = await actions.getStateById(store.loggedInEmployee.state)
+                const stateData = await actions.getStateById(store.loggedInEmployee.state)
                 setState(stateData)
             } catch (error) {
                 console.log(error)
             }
         }
+
+            const fetchInflight = async () => {
+                try{
+                     await actions.getInflight(store.loggedInEmployee.id)
+                    
+                }
+                catch(error) {
+                    error
+                }
+            }
+            fetchInflight();
+ 
     
         fetchDepartment();
         fetchRole();
         fetchCountry();
         fetchState();
+   
 
 
     }, []);
