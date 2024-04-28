@@ -6,6 +6,7 @@ from flask import Flask, request, jsonify, url_for, send_from_directory
 from flask_cors import CORS, cross_origin
 from flask_migrate import Migrate
 from flask_swagger import swagger
+from sqlalchemy import or_, and_
 from api.utils import APIException, generate_sitemap
 from api.models import (db, Models, Configurations, Fleet, Prices, Projects, Assignations, Budgets, Roles, Countries,
                     Nationalities, States, Employees, Airports, Inflight, Duties, Flights, Hotels, Rosters, Salary_Prices,
@@ -18,6 +19,7 @@ from flask_jwt_extended import get_jwt_identity
 from flask_jwt_extended import jwt_required
 from flask_jwt_extended import JWTManager
 from flask_bcrypt import Bcrypt
+from datetime import datetime, timedelta, timezone
 
 
 
@@ -391,7 +393,7 @@ def getEmployeeByCrewID():
     return jsonify(employee.serialize()), 200
 
 @app.route('/api/filterEmployees', methods=['GET'])
-@jwt_required()
+#@jwt_required()
 def filter_employees():
     role_id = request.args.get('role_id')
     if role_id is None:
@@ -629,21 +631,35 @@ def get_airports():
     return jsonify(serialized_airports), 200
 
 @app.route('/api/flights', methods=['GET'])
-@jwt_required()
+#@jwt_required()
 def get_flights():
     id = request.args.get('id')
     flight_number = request.args.get('flight_number')
-    if id is None and flight_number is None:
-        flights = Flights.query.all()
-        serialized_flights = list(map(lambda flight: flight.serialize(), flights))
-        return jsonify(serialized_flights), 200
-    if id is None:
-        flights = Flights.query.filter_by(flight_number=flight_number).all()
-        serialized_flights = list(map(lambda flight: flight.serialize(), flights))
-        return jsonify(serialized_flights), 200
-    flight = Flights.query.filter_by(id=id).first()
-    return jsonify(flight.serialize()), 200
+    date = request.args.get('date')
+    arrival = request.args.get('arrival_id')
+    departure = request.args.get('departure_id')
+    
+    conditions = []
 
+    if id:
+        conditions.append(Flights.id == id)
+    if flight_number:
+        conditions.append(Flights.flight_number == flight_number)
+    if date:
+        conditions.append(Flights.date == date)
+    if arrival:
+        conditions.append(Flights.arrival_id == arrival)
+    if departure:
+        conditions.append(Flights.departure_id == departure)
+    
+    if conditions:
+        flights = Flights.query.filter(and_(*conditions)).all()
+    else:
+        flights = Flights.query.all()
+
+    serialized_flights = [flight.serialize() for flight in flights]
+    return jsonify(serialized_flights), 200
+'''
 @app.route('/api/flights', methods=['POST'])
 @jwt_required()
 def post_flights():
@@ -675,6 +691,145 @@ def post_flights():
     db.session.add(flight)
     db.session.commit()
     return jsonify({'msg': 'Flight added succesfully'}), 201
+'''
+@app.route('/api/flights', methods=['POST'])
+#@jwt_required()
+def post_flights():
+    body = request.get_json(silent=True)
+    if body is None:
+        return jsonify({'msg': 'Body must contain something'}), 400
+    if ('flight_number' not in body or
+        'date' not in body or
+        'departure_id' not in body or
+        'arrival_id' not in body or
+        'departure_UTC' not in body or
+        'departure_LT' not in body or
+        'arrival_UTC' not in body or
+        'arrival_LT' not in body or
+        'aircraft_id' not in body or
+        'cpt_id' not in body or
+        'fo_id' not in body or
+        'sccm_id' not in body or
+        'cc2_id' not in body or
+        'cc3_id' not in body or
+        'cc4_id' not in body):
+        return jsonify({'msg': 'At least one of the mandatory fields is missing'}), 400
+    
+    # Convertir las cadenas de tiempo a objetos time
+    for time_field in ['departure_UTC', 'departure_LT', 'arrival_UTC', 'arrival_LT']:
+        if time_field in body:
+            body[time_field] = datetime.strptime(body[time_field], '%H:%M:%S').time()
+    
+    # Crear el vuelo y agregarlo a la base de datos
+    flight = Flights()
+    for key, value in body.items():
+        if hasattr(flight, key):
+            setattr(flight, key, value)
+        else:
+            return jsonify({'msg': 'Invalid field: {}'.format(key)}), 400
+    
+    # Guardar el vuelo en la base de datos
+    db.session.add(flight)
+    db.session.commit()
+    
+    # Verificar si ya hay vuelos para este día
+    existing_flights = Flights.query.filter_by(date=flight.date).all()
+    if existing_flights:
+        # Obtener el primer vuelo y el último vuelo para calcular el check-in y el check-out
+        earliest_flight = min(existing_flights, key=lambda x: x.departure_UTC)
+        latest_flight = max(existing_flights, key=lambda x: x.arrival_UTC)
+        # Calcular el check-in y el check-out
+        check_in_time = earliest_flight.departure_UTC.replace(hour=earliest_flight.departure_UTC.hour - 1)
+        check_out_time = latest_flight.arrival_UTC.replace(hour=latest_flight.arrival_UTC.hour,
+                                                           minute=latest_flight.arrival_UTC.minute + 30)
+        # Actualizar el check-in y el check-out si el nuevo vuelo afecta los horarios
+        if flight.departure_UTC < earliest_flight.departure_UTC:
+            check_in_time = flight.departure_UTC.replace(hour=flight.departure_UTC.hour - 1)
+        if flight.arrival_UTC > latest_flight.arrival_UTC:
+            check_out_time = flight.arrival_UTC.replace(hour=flight.arrival_UTC.hour,
+                                                        minute=flight.arrival_UTC.minute + 30)
+        # Calcular las block hours
+        total_block_hours = 0
+        for existing_flight in existing_flights:
+            total_block_hours += (existing_flight.arrival_UTC.hour * 3600 + existing_flight.arrival_UTC.minute * 60 -
+                                  existing_flight.departure_UTC.hour * 3600 - existing_flight.departure_UTC.minute * 60) / 3600
+        total_block_hours += (flight.arrival_UTC.hour * 3600 + flight.arrival_UTC.minute * 60 -
+                              flight.departure_UTC.hour * 3600 - flight.departure_UTC.minute * 60) / 3600
+    else:
+        # Si no hay vuelos previos, establecer el check-in y el check-out como los del vuelo actual
+        check_in_time = flight.departure_UTC.replace(hour=flight.departure_UTC.hour - 1)
+        check_out_time = flight.arrival_UTC.replace(hour=flight.arrival_UTC.hour,
+                                                     minute=flight.arrival_UTC.minute + 30)
+        total_block_hours = (flight.arrival_UTC.hour * 3600 + flight.arrival_UTC.minute * 60 -
+                             flight.departure_UTC.hour * 3600 - flight.departure_UTC.minute * 60) / 3600
+    
+    # Convertir los tiempos de check-in y check-out a la zona horaria local (LT)
+    check_in_time_lt = check_in_time
+    check_out_time_lt = check_out_time
+    
+    # Agregar los datos calculados al vuelo
+    flight.check_in_UTC = check_in_time
+    flight.check_in_LT = check_in_time_lt
+    flight.check_out_UTC = check_out_time
+    flight.check_out_LT = check_out_time_lt
+    flight.block_hours = total_block_hours
+    
+    # Calcular Duty Hours
+    duty_hours = (check_out_time.hour * 3600 + check_out_time.minute * 60 - 
+                  check_in_time.hour * 3600 - check_in_time.minute * 60) / 3600
+    
+    # Obtener el ID del duty correspondiente ("FLT")
+    duty_id = Duties.query.filter_by(duty="FLT").first().id
+    
+    # Verificar si el empleado tiene un duty asignado previamente como "OFFH", "HOL" o "GTR"
+    employee_duty_ids = ['OFFH', 'HOL', 'GTR']
+    for employee_field in ['cpt_id', 'fo_id', 'sccm_id', 'cc2_id', 'cc3_id', 'cc4_id']:
+        employee_id = body.get(employee_field)
+        if employee_id:
+            employee_duties = Rosters.query.filter_by(date=flight.date, employee_id=employee_id).all()
+            for employee_duty in employee_duties:
+                if employee_duty.duty.duty in employee_duty_ids:
+                    return jsonify({'msg': 'Employee is not available to fly on this date'}), 400
+    
+    # Crear registros de roster para cada empleado asociado al vuelo
+    roster_entries = []
+    for employee_field in ['cpt_id', 'fo_id', 'sccm_id', 'cc2_id', 'cc3_id', 'cc4_id']:
+        employee_id = body.get(employee_field)
+        if employee_id:
+            # Verificar si ya hay un roster creado para el empleado y el día dado
+            existing_roster = Rosters.query.filter_by(date=flight.date, employee_id=employee_id).first()
+            if existing_roster:
+                # Actualizar el roster existente si ya había uno creado
+                for i in range(1, 7):
+                    if getattr(existing_roster, f"flight{i}_id") is None:
+                        setattr(existing_roster, f"flight{i}_id", flight.id)
+                        break
+                else:
+                    return jsonify({'msg': 'Maximum number of flights per day reached for employee'}), 400
+            else:
+                # Crear un nuevo registro de roster si no hay uno existente
+                roster_entry = Rosters(
+                    date=flight.date,
+                    employee_id=employee_id,
+                    base_id=flight.departure_id,
+                    duty_id=duty_id,
+                    flight1_id=flight.id,
+                    check_in_UTC=check_in_time,
+                    check_in_LT=check_in_time_lt,
+                    check_out_UTC=check_out_time,
+                    check_out_LT=check_out_time_lt,
+                    block_hours=total_block_hours,
+                    duty_hours=duty_hours
+                    # Otros campos relacionados con el vuelo que quieras agregar al roster
+                )
+                roster_entries.append(roster_entry)
+    
+    # Agregar los registros de roster a la base de datos
+    db.session.add_all(roster_entries)
+    db.session.commit()
+    
+    return jsonify({'msg': 'Flight and Roster entries added successfully'}), 201
+
 
 @app.route('/api/flights', methods=['PUT'])
 @jwt_required()
@@ -740,6 +895,35 @@ def get_hotels():
     serialized_hotels = list(map(lambda hotel: hotel.serialize(), hotels))
     return jsonify(serialized_hotels), 200
 
+@app.route('/api/roster', methods=['GET'])
+#@jwt_required()
+def get_roster():
+    id = request.args.get('id')
+    employee = request.args.get('employee_id')
+    base = request.args.get('base_id')
+    duty = request.args.get('duty_id')
+    date = request.args.get('date')
+    
+    conditions = []
+
+    if id:
+        conditions.append(Rosters.id == id)
+    if employee:
+        conditions.append(Rosters.employee_id == employee)
+    if base:
+        conditions.append(Rosters.base_id == base)
+    if duty:
+        conditions.append(Rosters.duty_id == duty)
+    if date:
+        conditions.append(Rosters.date == date)
+    
+    if conditions:
+        rosters = Rosters.query.filter(and_(*conditions)).all()
+    else:
+        rosters = Rosters.query.all()
+
+    serialized_rosters = list(map(lambda roster: roster.serialize(), rosters))
+    return jsonify(serialized_rosters), 200
 
 @app.route('/api/duties', methods=['GET'])
 def get_duties():
