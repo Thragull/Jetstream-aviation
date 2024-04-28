@@ -99,7 +99,9 @@ export const ProfileComponent = () => {
             <EditProfile saveChangesFunction={()=> setEditProfile(false)}/>    
                  :  
         <div>
+        <div>
             <h1 className="mb-5">Profile</h1>
+            {   store.loggedInEmployee.department != 3 ? <></> :
                 <div className="row" style={{justifyContent: "space-between"}}>
                 <div className="tab col-6" style={{background: `${activeProfileColor}`, color: `${activeTabProfileTextColor}`  }} onClick={()=> setSeeInflight(false)}>
                     Profile
@@ -107,7 +109,7 @@ export const ProfileComponent = () => {
                 <div onClick={()=> setSeeInflight(true)}  className="tab col-6" style={{background: `${activeInflightColor}`, color: `${activeTabInflightTextColor}`  }} >
                     Inflight
                 </div>
-            </div>
+            </div>}
             {seeinflight ? <InflightProfile/> : 
                 <div>
                     <div style={{display: "flex"}}>
@@ -146,6 +148,7 @@ export const ProfileComponent = () => {
                     </div> 
                 </div> 
 }
+            </div>
         </div>
 	);
 };

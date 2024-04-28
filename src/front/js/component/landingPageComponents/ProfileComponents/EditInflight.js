@@ -14,6 +14,7 @@ export const EditInflight = () => {
     const [models, setModels] = useState([])
     const [airports, setAirports] = useState([])
 
+
     useEffect(()=> {
         const fetchModels = async() => {
             try {
@@ -59,7 +60,9 @@ export const EditInflight = () => {
     }, [])
 
     return (
+        
         <div>
+            
             <div style={{display: "flex"}}>
                 <InputComponent label="License" placeholder={store.inflightEmployee.license} name="license"/>
                 <InputComponent label="Passport" placeholder={store.inflightEmployee.passport} name="passport"/>
@@ -74,7 +77,7 @@ export const EditInflight = () => {
                                 style={{height: '4vh', fontSize: '1vw'}}
                                 name = "model"
                                 >
-                                <option selected>{`${certificates.certificate1} (current)`}</option>
+                                <option selected>{certificates.certificate1 ? `${certificates.certificate1} (current)` : 'Select Certificate'}</option>
                                 {
                                     models.map((model, index)=> (
                                         <option key={index} value={model.id}>{model.model}</option>
@@ -96,7 +99,7 @@ export const EditInflight = () => {
                                 style={{height: '4vh', fontSize: '1vw'}}
                                 name = "model"
                                 >
-                                <option selected>{`${certificates.certificate2} (current)`}</option>
+                                <option selected>{certificates.certificate2 != '' ? `${certificates.certificate2} (current)` : 'Select Certificate'}</option>
                                 {
                                     models.map((model, index)=> (
                                         <option key={index} value={model.id}>{model.model}</option>
@@ -118,7 +121,7 @@ export const EditInflight = () => {
                                 style={{height: '4vh', fontSize: '1vw'}}
                                 name = "model"
                                 >
-                                <option selected>{`${certificates.certificate3} (current)`}</option>
+                                <option selected>{certificates.certificate3 != '' ? `${certificates.certificate3} (current)` : 'Select Certificate'}</option>
                                 {
                                     models.map((model, index)=> (
                                         <option key={index} value={model.id}>{model.model}</option>
@@ -140,7 +143,7 @@ export const EditInflight = () => {
                                 style={{height: '4vh', fontSize: '1vw'}}
                                 name = "model"
                                 >
-                                <option selected>{`${certificates.certificate4} (current)`}</option>
+                                <option selected>{certificates.certificate4 != '' ? `${certificates.certificate4} (current)` : 'Select Certificate'}</option>
                                 {
                                     models.map((model, index)=> (
                                         <option key={index} value={model.id}>{model.model}</option>
