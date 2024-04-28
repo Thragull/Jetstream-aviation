@@ -541,7 +541,7 @@ def getInflight():
         return jsonify({'msg': 'This employee is not from Inflight Department'}), 400
     inflight_data = Inflight.query.filter_by(employee_id=employee_id).first()
     if inflight_data is None:
-        return jsonify({'msg': 'There is no inflight data Yet'}), 404
+        return jsonify({'msg': 'There is no inflight data yet'}), 404
     return jsonify(inflight_data.serialize()), 200
 
 @app.route('/api/inflight', methods=['POST'])

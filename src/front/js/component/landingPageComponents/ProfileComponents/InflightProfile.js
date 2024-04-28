@@ -55,7 +55,9 @@ export const InflightProfile = (props) => {
 
 	return (
         <div>
+            <div>
             {editInflight ? <EditInflight/> : 
+            store.inflightEmployee.msg ? <div>{store.inflightEmployee.msg}</div> : 
              <div>
                 <div style={{display: "flex"}}>
                     <InfoComponent label="License" name={store.inflightEmployee.license}/>
@@ -104,7 +106,9 @@ export const InflightProfile = (props) => {
                     <InfoComponent label="Total DH" name={store.inflightEmployee.yearly_DH}/>
                 </div>
             </div>}
-            <button type="button" className="btn btn-success" onClick={()=> {setEditInflight(!editInflight)}}>{editInflight ? "Save" : "Edit"}</button>
+            
+        </div>
+         <button type="button" className="my-5 btn btn-success" onClick={()=> {setEditInflight(!editInflight)}}>{editInflight ? "Save" : "Edit"}</button>
         </div>
         
 	);
