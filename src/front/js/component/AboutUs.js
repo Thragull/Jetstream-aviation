@@ -13,7 +13,7 @@ const AboutUs = () => {
       <div className="p-5 text-center fs-4">
         <p>
           Welcome to JetStream, your gateway to bespoke air travel experiences.
-          At [Airline Name], we pride ourselves on being more than just a
+          At JetStream, we pride ourselves on being more than just a
           charter airline – we're pioneers of personalized aviation. With a
           steadfast commitment to safety, reliability, and luxury, we redefine
           the art of flying, offering discerning travelers the freedom to soar

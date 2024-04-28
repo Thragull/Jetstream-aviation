@@ -11,7 +11,7 @@ const Contact = () => {
         <h1>Contact</h1>
       </div>
 
-      <div classNameName="row">
+      <div className="row">
         <div className="col-9 mb-3 ps-5">
           <label for="exampleFormControlInput1" className="form-label">
             <b>Name</b>
@@ -37,7 +37,7 @@ const Contact = () => {
         </div>
       </div>
 
-      <div classNameName="row">
+      <div className="row">
         <div className="InputEmail col-9 mb-3 ps-5">
           <label for="exampleFormControlInput1" className="form-label">
             <b>Email address </b>
@@ -63,7 +63,7 @@ const Contact = () => {
         </div>
       </div>
 
-      <div classNameName="row">
+      <div className="row">
         <div className="col-9 mb-3 ps-5 pb-4">
           <label for="exampleFormControlTextarea1" className="form-label">
             <b>Comments</b>
@@ -75,7 +75,7 @@ const Contact = () => {
           ></textarea>
         </div>
         <div className="col-9 mb-3 ps-5 pb-4 d-flex flex-row-reverse">
-           <button type="button" class="btn btn-primary">Send</button>
+           <button type="button" className="btn btn-primary">Send</button>
         </div>    
       </div>
     </div>

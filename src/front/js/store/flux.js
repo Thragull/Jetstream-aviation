@@ -30,7 +30,7 @@ const getState = ({ getStore, getActions, setStore }) => {
 			getMessage: async () => {
 				try {
 					// fetching data from the backend
-					const resp = await fetch(process.env.BACKEND_URL + "api/hello")
+					const resp = await fetch(process.env.BACKEND_URL + "/api/hello")
 					const data = await resp.json()
 					setStore({ message: data.message })
 					// don't forget to return something, that is how the async resolves
@@ -66,7 +66,7 @@ const getState = ({ getStore, getActions, setStore }) => {
 			},
 			getConfigurations: async (modelyId) => {
 				try {
-					const resp = await fetch(`${process.env.BACKEND_URL}api/configurations?model_id=${modelId}`, {
+					const resp = await fetch(`${process.env.BACKEND_URL}/api/configurations?model_id=${modelId}`, {
 						method: 'GET',
 						headers: {
 							'Content-Type': 'application/json'
@@ -101,7 +101,7 @@ const getState = ({ getStore, getActions, setStore }) => {
 			},
 			getFleet: async (modelId) => {
 				try {
-					const resp = await fetch(`${process.env.BACKEND_URL}api/fleet?model_id=${modelId}`, {
+					const resp = await fetch(`${process.env.BACKEND_URL}/api/fleet?model_id=${modelId}`, {
 						method: 'GET',
 						headers: {
 							'Content-Type': 'application/json'

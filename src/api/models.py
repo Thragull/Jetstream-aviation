@@ -459,6 +459,8 @@ class Rosters(db.Model):
     __tablename__ = 'rosters'
     id = db.Column(db.Integer, primary_key=True)
     date = db.Column(db.Date, nullable=False)
+    employee_id = db.Column(db.Integer, db.ForeignKey('employees.id'), nullable=False)
+    employee = db.relationship(Employees)
     base_id = db.Column(db.Integer, db.ForeignKey('airports.id'), nullable=False)
     base = db.relationship(Airports)
     duty_id = db.Column(db.Integer, db.ForeignKey('duties.id'), nullable=False)
@@ -491,6 +493,7 @@ class Rosters(db.Model):
         return{
             "id": self.id,
             "date": self.date,
+            "employee_id": self.employee_id,
             "base": self.base_id,
             "duty": self.duty_id,
             "hotel": self.hotel_id,

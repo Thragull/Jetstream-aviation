@@ -63,6 +63,8 @@ export const EditProfile = (props) => {
     const editEmployee = async () => {
         const authToken = localStorage.getItem("jwt-token");
         try {
+            const token = localStorage.getItem("jwt_token");
+            console.log(token);
             const response = await fetch(`${process.env.BACKEND_URL}/api/employee?id=${store.loggedInEmployee.id}`, {
                 method: "PUT",
                 headers: {
