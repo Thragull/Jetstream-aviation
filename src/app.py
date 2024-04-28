@@ -1,7 +1,7 @@
 """
 This module takes care of starting the API Server, Loading the DB and Adding the endpoints
 """
-import os
+import os, math
 from flask import Flask, request, jsonify, url_for, send_from_directory
 from flask_cors import CORS, cross_origin
 from flask_migrate import Migrate
@@ -19,8 +19,25 @@ from flask_jwt_extended import get_jwt_identity
 from flask_jwt_extended import jwt_required
 from flask_jwt_extended import JWTManager
 from flask_bcrypt import Bcrypt
-from datetime import datetime, timedelta, timezone
+from datetime import datetime, timedelta, timezone, time
 
+def calculate_check_in(hora):
+    check_in = hora.replace(hour=hora.hour - 1)
+    return check_in
+
+def calculate_check_out(hora):
+    check_out_minutos = hora.hour * 60 + hora.minute + 30
+    check_out = time(hour=math.floor(check_out_minutos / 60) % 24, minute=check_out_minutos % 60)
+    return check_out
+
+def transform_to_seconds(hour):
+    return hour.hour * 3600 + hour.minute * 60 + hour.second
+
+def add_hours(hour1, hour2):
+    total_seconds = transform_to_seconds(hour1) + transform_to_seconds(hour2)
+    total_minutes, remaining_seconds = divmod(total_seconds, 60)
+    total_hours, remaining_minutes = divmod(total_minutes, 60)
+    return time(hour=total_hours % 24, minute=remaining_minutes, second=remaining_seconds)
 
 
 # from models import Person
@@ -692,6 +709,7 @@ def post_flights():
     db.session.commit()
     return jsonify({'msg': 'Flight added succesfully'}), 201
 '''
+
 @app.route('/api/flights', methods=['POST'])
 #@jwt_required()
 def post_flights():
@@ -719,7 +737,7 @@ def post_flights():
     for time_field in ['departure_UTC', 'departure_LT', 'arrival_UTC', 'arrival_LT']:
         if time_field in body:
             body[time_field] = datetime.strptime(body[time_field], '%H:%M:%S').time()
-    
+
     # Crear el vuelo y agregarlo a la base de datos
     flight = Flights()
     for key, value in body.items():
@@ -728,55 +746,57 @@ def post_flights():
         else:
             return jsonify({'msg': 'Invalid field: {}'.format(key)}), 400
     
-    # Guardar el vuelo en la base de datos
-    db.session.add(flight)
-    db.session.commit()
-    
     # Verificar si ya hay vuelos para este día
     existing_flights = Flights.query.filter_by(date=flight.date).all()
-    if existing_flights:
+
+    #Guardamos el vuelo en la base de datos
+    #Lo hacemos despues de verificar si ya hay vuelos para evitar conflicto
+    db.session.add(flight)
+
+    if existing_flights == []:
+        # Si no hay vuelos previos, establecer el check-in y el check-out como los del vuelo actual
+        check_in_UTC_time = calculate_check_in(flight.departure_UTC)
+        check_in_LT_time = calculate_check_in(flight.departure_LT)
+        check_out_UTC_time = calculate_check_out(flight.arrival_UTC)
+        check_out_LT_time = calculate_check_out(flight.arrival_LT)
+        total_block_hours = (transform_to_seconds(flight.arrival_UTC) - 
+                            transform_to_seconds(flight.departure_UTC)) / 3600
+    else:
+        existing_flights.append(flight)
+        earliest_flight=existing_flights[0]
+        for existing_flight in existing_flights:
+            if existing_flight.departure_UTC < earliest_flight.departure_UTC:
+                earliest_flight=existing_flight
+        latest_flight=existing_flights[0]
+        for existing_flight in existing_flights:
+            if existing_flight.arrival_UTC > latest_flight.arrival_UTC:
+                latest_flight=existing_flight
         # Obtener el primer vuelo y el último vuelo para calcular el check-in y el check-out
-        earliest_flight = min(existing_flights, key=lambda x: x.departure_UTC)
-        latest_flight = max(existing_flights, key=lambda x: x.arrival_UTC)
+        #earliest_flight = min(existing_flights, key=lambda x: x.departure_UTC)
+        #latest_flight = max(existing_flights, key=lambda x: x.arrival_UTC)
         # Calcular el check-in y el check-out
-        check_in_time = earliest_flight.departure_UTC.replace(hour=earliest_flight.departure_UTC.hour - 1)
-        check_out_time = latest_flight.arrival_UTC.replace(hour=latest_flight.arrival_UTC.hour,
-                                                           minute=latest_flight.arrival_UTC.minute + 30)
-        # Actualizar el check-in y el check-out si el nuevo vuelo afecta los horarios
-        if flight.departure_UTC < earliest_flight.departure_UTC:
-            check_in_time = flight.departure_UTC.replace(hour=flight.departure_UTC.hour - 1)
-        if flight.arrival_UTC > latest_flight.arrival_UTC:
-            check_out_time = flight.arrival_UTC.replace(hour=flight.arrival_UTC.hour,
-                                                        minute=flight.arrival_UTC.minute + 30)
+        check_in_UTC_time = calculate_check_in(earliest_flight.departure_UTC)
+        check_in_LT_time = calculate_check_in(earliest_flight.departure_LT)
+        check_out_UTC_time = calculate_check_out(latest_flight.arrival_UTC)
+        check_out_LT_time = calculate_check_out(latest_flight.arrival_LT)
+
+        #hasta aqui calcula bien
         # Calcular las block hours
         total_block_hours = 0
         for existing_flight in existing_flights:
-            total_block_hours += (existing_flight.arrival_UTC.hour * 3600 + existing_flight.arrival_UTC.minute * 60 -
-                                  existing_flight.departure_UTC.hour * 3600 - existing_flight.departure_UTC.minute * 60) / 3600
-        total_block_hours += (flight.arrival_UTC.hour * 3600 + flight.arrival_UTC.minute * 60 -
-                              flight.departure_UTC.hour * 3600 - flight.departure_UTC.minute * 60) / 3600
-    else:
-        # Si no hay vuelos previos, establecer el check-in y el check-out como los del vuelo actual
-        check_in_time = flight.departure_UTC.replace(hour=flight.departure_UTC.hour - 1)
-        check_out_time = flight.arrival_UTC.replace(hour=flight.arrival_UTC.hour,
-                                                     minute=flight.arrival_UTC.minute + 30)
-        total_block_hours = (flight.arrival_UTC.hour * 3600 + flight.arrival_UTC.minute * 60 -
-                             flight.departure_UTC.hour * 3600 - flight.departure_UTC.minute * 60) / 3600
-    
-    # Convertir los tiempos de check-in y check-out a la zona horaria local (LT)
-    check_in_time_lt = check_in_time
-    check_out_time_lt = check_out_time
-    
+            total_block_hours += (transform_to_seconds(existing_flight.arrival_UTC) - 
+                                  transform_to_seconds(existing_flight.departure_UTC)) / 3600
+
     # Agregar los datos calculados al vuelo
-    flight.check_in_UTC = check_in_time
-    flight.check_in_LT = check_in_time_lt
-    flight.check_out_UTC = check_out_time
-    flight.check_out_LT = check_out_time_lt
+    flight.check_in_UTC = check_in_UTC_time
+    flight.check_in_LT = check_in_LT_time
+    flight.check_out_UTC = check_out_UTC_time
+    flight.check_out_LT = check_out_LT_time
     flight.block_hours = total_block_hours
     
     # Calcular Duty Hours
-    duty_hours = (check_out_time.hour * 3600 + check_out_time.minute * 60 - 
-                  check_in_time.hour * 3600 - check_in_time.minute * 60) / 3600
+    duty_hours = (transform_to_seconds(check_out_UTC_time) - 
+                  transform_to_seconds(check_in_UTC_time)) / 3600
     
     # Obtener el ID del duty correspondiente ("FLT")
     duty_id = Duties.query.filter_by(duty="FLT").first().id
@@ -806,6 +826,12 @@ def post_flights():
                         break
                 else:
                     return jsonify({'msg': 'Maximum number of flights per day reached for employee'}), 400
+                existing_roster.check_in_UTC = check_in_UTC_time
+                existing_roster.check_in_LT = check_in_LT_time
+                existing_roster.check_out_UTC = check_out_UTC_time
+                existing_roster.check_out_LT = check_out_LT_time
+                existing_roster.block_hours = total_block_hours
+                existing_roster.duty_hours = duty_hours
             else:
                 # Crear un nuevo registro de roster si no hay uno existente
                 roster_entry = Rosters(
@@ -814,10 +840,10 @@ def post_flights():
                     base_id=flight.departure_id,
                     duty_id=duty_id,
                     flight1_id=flight.id,
-                    check_in_UTC=check_in_time,
-                    check_in_LT=check_in_time_lt,
-                    check_out_UTC=check_out_time,
-                    check_out_LT=check_out_time_lt,
+                    check_in_UTC=check_in_UTC_time,
+                    check_in_LT=check_in_LT_time,
+                    check_out_UTC=check_out_UTC_time,
+                    check_out_LT=check_out_LT_time,
                     block_hours=total_block_hours,
                     duty_hours=duty_hours
                     # Otros campos relacionados con el vuelo que quieras agregar al roster
@@ -829,6 +855,7 @@ def post_flights():
     db.session.commit()
     
     return jsonify({'msg': 'Flight and Roster entries added successfully'}), 201
+
 
 
 @app.route('/api/flights', methods=['PUT'])
