@@ -39,6 +39,89 @@ def add_hours(hour1, hour2):
     total_hours, remaining_minutes = divmod(total_minutes, 60)
     return time(hour=total_hours % 24, minute=remaining_minutes, second=remaining_seconds)
 
+def calculate_time_interval(hour1, hour2):
+    total_seconds = transform_to_seconds(hour2) - transform_to_seconds(hour1)
+    return round(total_seconds/3600, 2)
+
+def roster_calculations(roster_id):
+    roster_to_calculate = Rosters.query.filter_by(id=roster_id).first()
+    flights = []
+    for i in range(1, 7):
+        if getattr(roster_to_calculate, f"flight{i}_id") is not None:
+            flights.append(Flights.query.filter_by(id=getattr(roster_to_calculate, f"flight{i}_id")).first())
+    check_in_UTC = calculate_check_in(getattr(flights[0], "departure_UTC"))
+    check_in_LT = calculate_check_in(getattr(flights[0], "departure_LT"))
+    check_out_UTC = calculate_check_out(getattr(flights[len(flights)-1], "arrival_UTC"))
+    check_out_LT = calculate_check_out(getattr(flights[len(flights)-1], "arrival_LT"))
+    duty_hours = calculate_time_interval(check_in_UTC, check_out_UTC)
+    block_hours = 0
+    for flight in flights:
+        block_hours += calculate_time_interval(getattr(flight, "departure_UTC"), getattr(flight, "arrival_UTC"))
+    setattr(roster_to_calculate, "check_in_UTC", check_in_UTC)
+    setattr(roster_to_calculate, "check_in_LT", check_in_LT)
+    setattr(roster_to_calculate, "check_out_UTC", check_out_UTC)
+    setattr(roster_to_calculate, "check_out_LT", check_out_LT)
+    setattr(roster_to_calculate, "block_hours", block_hours)
+    setattr(roster_to_calculate, "duty_hours", duty_hours)
+
+def delete_roster_entry(employee_id, flight):
+    existing_roster = Rosters.query.filter_by(employee_id=employee_id, date=flight.date).first()
+    if existing_roster:
+        employee_flights = []
+        for i in range(1, 7):
+            if getattr(existing_roster, f"flight{i}_id") is not None:
+                employee_flights.append(Flights.query.filter_by(id=getattr(existing_roster, f"flight{i}_id")).first())
+        if len(employee_flights) == 1:
+            db.session.delete(existing_roster)
+        else:
+            setattr(existing_roster, f"flight{len(employee_flights)}_id", None)
+            employee_flights.remove(flight)
+            i=1
+            for employee_flight in employee_flights:
+                setattr(existing_roster, f"flight{i}_id", employee_flight.id)
+                i+=1
+            roster_calculations(getattr(existing_roster, "id"))
+        db.session.commit()
+
+def add_new_roster_entry(employee_id, flight):
+    existing_roster = Rosters.query.filter_by(employee_id=employee_id, date=flight.date).first()
+    if existing_roster:
+        ground_duty = ['OFFH', 'HOL', 'GTR']
+        if existing_roster.duty.duty in ground_duty:
+            return jsonify({'msg': 'Employee is not available to fly on this date'}), 
+        duty_id = Duties.query.filter_by(duty="FLT").first().id
+        if existing_roster.duty_id != duty_id:
+            existing_roster.duty_id = duty_id
+        employee_flights = []
+        for i in range(1, 7):
+            if getattr(existing_roster, f"flight{i}_id") is None:
+                employee_flights.append(flight)
+                break
+            else:
+                employee_flights.append(Flights.query.filter_by(id=getattr(existing_roster, f"flight{i}_id")).first())
+        else:
+            return jsonify({'msg': 'Maximum number of flights per day reached for employee'}), 400
+        if len(employee_flights) > 1:
+            sorted_flights = sorted(employee_flights, key=lambda x: x.departure_UTC)
+            i=1
+            for sorted_flight in sorted_flights:
+                setattr(existing_roster, f"flight{i}_id", sorted_flight.id)
+                i+=1
+        roster_calculations(getattr(existing_roster, "id"))
+    else:
+        duty_id = Duties.query.filter_by(duty="FLT").first().id
+        roster_entry = Rosters(
+                    date=flight.date,
+                    employee_id=employee_id,
+                    base_id=flight.departure_id,
+                    duty_id=duty_id,
+                    flight1_id=flight.id
+                )
+        db.session.add(roster_entry)
+        db.session.commit()
+        roster_calculations(getattr(roster_entry, "id"))
+
+
 
 # from models import Person
 
@@ -676,39 +759,6 @@ def get_flights():
 
     serialized_flights = [flight.serialize() for flight in flights]
     return jsonify(serialized_flights), 200
-'''
-@app.route('/api/flights', methods=['POST'])
-@jwt_required()
-def post_flights():
-    body = request.get_json(silent=True)
-    if body is None:
-        return jsonify({'msg': 'Body must contain something'}), 400
-    if ('flight_number' not in body or
-        'date' not in body or
-        'departure_id' not in body or
-        'arrival_id' not in body or
-        'departure_UTC' not in body or
-        'departure_LT' not in body or
-        'arrival_UTC' not in body or
-        'arrival_LT' not in body or
-        'aircraft_id' not in body or
-        'cpt_id' not in body or
-        'fo_id' not in body or
-        'sccm_id' not in body or
-        'cc2_id' not in body or
-        'cc3_id' not in body or
-        'cc4_id' not in body):
-        return jsonify({'msg': 'At least one of the mandatory fields is missing'}), 400
-    flight = Flights()
-    for key, value in body.items():
-        if hasattr(flight, key):
-            setattr(flight, key, value)
-        else:
-            return jsonify({'msg': 'Invalid field: {}'.format(key)}), 400
-    db.session.add(flight)
-    db.session.commit()
-    return jsonify({'msg': 'Flight added succesfully'}), 201
-'''
 
 @app.route('/api/flights', methods=['POST'])
 #@jwt_required()
@@ -759,8 +809,7 @@ def post_flights():
         check_in_LT_time = calculate_check_in(flight.departure_LT)
         check_out_UTC_time = calculate_check_out(flight.arrival_UTC)
         check_out_LT_time = calculate_check_out(flight.arrival_LT)
-        total_block_hours = (transform_to_seconds(flight.arrival_UTC) - 
-                            transform_to_seconds(flight.departure_UTC)) / 3600
+        total_block_hours = calculate_time_interval(flight.departure_UTC, flight.arrival_UTC)
     else:
         existing_flights.append(flight)
         earliest_flight=existing_flights[0]
@@ -771,21 +820,16 @@ def post_flights():
         for existing_flight in existing_flights:
             if existing_flight.arrival_UTC > latest_flight.arrival_UTC:
                 latest_flight=existing_flight
-        # Obtener el primer vuelo y el último vuelo para calcular el check-in y el check-out
-        #earliest_flight = min(existing_flights, key=lambda x: x.departure_UTC)
-        #latest_flight = max(existing_flights, key=lambda x: x.arrival_UTC)
-        # Calcular el check-in y el check-out
+
         check_in_UTC_time = calculate_check_in(earliest_flight.departure_UTC)
         check_in_LT_time = calculate_check_in(earliest_flight.departure_LT)
         check_out_UTC_time = calculate_check_out(latest_flight.arrival_UTC)
         check_out_LT_time = calculate_check_out(latest_flight.arrival_LT)
 
-        #hasta aqui calcula bien
         # Calcular las block hours
         total_block_hours = 0
         for existing_flight in existing_flights:
-            total_block_hours += (transform_to_seconds(existing_flight.arrival_UTC) - 
-                                  transform_to_seconds(existing_flight.departure_UTC)) / 3600
+            total_block_hours += calculate_time_interval(existing_flight.departure_UTC, existing_flight.arrival_UTC)
 
     # Agregar los datos calculados al vuelo
     flight.check_in_UTC = check_in_UTC_time
@@ -795,8 +839,7 @@ def post_flights():
     flight.block_hours = total_block_hours
     
     # Calcular Duty Hours
-    duty_hours = (transform_to_seconds(check_out_UTC_time) - 
-                  transform_to_seconds(check_in_UTC_time)) / 3600
+    duty_hours = calculate_time_interval(check_in_UTC_time, check_out_UTC_time)
     
     # Obtener el ID del duty correspondiente ("FLT")
     duty_id = Duties.query.filter_by(duty="FLT").first().id
@@ -820,12 +863,21 @@ def post_flights():
             existing_roster = Rosters.query.filter_by(date=flight.date, employee_id=employee_id).first()
             if existing_roster:
                 # Actualizar el roster existente si ya había uno creado
+                employee_flights = []
                 for i in range(1, 7):
                     if getattr(existing_roster, f"flight{i}_id") is None:
-                        setattr(existing_roster, f"flight{i}_id", flight.id)
+                        employee_flights.append(Flights.query.filter_by(id=flight.id).first())
                         break
+                    else:
+                        employee_flights.append(Flights.query.filter_by(id=getattr(existing_roster, f"flight{i}_id")).first())
                 else:
                     return jsonify({'msg': 'Maximum number of flights per day reached for employee'}), 400
+                if len(employee_flights) > 1:
+                    sorted_flights = sorted(employee_flights, key=lambda x: x.departure_UTC)
+                    i=1
+                    for sorted_flight in sorted_flights:
+                        setattr(existing_roster, f"flight{i}_id", sorted_flight.id)
+                        i+=1
                 existing_roster.check_in_UTC = check_in_UTC_time
                 existing_roster.check_in_LT = check_in_LT_time
                 existing_roster.check_out_UTC = check_out_UTC_time
@@ -846,7 +898,6 @@ def post_flights():
                     check_out_LT=check_out_LT_time,
                     block_hours=total_block_hours,
                     duty_hours=duty_hours
-                    # Otros campos relacionados con el vuelo que quieras agregar al roster
                 )
                 roster_entries.append(roster_entry)
     
@@ -859,7 +910,7 @@ def post_flights():
 
 
 @app.route('/api/flights', methods=['PUT'])
-@jwt_required()
+#@jwt_required()
 def update_flights():
     flight_id = request.args.get('id')
     if flight_id is None:
@@ -868,7 +919,6 @@ def update_flights():
     if body is None:
         return jsonify({'msg': 'Body must contain something'}), 400
     if ('flight_number' not in body and
-        'date' not in body and
         'departure_id' not in body and
         'arrival_id' not in body and
         'departure_UTC' not in body and
@@ -890,11 +940,27 @@ def update_flights():
     flight = Flights.query.filter_by(id=flight_id).first()
     if flight is None:
         return jsonify({'msg': 'Flight does not exist'}), 404
-    for key, value in body.items():
-        if hasattr(flight, key):
-            setattr(flight, key, value)
+    for time_field in ['departure_UTC', 'departure_LT', 'arrival_UTC', 'arrival_LT']:
+        if time_field in body:
+            body[time_field] = datetime.strptime(body[time_field], '%H:%M:%S').time()
+    non_crew_fields =['flight_number', 'departure_id', 'arrival_id', 'departure_UTC', 'departure_LT', 'arrival_UTC', 'arrival_LT', 'aircraft_id']
+    for field in non_crew_fields:
+        if field in body and body[field] != getattr(flight, field):
+            setattr(flight, field, body[field])
+    ranks = ['cpt_id', 'fo_id', 'sccm_id', 'cc2_id', 'cc3_id', 'cc4_id', 'cc5_id', 'cc6_id', 'cc7_id', 'cc8_id']
+    for rank in ranks:
+        if rank in body and body[rank] != getattr(flight, rank):
+            delete_roster_entry(getattr(flight, rank), flight)
+            add_new_roster_entry(body[rank], flight)
+            setattr(flight, rank, body[rank])
         else:
+            roster = Rosters.query.filter_by(employee_id=getattr(flight, rank), date=flight.date).first()
+            if roster:
+                roster_calculations(getattr(roster, "id"))
+    for key in body:
+        if key not in non_crew_fields and key not in ranks:
             return jsonify({'msg': 'Invalid field: {}'.format(key)}), 400
+
     db.session.commit()
     return jsonify({'msg': 'Flight {} succesfully updated'.format(flight.flight_number)})
 
