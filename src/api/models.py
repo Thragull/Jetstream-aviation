@@ -483,8 +483,8 @@ class Rosters(db.Model):
     flight6 = db.relationship(Flights, foreign_keys=flight6_id)
     check_out_UTC = db.Column(db.Time)
     check_out_LT = db.Column(db.Time)
-    block_hours = db.Column(db.Integer)
-    duty_hours = db.Column(db.Integer)
+    block_hours = db.Column(db.Float)
+    duty_hours = db.Column(db.Float)
 
     def __repr__(self):
         return "Duty: {} for the {}".format(self.duty.duty, str(self.date))
@@ -492,21 +492,21 @@ class Rosters(db.Model):
     def serialize(self):
         return{
             "id": self.id,
-            "date": self.date,
+            "date": str(self.date),
             "employee_id": self.employee_id,
             "base": self.base_id,
             "duty": self.duty_id,
             "hotel": self.hotel_id,
-            "check_in_UTC": self.check_in_UTC,
-            "check_in_LT": self.check_in_LT,
+            "check_in_UTC": str(self.check_in_UTC),
+            "check_in_LT": str(self.check_in_LT),
             "flight1": self.flight1_id,
             "flight2": self.flight2_id,
             "flight3": self.flight3_id,
             "flight4": self.flight4_id,
             "flight5": self.flight5_id,
             "flight6": self.flight6_id,
-            "check_out_UTC": self.check_out_UTC,
-            "check_out_LT": self.check_out_LT,
+            "check_out_UTC": str(self.check_out_UTC),
+            "check_out_LT": str(self.check_out_LT),
             "block_hours": self.block_hours,
             "duty_hours": self.duty_hours
         }
