@@ -402,6 +402,41 @@ def deleteAssignation():
     db.session.commit()
     return jsonify({'msg': 'Assignation with ID {} has been succesfully deleted'.format(assignation.id)}), 200
 
+@app.route('/api/budgets', methods=['GET'])
+#@jwt_required()
+def get_budgets():
+    id = request.args.get('id')
+    client_name = request.args.get('client_name')
+    client_surname = request.args.get('client_surname')
+    client_business = request.args.get('client_business')
+    email = request.args.get('email')
+    phone = request.args.get('phone')
+
+    conditions = []
+
+    if id:
+        conditions.append(Budgets.id == id)
+    if client_name:
+        conditions.append(Budgets.client_name == client_name)
+    if client_surname:
+        conditions.append(Budgets.client_surname == client_surname)
+    if client_business:
+        conditions.append(Budgets.client_business == client_business)
+    if email:
+        conditions.append(Budgets.email == email)
+    if phone:
+        conditions.append(Budgets.phone == phone)
+    
+    if conditions:
+        budgets = Budgets.query.filter(and_(*conditions)).all()
+    else:
+        budgets = Budgets.query.all()
+    
+    serialized_budgets = list(map(lambda budget: budget.serialize(), budgets))
+    return jsonify(serialized_budgets)
+
+#añadir pendings y accepted en la tabla de budgets
+
 @app.route('/api/roles', methods=['GET'])
 @jwt_required()
 @cross_origin(supports_credentials=True)
@@ -1103,6 +1138,17 @@ def delete_roster():
     db.session.delete(roster)
     db.session.commit()
     return jsonify({'msg': 'Roster with ID {} succesfully deleted'.format(id)}), 200
+
+@app.route('/api/salary_prices', methods=['GET'])
+#@jwt_required()
+def get_salary_prices():
+    role_id = request.args.get('role_id')
+    if role_id is None:
+        return jsonify({'msg': 'You must specify a Role ID'}), 400
+    salary_prices = Salary_Prices.query.filter_by(role_id=role_id).first()
+    if salary_prices is None:
+        return jsonify({'msg': 'There is no salary table for this role'}), 404
+    return jsonify(salary_prices.serialize()), 200
 
 @app.route('/api/duties', methods=['GET'])
 def get_duties():

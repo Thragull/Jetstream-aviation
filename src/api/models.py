@@ -538,7 +538,7 @@ class Salary_Prices(db.Model):
     def serialize(self):
         return {
             "id": self.id,
-            "role": self.role_id,
+            "role_id": self.role_id,
             "basic": self.basic,
             "main_service": self.main_service,
             "instruction": self.instruction,
