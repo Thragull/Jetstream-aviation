@@ -965,7 +965,7 @@ def update_flights():
     return jsonify({'msg': 'Flight {} succesfully updated'.format(flight.flight_number)})
 
 @app.route('/api/flights', methods=['DELETE'])
-@jwt_required()
+#@jwt_required()
 def delete_flight():
     flight_id = request.args.get('id')
     if flight_id is None:
@@ -973,6 +973,11 @@ def delete_flight():
     flight = Flights.query.filter_by(id=flight_id).first()
     if flight is None:
         return jsonify({'msg': 'The flight does not exist in DB'}), 404
+    ranks = ['cpt_id', 'fo_id', 'sccm_id', 'cc2_id', 'cc3_id', 'cc4_id', 'cc5_id', 'cc6_id', 'cc7_id', 'cc8_id']
+    for rank in ranks:
+        employee_id = getattr(flight, rank)
+        if employee_id is not None:
+            delete_roster_entry(employee_id, flight)
     db.session.delete(flight)
     db.session.commit()
     return jsonify({'msg': 'The flight {} has been succesfully deleted'.format(flight.flight_number)}), 200
@@ -1017,6 +1022,87 @@ def get_roster():
 
     serialized_rosters = list(map(lambda roster: roster.serialize(), rosters))
     return jsonify(serialized_rosters), 200
+
+@app.route('/api/roster', methods=['POST'])
+#@jwt_required()
+def post_roster():
+    body = request.get_json(silent=True)
+    if body is None:
+        return jsonify({'msg': "Body must contain something"}), 400
+    if ("date"not in body or
+        "employee_id" not in body or
+        "base_id" not in body or
+        "duty_id" not in body):
+        return jsonify({'msg': 'One or more mandatory fields are missing in body'}), 400
+    roster = Rosters.query.filter_by(employee_id=body['employee_id'], date=body['date']).first()
+    if roster is None:
+        roster = Rosters()
+        for time_field in ["check_in_UTC", "check_in_LT", "check_out_UTC", "check_out_LT"]:
+            if time_field in body:
+                body[time_field] = datetime.strptime(body[time_field], '%H:%M:%S').time()
+        for key, value in body.items():
+            if hasattr(roster, key):
+                setattr(roster, key, value)
+            else:
+                return jsonify({'msg': 'Invalid field: {}'.format(key)}), 400
+        setattr(roster, "block_hours", 0)
+        if "check_in_UTC" in body and "check_out_UTC" in body:
+            setattr(roster, "duty_hours", calculate_time_interval(body["check_in_UTC"], body["check_out_UTC"]))
+        db.session.add(roster)
+        db.session.commit()
+        return jsonify({'msg': 'Duty {} created for employee {}'.format(roster.duty, roster.employee)}), 201
+    else:
+        return jsonify({'msg': 'The employee already has a duty on that date. You can\'t create a new one'}), 400
+
+@app.route('/api/roster', methods=['PUT'])
+#@jwt_required()
+def put_roster():
+    id = request.args.get('id')
+    if id is None:
+        return jsonify({'msg': 'You must specify the roster ID'}), 400
+    body = request.get_json(silent=True)
+    if body is None:
+        return jsonify({'msg': 'Body must contain something'}), 400
+    if ("base_id" not in body and
+        "duty_id" not in body and
+        "hotel_id" not in body and
+        "check_in_UTC" not in body and
+        "check_in_LT" not in body and
+        "check_out_UTC" not in body and
+        "check_out_LT"):
+        return jsonify({'msg': 'You must specify at least one field to be updated'}), 400
+    if ("date" in body or "employee_id" in body):
+        return jsonify({'msg': 'To edit the employee or the date you must delete this register and create a new one'}), 400
+    roster = Rosters.query.filter_by(id=id).first()
+    if roster is None:
+        return jsonify({'msg': 'Roster does not exist'}), 404
+    for time_field in ["check_in_UTC", "check_in_LT", "check_out_UTC", "check_out_LT"]:
+        if time_field in body:
+            body[time_field] = datetime.strptime(body[time_field], '%H:%M:%S').time()
+    for key, value in body.items():
+        if hasattr(roster, key):
+            setattr(roster, key, value)
+        else:
+            return jsonify({'msg': 'Invalid field: {}'.format(key)}), 400
+    if "check_in_UTC" in body or "check_out_UTC" in body:
+        setattr(roster, "duty_hours", calculate_time_interval(getattr(roster, "check_in_UTC"), getattr(roster, "check_out_UTC")))
+    db.session.commit()
+    return jsonify({'msg': 'Duty {} updated for employee {}'.format(roster.duty, roster.employee)}), 200
+
+@app.route('/api/roster', methods=['DELETE'])
+#@jwt_required()
+def delete_roster():
+    id = request.args.get('id')
+    if id is None:
+        return jsonify({'msg': 'You must specify the roster ID'}), 400
+    roster = Rosters.query.filter_by(id=id).first()
+    if roster is None:
+        return jsonify({'msg': 'Roster does not exist'}), 404
+    if getattr(roster, "flight1_id") is not None:
+        return jsonify({'msg': 'You must delete all flights for this employee first'}), 400
+    db.session.delete(roster)
+    db.session.commit()
+    return jsonify({'msg': 'Roster with ID {} succesfully deleted'.format(id)}), 200
 
 @app.route('/api/duties', methods=['GET'])
 def get_duties():
