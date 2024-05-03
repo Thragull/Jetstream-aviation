@@ -2201,4 +2201,5 @@ def setup_commands(app):
         insert_employees()
         insert_inflight_details()
         insert_duties()
+        insert_salary_prices()
         insert_bank_details()
