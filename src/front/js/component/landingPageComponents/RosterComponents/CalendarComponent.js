@@ -22,7 +22,9 @@ export const CalendarComponent = (props) => {
         }
     }
 
-
+    const fetchRoster = () => {
+        
+    }
 
     const events = [
         {

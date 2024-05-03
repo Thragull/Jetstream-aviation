@@ -63,8 +63,7 @@ export const EditProfile = (props) => {
     const editEmployee = async () => {
         const authToken = localStorage.getItem("jwt-token");
         try {
-            const token = localStorage.getItem("jwt_token");
-            console.log(token);
+            console.log(authToken)
             const response = await fetch(`${process.env.BACKEND_URL}/api/employee?id=${store.loggedInEmployee.id}`, {
                 method: "PUT",
                 headers: {
@@ -76,6 +75,7 @@ export const EditProfile = (props) => {
             if (response.ok) {
                 console.log("Employee successfully added to database");
                 // Limpiar el formulario o realizar cualquier otra acción necesaria
+                setStore({ loggedInEmployee: employee });
             } else {
                 const data = await response.json();
                 console.error(data.msg);
@@ -92,14 +92,13 @@ export const EditProfile = (props) => {
             <h1 className="mb-5">Edit Profile</h1>
             <div style={{display: "flex"}}>
                 <InputComponent label="Name" placeholder={store.loggedInEmployee.name} name="name" handleScript = {handleInputChange}/> 
-                <InputComponent label="Sirame" placeholder={store.loggedInEmployee.surname} name="surname" handleScript = {handleInputChange}/> 
+                <InputComponent label="Surame" placeholder={store.loggedInEmployee.surname} name="surname" handleScript = {handleInputChange}/> 
             </div>
             <div className="mx-3 mb-3" style={{display: 'flex'}}>
                 <span className=" me-1 input-group-text" id="basic-addon1">Birth Date</span>
                 <input type='date' id='dateInput'></input>
             </div>
             <div style={{display: "flex"}}>
-                <InputComponent label="Phone Number" placeholder="Phone Number" name="phone_number"/> 
                 <span className="input-group-text" id="basic-addon1" style={{height: '6vh', fontSize: '2vh'}} >Nationality</span>
                         <select 
                             className="form-select form-select-lg mb-3" 

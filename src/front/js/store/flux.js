@@ -114,6 +114,21 @@ const getState = ({ getStore, getActions, setStore }) => {
 					console.log(error);
 				}
 			},
+			getAllFleet: async () => {
+				try {
+					const resp = await fetch(`${process.env.BACKEND_URL}/api/fleet`, {
+						method: 'GET',
+						headers: {
+							'Content-Type': 'application/json'
+						}
+					});
+					const data = await resp.json();
+					console.log(data);
+					return data;
+				} catch(error) {
+					console.log(error);
+				}
+			},
 			getCountries: async () => {
 				let allCountries = [];
 				try {
@@ -164,6 +179,18 @@ const getState = ({ getStore, getActions, setStore }) => {
 					console.log(error)
 				}
 			},
+			getAirportsByCountry: async(country_id) => {
+				try {
+					const resp = await fetch(
+						process.env.BACKEND_URL + `/api/airports?country_id=${country_id}`
+					)
+					const data = await resp.json()
+					console.log(data)
+					return data
+				} catch (error) {
+					console.log(error)
+				}
+			},
 			getStates: async (countryId) => {
 				try {
 					const resp = await fetch(`${process.env.BACKEND_URL}/api/states?country_id=${countryId}`, {
@@ -202,6 +229,15 @@ const getState = ({ getStore, getActions, setStore }) => {
 					
 				}
 			}, 
+			getNationalityById: async (nationality_id) => {
+				try {
+					const resp = await fetch(process.env.BACKEND_URL + `/api/nationalities?id=${nationality_id}`)
+					const data = await resp.json()
+					return data[0].nationality
+				} catch (error) {
+					console.log(error)
+				}
+			},
 			getRoles: async () => {
 				let allRoles = [];
 				const authToken = localStorage.getItem("jwt-token");
@@ -288,6 +324,40 @@ const getState = ({ getStore, getActions, setStore }) => {
 
 				}
 			},
+			getEmployeesByRol: async (role_id) => {
+				let employeesByRol = []
+				const authToken = localStorage.getItem("jwt-token");
+				try {
+					const resp = await fetch(
+						process.env.BACKEND_URL + `/api/filterEmployees?role_id=${role_id}`, {
+							headers: {
+								Authorization: `Bearer ${authToken}`
+							}})
+					const data = await resp.json()
+					employeesByRol = data;
+					console.log(employeesByRol)
+					return employeesByRol;
+				} catch (error) {
+
+				}
+			},
+			getEmployeesByDepartment: async (department_id) => {
+				let employeesByDepartment = []
+				const authToken = localStorage.getItem("jwt-token");
+				try {
+					const resp = await fetch(
+						process.env.BACKEND_URL + `/api/filterEmployees?department_id=${department_id}`, {
+							headers: {
+								Authorization: `Bearer ${authToken}`
+							}})
+					const data = await resp.json()
+					employeesByDepartment = data;
+					console.log(employeesByDepartment)
+					return employeesByDepartment;
+				} catch (error) {
+					console.log(error)
+				}
+			},
 			getEmployee: async () => {
 				let employee = {}
 				const authToken = localStorage.getItem("jwt-token");
@@ -310,6 +380,15 @@ const getState = ({ getStore, getActions, setStore }) => {
 					} catch (error) {
 
 					}
+				}
+			},
+			getRoster: async() => {
+				try {
+					const resp = await fetch(
+						process.env.BACKEND_URL + `/api/employee`
+					)
+				} catch (error) {
+					console.log(error)
 				}
 			},
 			changeColor: (index, color) => {
