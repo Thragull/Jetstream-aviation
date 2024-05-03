@@ -21,6 +21,11 @@ export const ProfileComponent = () => {
     const [role, setRole] = useState(null)
     const [country, setCountry] = useState(null)
     const [state, setState] = useState(null)
+    const [nationality, setNationality] = useState(null)
+
+    useEffect(()=>{
+        console.log(nationality)
+    }, [nationality])
 
 
     useEffect(() => {
@@ -59,8 +64,18 @@ export const ProfileComponent = () => {
                 console.log(error)
             }
         }
+        const fetchNationality = async ()=>{
+            try {
+                const nationalityData = await actions.getNationalityById(store.loggedInEmployee.nationality)
+                setNationality(nationalityData)
 
-            const fetchInflight = async () => {
+            } catch (error) {
+                console.log(error)
+            }
+        }
+
+        
+        const fetchInflight = async () => {
                 try{
                      await actions.getInflight(store.loggedInEmployee.id)
                     
@@ -76,6 +91,7 @@ export const ProfileComponent = () => {
         fetchRole();
         fetchCountry();
         fetchState();
+        fetchNationality();
    
 
 
@@ -129,7 +145,7 @@ export const ProfileComponent = () => {
                     </div>
                     <Divider/>
                     <div style={{display: "flex"}}>
-                        <InfoComponent label="Nationality" name={store.loggedInEmployee.nationality ? store.loggedInEmployee.nationality : '' }/>
+                        <InfoComponent label="Nationality" name={nationality ? nationality : '' }/>
                     </div>
                     <Divider/>
                     <div style={{display: "flex"}}>

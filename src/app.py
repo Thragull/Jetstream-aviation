@@ -413,15 +413,21 @@ def getEmployeeByCrewID():
 #@jwt_required()
 def filter_employees():
     role_id = request.args.get('role_id')
-    if role_id is None:
-        return jsonify({'msg': 'You must specify a role ID'})
-    employees = Employees.query.filter_by(role_id=role_id).all()
-    serialized_employees = list(map(lambda employee: employee.serialize(), employees))
-    return jsonify(serialized_employees)
+    department_id = request.args.get('department_id')
+    if role_id is not None: 
+        employees = Employees.query.filter_by(role_id=role_id).all()
+        serialized_employees = list(map(lambda employee: employee.serialize(), employees))
+        return jsonify(serialized_employees)
+    if department_id is not None: 
+        employees = Employees.query.filter_by(department_id=department_id).all()
+        serialized_employees = list(map(lambda employee: employee.serialize(), employees))
+        return jsonify(serialized_employees)
+    if role_id is None or department_id is None:
+        return jsonify({'msg': 'You must specify a role or a department ID'})
 
 
 @app.route('/api/signupEmployee', methods=['POST'])
-@jwt_required
+#@jwt_required
 @cross_origin(supports_credentials=True)
 def signupUser():
     body = request.get_json(silent=True)
@@ -481,14 +487,14 @@ def modifyEmployee():
         "email" not in body and
         "phone" not in body and
         "role" not in body and
-        "department_id" not in body and
+        "department" not in body and
         "gender" not in body and
-        "nationality_id" not in body and
+        "nationality" not in body and
         "address" not in body and
         "address2" not in body and
         "address3" not in body and
-        "country_id" not in body and
-        "state_id" not in body and
+        "country" not in body and
+        "state" not in body and
         "city" not in body and
         "zipcode" not in body and
         "birthday" not in body and
@@ -500,12 +506,19 @@ def modifyEmployee():
         return jsonify({'msg': 'Employee does not exist'}), 404
     if not employee.is_active:
         return jsonify({'msg': 'Employee does not exist'}), 404
+    print(body.items())
+    body["country_id"] = body.pop("country")
+    body["nationality_id"] = body.pop("nationality")
+    body["state_id"] = body.pop("state")
+    body["department_id"] = body.pop("department")
+    body["role_id"] = body.pop("role")
     for key, value in body.items():
-        if hasattr(employee, key):
+        if hasattr(employee, key) and key!="id":
+            print(employee, key, value)
             setattr(employee, key, value)
-        else:
-            return jsonify({'msg': 'Invalid field: {}'.format(key)}), 400
-
+  #      else:
+  #          return jsonify({'msg': 'Invalid field: {}'.format(key)}), 400
+    print(employee.serialize())
     db.session.commit()
     return jsonify({'msg': "Employee {} successfully modified".format(employee.crew_id)}), 200
 
@@ -639,6 +652,11 @@ def delete_inflight():
 @app.route('/api/airports', methods=['GET'])
 def get_airports():
     id = request.args.get('id')
+    country_id = request.args.get('country_id')
+    if country_id is not None: 
+            airports = Airports.query.filter_by(country_id=country_id).all()
+            serialized_airports = list(map(lambda airport: airport.serialize(), airports))
+            return jsonify(serialized_airports), 200
     if id is None:
         airports = Airports.query.all()
         serialized_airports = list(map(lambda airport: airport.serialize(), airports))

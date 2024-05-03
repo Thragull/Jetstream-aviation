@@ -3,12 +3,7 @@ import { Context } from "../store/appContext";
 import airplanebackground from "../../img/aviondesdeabajo.jpeg";
 import "../../styles/landing_page_worker.css";
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome'
-import { faCalendarCheck, faHouse } from '@fortawesome/free-solid-svg-icons'
-import { faUser } from '@fortawesome/free-solid-svg-icons'
-import { faMoneyBills } from '@fortawesome/free-solid-svg-icons'
-import { faUserGraduate } from '@fortawesome/free-solid-svg-icons'
-import { faFile } from '@fortawesome/free-solid-svg-icons'
-import { faUmbrellaBeach } from '@fortawesome/free-solid-svg-icons'
+import { faCalendarCheck, faHouse, faUser, faMoneyBills, faUserGraduate, faFile, faUmbrellaBeach } from '@fortawesome/free-solid-svg-icons'
 import DashboardComponent from "../component/landingPageComponents/DashboardComponent.js"
 import ProfileComponent from "../component/landingPageComponents/ProfileComponent.js"
 import PayslipComponent from "../component/landingPageComponents/PayslipComponent.js"
@@ -19,6 +14,7 @@ import RosterComponent from "../component/landingPageComponents/RosterComponent.
 import ManagementComponent from "../component/landingPageComponents/ManagementComponent.js";
 import Lottie from "react-lottie";
 import animationData from "../../img/animation_data.json";
+import CrewControllerComponent from "../component/landingPageComponents/CrewControllerComponent.js";
 
 
 
@@ -29,9 +25,7 @@ import animationData from "../../img/animation_data.json";
 
 export const LandingPageWorker = () => {
 
-
-  
-    const defaultOptions = {
+      const defaultOptions = {
             loop: true,
             autoplay: true,
             animationData: animationData, 
@@ -129,7 +123,12 @@ export const LandingPageWorker = () => {
             case 'Roster':
                 if (store.loggedInEmployee.department == 3) {
                     return <RosterComponent />
-                } else { return <ManagementComponent /> }
+                } else if(store.loggedInEmployee.department == 2)
+                     { return  <CrewControllerComponent/> 
+                } 
+                    else {
+                    return <ManagementComponent/>
+                }
             default:
                 return <DashboardComponent />
 
@@ -175,7 +174,9 @@ export const LandingPageWorker = () => {
                                     <div className="mx-auto navbar-icon-text">
                                         <FontAwesomeIcon icon={faCalendarCheck} />
                                         <div className="mx-1"></div>
-                                        {store.loggedInEmployee.department !=3 ? <p>Management</p> : <p>Roster</p>}
+                                        {store.loggedInEmployee.department ==3 ? <p>Roster</p> : 
+                                        store.loggedInEmployee.department == 2 ? <p>Crew Control</p> : 
+                                        <p>Roster</p>}
                                     </div>
                                 </div>
                                 <div className="navbarComponent" style={{ color: `${textColorPayslip}`, backgroundColor: `${colorPayslip}`, borderTopRightRadius: `${roosterRadius}`, borderBottomRightRadius: `${documentsRadius}` }} onClick={() => setActiveComponent('Payslip')}>
