@@ -574,7 +574,7 @@ class Bank_Details(db.Model):
     def serialize(self):
         return {
             "id": self.id,
-            "employee": self.employee_id,
+            "employee_id": self.employee_id,
             "IBAN": self.IBAN,
             "tax_number": self.tax_number
         }
@@ -582,7 +582,7 @@ class Bank_Details(db.Model):
 class Payslips(db.Model):
     __tablename__ = 'payslips'
     id = db.Column(db.Integer, primary_key=True)
-    employee_id = db.Column(db.Integer, db.ForeignKey('employees.id'), unique=True, nullable=False)
+    employee_id = db.Column(db.Integer, db.ForeignKey('employees.id'), nullable=False)
     employee = db.relationship(Employees)
     month = db.Column(db.String(10), nullable=False)
     year = db.Column(db.Integer, nullable=False)
@@ -594,7 +594,7 @@ class Payslips(db.Model):
     def serialize(self):
         return {
             "id": self.id,
-            "employee": self.employee_id,
+            "employee_id": self.employee_id,
             "month": self.month,
             "year": self.year,
             "href": self.href
