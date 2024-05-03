@@ -411,6 +411,8 @@ def get_budgets():
     client_business = request.args.get('client_business')
     email = request.args.get('email')
     phone = request.args.get('phone')
+    pending = request.args.get('pending')
+    accepted = request.args.get('accepted')
 
     conditions = []
 
@@ -426,6 +428,10 @@ def get_budgets():
         conditions.append(Budgets.email == email)
     if phone:
         conditions.append(Budgets.phone == phone)
+    if pending:
+        conditions.append(Budgets.pending == pending)
+    if accepted:
+        conditions.append(Budgets.accepted == accepted)
     
     if conditions:
         budgets = Budgets.query.filter(and_(*conditions)).all()
@@ -435,7 +441,67 @@ def get_budgets():
     serialized_budgets = list(map(lambda budget: budget.serialize(), budgets))
     return jsonify(serialized_budgets)
 
-#añadir pendings y accepted en la tabla de budgets
+@app.route('/api/budgets', methods=['POST'])
+def post_budgets():
+    body = request.get_json(silent=True)
+    if body is None:
+        return jsonify({'msg': 'Body must contain something'}), 400
+    if ('client_name' not in body or
+        'client_surname' not in body or
+        'client_business' not in body or
+        'client_email' not in body or
+        'client_phone' not in body or
+        'start_date' not in body or
+        'end_date' not in body or
+        'total_price' not in body):
+        return jsonify({'msg': 'One or more mandatory fields are missing'}), 400
+    budget = Budgets()
+
+    for key, value in body.items():
+        if hasattr(budget, key):
+            setattr(budget, key, value)
+        else:
+            return jsonify({'msg': 'Invalid field {}'.format(key)}), 400
+    db.session.add(budget)
+    db.session.commit()
+    return jsonify({'msg': 'New budget added. Pending of review'}), 201
+
+@app.route('/api/budgets', methods=['PUT'])
+#@jwt_required()
+def put_budget():
+    id = request.args.get('id')
+    if id is None:
+        return jsonify({'msg': 'You must specify the budget ID'}), 400
+    body = request.get_json(silent=True)
+    if body is None:
+        return jsonify({'msg': 'Body must contain something'}), 400
+    if ('start_date' not in body and
+        'end_date' not in body and
+        'total_price' not in body and
+        'pending' not in body and
+        'accepted' not in body):
+        return jsonify({'msg': 'None of the fields included can be modified'}), 400
+    budget = Budgets.query.filter_by(id=id).first()
+    for key, value in body.items():
+        if hasattr(budget, key):
+            setattr(budget, key, value)
+        else:
+            return jsonify({'msg': 'Invalid field {}'.format(key)}), 400
+    db.session.commit()
+    return jsonify({'msg': 'Budget with ID {} succesfully updated'.format(id)}), 200
+
+@app.route('/api/budgets', methods=['DELETE'])
+#@jwt_required()
+def delete_budgets():
+    id = request.args.get('id')
+    if id is None:
+        return jsonify({'msg': 'You must specify a budget ID'}), 400
+    budget = Budgets.query.filter_by(id=id).first()
+    if budget is None:
+        return jsonify({'msg': 'The budget does not exist'}), 404
+    db.session.delete(budget)
+    db.session.commit()
+    return jsonify({'msg': 'Budget succesfully deleted'}), 200
 
 @app.route('/api/roles', methods=['GET'])
 @jwt_required()

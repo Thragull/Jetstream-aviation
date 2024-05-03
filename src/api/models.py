@@ -132,7 +132,9 @@ class Budgets(db.Model):
     client_phone = db.Column(db.BigInteger, nullable=False)
     start_date = db.Column(db.DateTime, nullable=False)
     end_date = db.Column(db.DateTime, nullable=False)
-    total_price = db.Column(db.Integer, nullable=False)
+    total_price = db.Column(db.BigInteger, nullable=False)
+    pending = db.Column(db.Boolean, nullable=False, default=True)
+    accepted = db.Column(db.Boolean)
 
     def __repr__(self):
         return "We can negotiate with {}".format(self.client_business)
@@ -140,14 +142,16 @@ class Budgets(db.Model):
     def serialize(self):
         return {
             "id": self.id,
-            "name": self.client_name,
-            "surname": self.client_surname,
-            "business": self.client_business,
-            "email": self.client_email,
-            "phone": self.client_phone,
-            "start": self.start_date,
-            "end": self.end_date,
-            "price": self.total_price
+            "client_name": self.client_name,
+            "client_surname": self.client_surname,
+            "client_business": self.client_business,
+            "client_email": self.client_email,
+            "client_phone": self.client_phone,
+            "start_date": str(self.start_date),
+            "end_date": str(self.end_date),
+            "total_price": self.total_price,
+            "pending": self.pending,
+            "accepted": self.accepted
         }
     
 #Database structure for Employees registration
