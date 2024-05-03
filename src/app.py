@@ -1281,7 +1281,85 @@ def put_bank_details():
         else:
             return jsonify({'msg': 'Invalid field: {}'.format(key)}), 400
     db.session.commit()
-    return jsonify({'msg': 'Bank details succesfully updated for employee {}'.format(bank_details.employee)})
+    return jsonify({'msg': 'Bank details succesfully updated for employee {}'.format(bank_details.employee)}), 200
+
+@app.route('/api/bank_details', methods=['DELETE'])
+#@jwt_required()
+def delete_bank_details():
+    id = request.args.get('id')
+    if id is None:
+        return jsonify({'msg': 'You must specify an ID'}), 400
+    bank_details = Bank_Details.query.filter_by(id=id).first()
+    if bank_details is None:
+        return jsonify({'msg': 'There are no details with this ID'}), 404
+    db.session.delete(bank_details)
+    db.session.commit()
+    return jsonify({'msg': 'Bank details succesfully deleted'}), 200
+
+@app.route('/api/payslips', methods=['GET'])
+#@jwt_required()
+def get_payslips():
+    employee_id = request.args.get("employee_id")
+    if employee_id is None:
+        return jsonify({'msg': 'You must specify an Employee ID'}), 400
+    payslips = Payslips.query.filter_by(employee_id=employee_id).all()
+    serialized_payslips = list(map(lambda payslip: payslip.serialize(), payslips))
+    return jsonify(serialized_payslips), 200
+
+@app.route('/api/payslips', methods=['POST'])
+#@jwt_required()
+def post_payslips():
+    body = request.get_json(silent=True)
+    if body is None:
+        return jsonify({'msg': 'Body must contain something'}), 400
+    if ('employee_id' not in body or
+        'month' not in body or
+        'year' not in body or
+        'href' not in body):
+        return jsonify({'msg': 'One or more mandatory fields are missing'}), 400
+    payslip = Payslips.query.filter_by(employee_id=body['employee_id'], month=body['month'], year=body['year']).first()
+    if payslip is not None:
+        return jsonify({'msg': 'There is alread a payslip for this employee on the selected dates'}), 405
+    payslip = Payslips()
+    for key, value in body.items():
+        if hasattr(payslip, key):
+            setattr(payslip, key, value)
+        else:
+            return jsonify({'msg': 'Invalid field: {}'.format(key)}), 400
+    db.session.add(payslip)
+    db.session.commit()
+    return jsonify({'msg': 'Payslip created succesfully for employee {}'.format(payslip.employee)}), 201
+
+@app.route('/api/payslips', methods=['PUT'])
+#@jwt_required()
+def put_payslips():
+    id = request.args.get('id')
+    if id is None:
+        return jsonify({'msg': 'You must specify a Payslip ID'}), 400
+    body = request.get_json(silent=True)
+    if body is None:
+        return jsonify({'msg': 'Body must contain something'}), 400
+    if 'href' not in body:
+        return jsonify({'msg': 'You must specify the new route to the file'}), 400
+    payslip = Payslips.query.filter_by(id=id).first()
+    if payslip is None:
+        return jsonify({'msg': 'There is no payslip with this ID'}), 404
+    setattr(payslip, 'href', body['href'])
+    db.session.commit()
+    return jsonify({'msg': 'Payslip updated succesfully'}), 200
+
+@app.route('/api/payslips', methods=['DELETE'])
+#@jwt_required()
+def delete_payslips():
+    id = request.args.get('id')
+    if id is None:
+        return jsonify({'msg': 'You must specify a Payslip ID'}), 400
+    payslip = Payslips.query.filter_by(id=id).first()
+    if payslip is None:
+        return jsonify({'msg': 'There is no payslip with this ID'}), 404
+    db.session.delete(payslip)
+    db.session.commit()
+    return jsonify({'msg': 'Payslip deleted succesfully'}), 200
 
 @app.route('/api/login', methods=['POST'])
 @cross_origin(supports_credentials=True)
