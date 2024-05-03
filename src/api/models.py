@@ -574,7 +574,7 @@ class Bank_Details(db.Model):
     def serialize(self):
         return {
             "id": self.id,
-            "employee": self.employee_id,
+            "employee_id": self.employee_id,
             "IBAN": self.IBAN,
             "tax_number": self.tax_number
         }

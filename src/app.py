@@ -831,6 +831,17 @@ def get_airports():
     serialized_airports = list(map(lambda airport: airport.serialize(), airports))
     return jsonify(serialized_airports), 200
 
+@app.route('/api/duties', methods=['GET'])
+def get_duties():
+    id = request.args.get('id')
+    if id is None: 
+        duties = Duties.query.all()
+        serialized_duties = list(map(lambda duty: duty.serialize(), duties))
+        return jsonify(serialized_duties), 200
+    duties = Duties.query.filter_by(id=id).all()
+    serialized_duties = list(map(lambda duty: duty.serialize, duties))
+    return jsonify (serialized_duties), 200
+
 @app.route('/api/flights', methods=['GET'])
 #@jwt_required()
 def get_flights():
@@ -1216,17 +1227,62 @@ def get_salary_prices():
         return jsonify({'msg': 'There is no salary table for this role'}), 404
     return jsonify(salary_prices.serialize()), 200
 
-@app.route('/api/duties', methods=['GET'])
-def get_duties():
+@app.route('/api/bank_details', methods=['GET'])
+#@jwt_required()
+def get_bank_details():
     id = request.args.get('id')
-    if id is None: 
-        duties = Duties.query.all()
-        serialized_duties = list(map(lambda duty: duty.serialize(), duties))
-        return jsonify(serialized_duties), 200
-    duties = Duties.query.filter_by(id=id).all()
-    serialized_duties = list(map(lambda duty: duty.serialize, duties))
-    return jsonify (serialized_duties), 200
+    if id is None:
+        return jsonify({'msg': 'You must specify an ID'}), 400
+    bank_details = Bank_Details.query.filter_by(id=id).first()
+    if bank_details is None:
+        return jsonify({'msg': 'There is no bank details with this ID'}), 404
+    return jsonify(bank_details.serialize()), 200
+
+@app.route('/api/bank_details', methods=['POST'])
+#@jwt_required()
+def post_bank_details():
+    body = request.get_json(silent=True)
+    if body is None:
+        return jsonify({'msg': 'Body must contain something'}), 400
+    if ('employee_id' not in body or
+        'IBAN' not in body):
+        return jsonify({'msg': 'One or more of the mandatory fields are missing in body'}), 400
+    bank_details = Bank_Details.query.filter_by(employee_id=body['employee_id']).first()
+    if bank_details is not None:
+        return jsonify({'msg': 'This employee already have bank details registered in DB.'}), 400
+    bank_details = Bank_Details()
+    for key, value in body.items():
+        if hasattr(bank_details, key):
+            setattr(bank_details, key, value)
+        else:
+            return jsonify({'msg': 'Invalid field: {}'.format(key)}), 400
+    
+    db.session.add(bank_details)
+    db.session.commit()
+    return jsonify({'msg': 'Bank details added for employee {}'.format(bank_details.employee)})
  
+@app.route('/api/bank_details', methods=['PUT'])
+#@jwt_required()
+def put_bank_details():
+    id = request.args.get('id')
+    if id is None:
+        return jsonify({'msg': 'You must specify a bank details ID'}), 400
+    body = request.get_json(silent=True)
+    if body is None:
+        return jsonify({'msg': 'Body must contain something'}), 400
+    if ('IBAN' not in body and 'tax_number' not in body):
+        return jsonify({'msg': 'You must specify at least on of the fields to be updated'}), 400
+    bank_details = Bank_Details.query.filter_by(id=id).first()
+    if bank_details is None:
+        return jsonify({'msg': 'There are no bank details with this ID'}), 404
+    for key, value in body.items():
+        if hasattr(bank_details, key):
+            setattr(bank_details, key, value)
+        else:
+            return jsonify({'msg': 'Invalid field: {}'.format(key)}), 400
+    db.session.commit()
+    return jsonify({'msg': 'Bank details succesfully updated for employee {}'.format(bank_details.employee)})
+
 @app.route('/api/login', methods=['POST'])
 @cross_origin(supports_credentials=True)
 def login():
