@@ -269,15 +269,15 @@ class Employees(db.Model):
             "surname": self.surname,
             "email": self.email,
             "phone": self.phone,
-            "role": self.role_id,
-            "department": self.department_id,
+            "role_id": self.role_id,
+            "department_id": self.department_id,
             "gender": self.gender,
-            "nationality": self.nationality_id,
+            "nationality_id": self.nationality_id,
             "address": self.address,
             "address2": self.address2,
             "address3": self.address3,
-            "country": self.country_id,
-            "state": self.state_id,
+            "country_id": self.country_id,
+            "state_id": self.state_id,
             "city": self.city,
             "zipcode": self.zipcode,
             "birthday": self.birthday,
@@ -631,5 +631,5 @@ class Visibility(db.Model):
         return {
             "id": self.id,
             "role": self.role_id,
-            "document": self.document_id
+            "document_id": self.document_id
         }
