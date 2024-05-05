@@ -48,11 +48,12 @@ export const LoginPage = () => {
             //Guarda el token en el local Storage
             //También deberías almacenar el usuario en la store utilizando la función setItem
             localStorage.setItem("jwt-token", data.token);
-
+            
             console.log("Login successful")
             console.log(`${data.token}`)
 
             console.log(employee.crew_id)
+
 
             
             const loggedEmployee =  await actions.getEmployee(employee.crew_id);
