@@ -13,3 +13,10 @@
 .header{
     background-color: rgba(92, 166, 209, 0.5);
 }
+.nav-tabs .nav-item .nav-link.active {
+    background-color: rgba(95, 174, 219, 0.5);
+    border-color: rgba(95, 174, 219);
+}
+.nav-tabs {
+    border-color: rgba(95, 174, 219);
+}

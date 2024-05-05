@@ -32,7 +32,7 @@ const ShowBudgets = () => {
                 <li className="list-group-item col-1 text-center header">Phone #</li>
                 <li className="list-group-item col-2 text-center header">Start</li>
                 <li className="list-group-item col-2 text-center header">End</li>
-                <li className="list-group-item col-1 text-center header">Total</li>
+                <li className="list-group-item col-2 text-center header">Total</li>
             </ul>
             {store.budgets.map((item) => {
                 const startDate = item.start_date.split(' ')[0];
@@ -47,7 +47,7 @@ const ShowBudgets = () => {
                         <li className={`list-group-item col-1 text-center ${bgClass}`}>{item.client_phone}</li>
                         <li className={`list-group-item col-2 text-center ${bgClass}`}>{startDate}</li>
                         <li className={`list-group-item col-2 text-center ${bgClass}`}>{endDate}</li>
-                        <li className={`list-group-item col-1 text-center ${bgClass}`}>{item.total_price+"€"}</li>
+                        <li className={`list-group-item col-2 text-center ${bgClass}`}>{item.total_price+"€"}</li>
                     </ul>
                 )
             })}
