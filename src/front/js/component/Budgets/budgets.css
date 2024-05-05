@@ -1,0 +1,15 @@
+.nav-item:hover {
+    cursor: pointer
+}
+.pending{
+    background-color: rgba(158, 157, 158, 0.5);
+}
+.accepted{
+    background-color: rgba(3, 109, 3, 0.5);
+}
+.rejected{
+    background-color: rgba(243, 74, 74, 0.5);
+}
+.header{
+    background-color: rgba(92, 166, 209, 0.5);
+}

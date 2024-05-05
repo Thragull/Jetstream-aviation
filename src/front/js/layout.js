@@ -16,7 +16,7 @@ import AboutUs from "./component/AboutUs";
 import Fleet from "./component/Fleet";
 import Services from "./component/Services";
 import LoginPage from "./pages/LoginPage";
-import Prueba from "./component/Prueba";
+import Budgets from "./component/Budgets/Budgets";
 
 
 
@@ -46,7 +46,7 @@ const Layout = () => {
             <Route element={<Fleet />} path="/fleet" />
             <Route element={<Services />} path="/services" />
             <Route element={<LoginPage/>} path="/login" />
-            <Route element={<Prueba/>} path="/prueba"/>
+            <Route element={<Budgets/>} path="/prueba"/>
           </Routes>
           {/* <Footer /> */}
         </ScrollToTop>
