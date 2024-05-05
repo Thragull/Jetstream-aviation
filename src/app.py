@@ -21,6 +21,7 @@ from flask_jwt_extended import JWTManager
 from flask_jwt_extended import get_jwt
 from flask_bcrypt import Bcrypt
 from datetime import datetime, timedelta, timezone, time
+from api.dbfiller import insert_data
 
 def calculate_check_in(hora):
     check_in = hora.replace(hour=hora.hour - 1)
@@ -555,11 +556,12 @@ def getRoles():
     id = request.args.get('id')
     if id is None:
         roles = Roles.query.all()
-        serialized_roles = [role.serialize() for role in roles]
+        serialized_roles = list(map(lambda role: role.serialize(), roles))
         return jsonify(serialized_roles), 200
-    roles = Roles.query.filter_by(id=id).all()
-    serialized_roles = [role.serialize() for role in roles]
-    return jsonify(serialized_roles), 200
+    role = Roles.query.filter_by(id=id).first()
+    if role is None:
+        return jsonify({'msg': 'Role not found'}), 404
+    return jsonify(role.serialize()), 200
 
 @app.route('/api/countries', methods=['GET'])
 @cross_origin(supports_credentials=True)
@@ -567,11 +569,12 @@ def getCountries():
     id = request.args.get('id')
     if id is None:
         countries = Countries.query.all()
-        serialized_countries = [country.serialize() for country in countries]
+        serialized_countries = list(map(lambda country: country.serialize(), countries))
         return jsonify(serialized_countries), 200
-    countries = Countries.query.filter_by(id=id).all()
-    serialized_countries = [country.serialize() for country in countries]
-    return jsonify(serialized_countries), 200
+    country = Countries.query.filter_by(id=id).first()
+    if country is None:
+        return jsonify({'msg': 'Country not found'}), 404
+    return jsonify(country.serialize()), 200
 
 
 @app.route('/api/nationalities', methods=['GET'])
@@ -1838,7 +1841,10 @@ def protected():
     additional_claims = get_jwt()
     return jsonify(logged_in_as=current_user, additional_claims=additional_claims), 200
 
-
+@app.route('/api/dbfiller', methods=['GET'])
+def dbfiller():
+    insert_data()
+    return jsonify({'msg': "Funciona"}), 201
 
 # this only runs if `$ python src/main.py` is executed
 if __name__ == '__main__':
