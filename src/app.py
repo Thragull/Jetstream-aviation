@@ -631,12 +631,7 @@ def getCrewId():
 @jwt_required()
 def getEmployeeByCrewID():
     credentials=get_jwt()
-    role_id=credentials.get('role_id')
-    if Roles.query.filter_by(role='Manager').first().id != role_id:
-        crew_id = get_jwt_identity()
-    else:
-        crew_id = request.args.get('crew_id')
-    
+    crew_id = get_jwt_identity()
     if crew_id is None:
         return jsonify({'msn': 'You must specify a employee ID'}), 400
     employee = Employees.query.filter_by(crew_id=crew_id).first()
@@ -964,7 +959,6 @@ def delete_inflight():
     return jsonify({'msg': 'Inflight data has been deleted'}), 200
 
 @app.route('/api/airports', methods=['GET'])
-@jwt_required()
 def get_airports():
     id = request.args.get('id')
     country_id = request.args.get('country_id')

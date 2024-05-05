@@ -32,7 +32,7 @@ export const ProfileComponent = () => {
         const fetchDepartment = async () => {
             console.log('departmemts')
             try {
-                const departmentData = await actions.getDepartmentById(store.loggedInEmployee.department);
+                const departmentData = await actions.getDepartmentById(store.loggedInEmployee.department_id);
                 setDepartment(departmentData);
             } catch (error) {
                 console.error('Error fetching department:', error);
@@ -40,7 +40,7 @@ export const ProfileComponent = () => {
         };
         const fetchRole = async() => {
             try{
-                const roleData = await actions.getRoleById(store.loggedInEmployee.role);
+                const roleData = await actions.getRoleById(store.loggedInEmployee.role_id);
                 setRole(roleData);
                 
             } catch (error) {
@@ -49,7 +49,7 @@ export const ProfileComponent = () => {
         }
         const fetchCountry = async() => {
             try{
-                const countryData = await actions.getCountryById(store.loggedInEmployee.country)
+                const countryData = await actions.getCountryById(store.loggedInEmployee.country_id)
                 setCountry(countryData)
 
             } catch (error) {
@@ -58,7 +58,7 @@ export const ProfileComponent = () => {
         }
         const fetchState = async ()=>{
             try {
-                const stateData = await actions.getStateById(store.loggedInEmployee.state)
+                const stateData = await actions.getStateById(store.loggedInEmployee.state_id)
                 setState(stateData)
             } catch (error) {
                 console.log(error)
@@ -66,7 +66,7 @@ export const ProfileComponent = () => {
         }
         const fetchNationality = async ()=>{
             try {
-                const nationalityData = await actions.getNationalityById(store.loggedInEmployee.nationality)
+                const nationalityData = await actions.getNationalityById(store.loggedInEmployee.nationality_id)
                 setNationality(nationalityData)
 
             } catch (error) {
@@ -86,15 +86,21 @@ export const ProfileComponent = () => {
             }
             fetchInflight();
  
-    
-        fetchDepartment();
-        fetchRole();
-        fetchCountry();
-        fetchState();
-        fetchNationality();
-   
-
-
+        if (store.loggedInEmployee.department_id != null){
+            fetchDepartment();
+        }
+        if (store.loggedInEmployee.role_id != null){
+            fetchRole();
+        }
+        if (store.loggedInEmployee.country_id != null){
+            fetchCountry();
+        }
+        if (store.loggedInEmployee.state_id != null){
+            fetchState();
+        }
+        if (store.loggedInEmployee.nationality_id != null){
+            fetchNationality();
+        }
     }, []);
     
     
@@ -130,7 +136,7 @@ export const ProfileComponent = () => {
                 <div>
                     <div style={{display: "flex"}}>
                         <InfoComponent label="Name" name={store.loggedInEmployee.name}/>
-                        <InfoComponent label="Sirname" name={store.loggedInEmployee.surname}/>
+                        <InfoComponent label="Surname" name={store.loggedInEmployee.surname}/>
                         { store.loggedInEmployee.birthday != null ? 
                         <InfoComponent label="Birthday" name={store.loggedInEmployee.birthday}/> : <></>}
                     </div>

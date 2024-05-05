@@ -121,9 +121,9 @@ export const LandingPageWorker = () => {
             case 'Holidays':
                 return <HolidaysComponent />
             case 'Roster':
-                if (store.loggedInEmployee.department == 3) {
+                if (store.loggedInEmployee.department_id == 3) {
                     return <RosterComponent />
-                } else if(store.loggedInEmployee.department == 2)
+                } else if(store.loggedInEmployee.department_id == 2)
                      { return  <CrewControllerComponent/> 
                 } 
                     else {
@@ -135,7 +135,7 @@ export const LandingPageWorker = () => {
         }
 
     }
-
+    console.log(store.loggedInEmployee)
     return (
         <>
             {store.loggedInEmployee == null ? 

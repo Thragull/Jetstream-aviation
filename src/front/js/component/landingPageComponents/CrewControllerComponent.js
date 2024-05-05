@@ -27,7 +27,7 @@ export const CrewControllerComponent = () => {
         let apicall = process.env.BACKEND_URL + `/api/flights?`
         let moreThan1Filter = false
         let flightsData 
-        
+        const authToken = localStorage.getItem("jwt-token");
         
         for (let key in filterFlight) {
             if (filterFlight[key] != null && filterFlight[key]!= NaN) {
@@ -43,7 +43,9 @@ export const CrewControllerComponent = () => {
         }
         try{
             const resp = await fetch(
-                apicall
+                apicall, {headers: {
+                    Authorization: `Bearer ${authToken}`
+                }}
             )
             flightsData = await resp.json()
             console.log(flights)
