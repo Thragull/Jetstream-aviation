@@ -107,11 +107,13 @@ export const CreateFlight = () => {
     };
     
     const postFlight = async () => {
+        const authToken = localStorage.getItem("jwt-token");
         try {
             const response = await fetch(`${process.env.BACKEND_URL}/api/flights`, {
                 method: "POST",
                 headers: {
                     "Content-Type": "application/json",
+                    Authorization: `Bearer ${authToken}`
                 },
                 body: JSON.stringify(flight),
                 mode: 'cors'
@@ -208,11 +210,11 @@ export const CreateFlight = () => {
                         </div>
                     </div>
                     <div style={{display: "flex", justifyContent: "space-between"}}>
-                    <span className="input-group-text"  style={{height: '4vh', fontSize: '1vw'}} >Aircraft</span>
+                    <span className="input-group-text"  style={{height: '6vh', fontSize: '1vw'}} >Aircraft</span>
                     <select 
                         className="form-select form-select-lg mb-3" 
                         aria-label="Large select example" 
-                        style={{height: '4vh', fontSize: '0.9vw', textAlign: "initial"}}
+                        style={{height: '6vh', fontSize: '0.9vw', textAlign: "initial"}}
                         name = "aircraft_id"
                         onChange={handleInputChange}
                         >
@@ -223,11 +225,11 @@ export const CreateFlight = () => {
                             ))
                         }
                     </select>
-                    <span className="ms-2 input-group-text"  style={{height: '4vh', fontSize: '1vw'}} >Captain</span>
+                    <span className="ms-2 input-group-text"  style={{height: '6vh', fontSize: '1vw'}} >Captain</span>
                     <select 
                         className="form-select form-select-lg mb-3" 
                         aria-label="Large select example" 
-                        style={{height: '4vh', fontSize: '0.9vw'}}
+                        style={{height: '6vh', fontSize: '0.9vw'}}
                         name = "cpt_id"
                         onChange={handleInputChange}
                         >
@@ -240,11 +242,11 @@ export const CreateFlight = () => {
                     </select> 
                     </div>
                     <div style={{display: "flex", justifyContent: "space-between"}}>
-                    <span className="input-group-text"  style={{height: '4vh', fontSize: '1vw'}} >First Officer</span>
+                    <span className="input-group-text"  style={{height: '6vh', fontSize: '1vw'}} >First Officer</span>
                     <select 
                         className="me-2 form-select form-select-lg mb-3" 
                         aria-label="Large select example" 
-                        style={{height: '4vh', fontSize: '0.9vw'}}
+                        style={{height: '6vh', fontSize: '0.9vw'}}
                         name = "fo_id"
                         onChange={handleInputChange}
                         >
@@ -255,11 +257,11 @@ export const CreateFlight = () => {
                             ))
                         }
                     </select>
-                    <span className="input-group-text"  style={{height: '4vh', fontSize: '0.9vw'}} >Senior</span>
+                    <span className="input-group-text"  style={{height: '6vh', fontSize: '0.9vw'}} >Senior</span>
                     <select 
                         className="form-select form-select-lg mb-3" 
                         aria-label="Large select example" 
-                        style={{height: '4vh', fontSize: '0.9vw'}}
+                        style={{height: '6vh', fontSize: '0.9vw'}}
                         name = "sccm_id"
                         onChange={handleInputChange}
                         >
@@ -272,11 +274,11 @@ export const CreateFlight = () => {
                     </select>
                     </div>
                     <div style={{display: "flex", justifyContent: "space-between"}}>
-                        <span className="input-group-text"  style={{height: '4vh', fontSize: '1vw'}} >Cabin Crew 2</span>
+                        <span className="input-group-text"  style={{height: '6vh', fontSize: '1vw'}} >Cabin Crew 2</span>
                         <select 
                             className="form-select form-select-lg mb-3" 
                             aria-label="Large select example" 
-                            style={{height: '4vh', fontSize: '0.9vw'}}
+                            style={{height: '6vh', fontSize: '0.9vw'}}
                             name = "cc2_id"
                             onChange={handleInputChange}
                             >
@@ -287,11 +289,11 @@ export const CreateFlight = () => {
                                 ))
                             }
                         </select>
-                        <span className="input-group-text"  style={{height: '4vh', fontSize: '1vw'}} >Cabin Crew 3</span>
+                        <span className="input-group-text"  style={{height: '6vh', fontSize: '1vw'}} >Cabin Crew 3</span>
                         <select 
                             className="form-select form-select-lg mb-3" 
                             aria-label="Large select example" 
-                            style={{height: '4vh', fontSize: '0.9vw'}}
+                            style={{height: '6vh', fontSize: '0.9vw'}}
                             name = "cc3_id"
                             onChange={handleInputChange}
                             >
@@ -302,11 +304,11 @@ export const CreateFlight = () => {
                                 ))
                             }
                         </select>
-                        <span className="input-group-text"  style={{height: '4vh', fontSize: '1vw'}} >Cabin Crew 4</span>
+                        <span className="input-group-text"  style={{height: '6vh', fontSize: '1vw'}} >Cabin Crew 4</span>
                         <select 
                             className="form-select form-select-lg mb-3" 
                             aria-label="Large select example" 
-                            style={{height: '4vh', fontSize: '0.9vw'}}
+                            style={{height: '6vh', fontSize: '0.9vw'}}
                             name = "cc4_id"
                             onChange={handleInputChange}
                             >
@@ -319,9 +321,9 @@ export const CreateFlight = () => {
                         </select>
                     </div>
                     <div style={{display: "flex"}}>
-                        <InputComponent label="Flight number" placeholder="Flight number" name="flight_number" handleScript={handleInputChange}/>
+                        <InputComponent margin='mx-0' label="Flight number" placeholder="Flight number" name="flight_number" handleScript={handleInputChange}/>
                         <div style={{display: "flex", width: "50vw"}}>
-                        <span className=" me-1 input-group-text" id="basic-addon1">Date</span>
+                        <span className=" ms-3 input-group-text" id="basic-addon1">Date</span>
                         <input name="date" onChange={handleInputChange} type='date' id='dateInput'></input>
                         </div>
                     </div>

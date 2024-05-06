@@ -23,15 +23,6 @@ export const LoginPage = () => {
     }
 
     
-
-
-    useEffect(()=>{
-        console.log(employee);
-    }, [employee])
-
-
-
-
     const login = async() => {
         try {
             const resp = await fetch(`${process.env.BACKEND_URL}/api/login`, {
@@ -49,14 +40,8 @@ export const LoginPage = () => {
             //También deberías almacenar el usuario en la store utilizando la función setItem
             localStorage.setItem("jwt-token", data.token);
             
-            console.log("Login successful")
-            console.log(`${data.token}`)
-
-            console.log(employee.crew_id)
-
-
+            actions.getEmployee()
             
-            const loggedEmployee =  await actions.getEmployee(employee.crew_id);
             
 
             navigate("/worker")
@@ -83,7 +68,7 @@ export const LoginPage = () => {
                 <p className="mb-5" style={{fontSize: "10vh", color: "white"}}>LOGIN</p>
                 <div className="form">
                     <InputComponent label="Crew ID" name="crew_id" handleScript={handleInputChange}/>
-                    <InputComponent label="Password" name="password" handleScript={handleInputChange}/>
+                    <InputComponent type="password" label="Password" name="password" handleScript={handleInputChange}/>
                 </div>
                 <button type="button" onClick={login} className="btn btn-success">Log in</button>
             </div>

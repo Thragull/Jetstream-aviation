@@ -45,7 +45,7 @@ export const Home = () => {
             <div className="d-grid mx-auto text-center">
               <Link to="/client"> 
                 <button className="btn1 btn" type="button">
-                  <i class="fa-solid fa-plane"></i>
+                  <i className="fa-solid fa-plane"></i>
                   <b> Customer</b>
                 </button>
               </Link>
@@ -61,7 +61,7 @@ export const Home = () => {
             <div className="d-grid mx-auto">
               <Link to="/login">
                 <button className="btn2 btn" type="button">
-                  <i class="fa-regular fa-circle-user"></i>
+                  <i className="fa-regular fa-circle-user"></i>
                   <b> Employee</b>
                 </button>
               </Link>
@@ -76,7 +76,7 @@ export const Home = () => {
             />
             <div className="d-grid mx-auto">
               <button className="btn3 btn" type="button">
-                <i class="fa-solid fa-earth-americas"></i>
+                <i className="fa-solid fa-earth-americas"></i>
                 <b> Socials</b>
               </button>
             </div>
