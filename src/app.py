@@ -19,9 +19,11 @@ from flask_jwt_extended import get_jwt_identity
 from flask_jwt_extended import jwt_required
 from flask_jwt_extended import JWTManager
 from flask_jwt_extended import get_jwt
+from flask_jwt_extended import unset_jwt_cookies
 from flask_bcrypt import Bcrypt
 from datetime import datetime, timedelta, timezone, time
 from api.dbfiller import insert_data
+
 
 def calculate_check_in(hora):
     check_in = hora.replace(hour=hora.hour - 1)
@@ -647,7 +649,7 @@ def getEmployeeByCrewID():
 def filter_employees():
     credentials=get_jwt()
     role_id=credentials.get('role_id')
-    if Roles.query.filter_by(role='Manager').first().id != role_id:
+    if role_id is None: 
         return jsonify({'msg': 'Unauthorised access'}), 401
     role_id = request.args.get('role_id')
     department_id = request.args.get('department_id')
@@ -662,7 +664,7 @@ def filter_employees():
         return jsonify(serialized_employees), 200
     if department_id is not None: 
         employees = Employees.query.filter_by(department_id=department_id).all()
-        serialized_employees = list(map(lambda employee: employee.serialize(), employees)
+        serialized_employees = list(map(lambda employee: employee.serialize(), employees))
         return jsonify(serialized_employees), 200
     return jsonify({'msg': 'You must specify a role or a department ID'}), 400
     
@@ -986,7 +988,7 @@ def get_duties():
         serialized_duties = list(map(lambda duty: duty.serialize(), duties))
         return jsonify(serialized_duties), 200
     duties = Duties.query.filter_by(id=id).all()
-    serialized_duties = list(map(lambda duty: duty.serialize, duties))
+    serialized_duties = list(map(lambda duty: duty.serialize(), duties))
     return jsonify (serialized_duties), 200
 
 @app.route('/api/flights', methods=['GET'])
@@ -1829,7 +1831,13 @@ def login():
     access_token = create_access_token(identity=user.crew_id, additional_claims=other_employee_info)
     return jsonify({'msg': 'Login successful', 'token': access_token}), 200
 
-
+@app.route('/api/logout', methods=['POST'])
+@jwt_required()
+def logout():
+    # Eliminar el token almacenado en el cliente
+    resp = jsonify({'logout': True})
+    unset_jwt_cookies(resp)
+    return resp, 200
 
 @app.route("/protected", methods=["GET"])
 @jwt_required() #Esto sirve para proteger el enlace

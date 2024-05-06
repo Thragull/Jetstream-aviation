@@ -99,7 +99,7 @@ export const EditProfile = (props) => {
                 <input type='date' id='dateInput'></input>
             </div>
             <div style={{display: "flex"}}>
-                <span className="input-group-text" id="basic-addon1" style={{height: '6vh', fontSize: '2vh'}} >Nationality</span>
+                <span className="ms-3 input-group-text" id="basic-addon1" style={{height: '6vh', fontSize: '2vh'}} >Nationality</span>
                         <select 
                             className="form-select form-select-lg mb-3" 
                             aria-label="Large select example" 
