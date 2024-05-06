@@ -279,7 +279,8 @@ const getState = ({ getStore, getActions, setStore }) => {
 					)
 					const data = await resp.json()
 					console.log(JSON.stringify(data))
-					role = data[0].role
+					role = data.role
+					console.log(role)
 					return role; 
 				} catch(error) {
 					console.log(error)
@@ -401,7 +402,6 @@ const getState = ({ getStore, getActions, setStore }) => {
 						)
 						const data = await resp.json()
 						employee = data
-						console.log('employee')
 						setTimeout(() => {
 							setStore({ loggedInEmployee: employee });
 						}, 1000);

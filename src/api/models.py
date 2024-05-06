@@ -269,15 +269,15 @@ class Employees(db.Model):
             "surname": self.surname,
             "email": self.email,
             "phone": self.phone,
-            "role": self.role_id,
-            "department": self.department_id,
+            "role_id": self.role_id,
+            "department_id": self.department_id,
             "gender": self.gender,
-            "nationality": self.nationality_id,
+            "nationality_id": self.nationality_id,
             "address": self.address,
             "address2": self.address2,
             "address3": self.address3,
-            "country": self.country_id,
-            "state": self.state_id,
+            "country_id": self.country_id,
+            "state_id": self.state_id,
             "city": self.city,
             "zipcode": self.zipcode,
             "birthday": self.birthday,
@@ -574,7 +574,7 @@ class Bank_Details(db.Model):
     def serialize(self):
         return {
             "id": self.id,
-            "employee": self.employee_id,
+            "employee_id": self.employee_id,
             "IBAN": self.IBAN,
             "tax_number": self.tax_number
         }
@@ -582,7 +582,7 @@ class Bank_Details(db.Model):
 class Payslips(db.Model):
     __tablename__ = 'payslips'
     id = db.Column(db.Integer, primary_key=True)
-    employee_id = db.Column(db.Integer, db.ForeignKey('employees.id'), unique=True, nullable=False)
+    employee_id = db.Column(db.Integer, db.ForeignKey('employees.id'), nullable=False)
     employee = db.relationship(Employees)
     month = db.Column(db.String(10), nullable=False)
     year = db.Column(db.Integer, nullable=False)
@@ -594,7 +594,7 @@ class Payslips(db.Model):
     def serialize(self):
         return {
             "id": self.id,
-            "employee": self.employee_id,
+            "employee_id": self.employee_id,
             "month": self.month,
             "year": self.year,
             "href": self.href
@@ -631,5 +631,5 @@ class Visibility(db.Model):
         return {
             "id": self.id,
             "role": self.role_id,
-            "document": self.document_id
+            "document_id": self.document_id
         }

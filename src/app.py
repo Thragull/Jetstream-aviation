@@ -1,7 +1,7 @@
 """
 This module takes care of starting the API Server, Loading the DB and Adding the endpoints
 """
-import os, math
+import os, math, jwt
 from flask import Flask, request, jsonify, url_for, send_from_directory
 from flask_cors import CORS, cross_origin
 from flask_migrate import Migrate
@@ -18,8 +18,10 @@ from flask_jwt_extended import create_access_token
 from flask_jwt_extended import get_jwt_identity
 from flask_jwt_extended import jwt_required
 from flask_jwt_extended import JWTManager
+from flask_jwt_extended import get_jwt
 from flask_bcrypt import Bcrypt
 from datetime import datetime, timedelta, timezone, time
+from api.dbfiller import insert_data
 
 def calculate_check_in(hora):
     check_in = hora.replace(hour=hora.hour - 1)
@@ -186,7 +188,7 @@ def serve_any_other_file(path):
 
 @app.route('/api/models', methods=['GET'])
 @cross_origin(supports_credentials=True)
-def getModels():
+def get_models():
     id = request.args.get('id')
     if id is None:
         models = Models.query.all()
@@ -197,7 +199,7 @@ def getModels():
     return jsonify(serialized_models), 200
 
 @app.route('/api/configurations', methods=['GET'])
-def getConfigurations():
+def get_configurations():
     model = request.args.get("model")
     id = request.args.get('id')
     if model is None: 
@@ -211,7 +213,7 @@ def getConfigurations():
     return jsonify(serialized_configurations), 200
 
 @app.route('/api/fleet', methods=['GET'])
-def getFleet():
+def get_fleet():
     model_id = request.args.get("model_id")
     configuration_id = request.args.get("configuration_id")
     if model_id is None and configuration_id is None:
@@ -240,7 +242,7 @@ def getFleet():
 
 
 @app.route('/api/prices', methods=['GET'])
-def getPrices():
+def get_prices():
     model_id = request.args.get('model_id')
     if model_id is None:
         return jsonify({'msg': 'You must specify a model ID'}), 400
@@ -258,7 +260,11 @@ def getPrices():
 
 @app.route('/api/projects', methods=['GET'])
 @jwt_required()
-def getProjects():
+def get_projects():
+    credentials=get_jwt()
+    role_id=credentials.get('role_id')
+    if Roles.query.filter_by(role='Manager').first().id != role_id:
+        return jsonify({'msg': 'Unauthorised access'}), 401
     projects = Projects.query.all()
     serialized_projects = list(map(lambda project: project.serialize(), projects))
     return jsonify(serialized_projects), 200
@@ -266,6 +272,10 @@ def getProjects():
 @app.route('/api/projects', methods=['POST'])
 @jwt_required()
 def createProject():
+    credentials=get_jwt()
+    role_id=credentials.get('role_id')
+    if Roles.query.filter_by(role='Manager').first().id != role_id:
+        return jsonify({'msg': 'Unauthorised access'}), 401
     body = request.get_json(silent=True)
     if body is None:
         return jsonify({'msg': 'Body must contain something'}), 400
@@ -287,6 +297,10 @@ def createProject():
 @app.route('/api/projects', methods=['PUT'])
 @jwt_required()
 def modifyProject():
+    credentials=get_jwt()
+    role_id=credentials.get('role_id')
+    if Roles.query.filter_by(role='Manager').first().id != role_id:
+        return jsonify({'msg': 'Unauthorised access'}), 401
     project_id = request.args.get('id')
     if project_id is None:
         return jsonify({'msg': 'You must specify a project ID'}),400
@@ -312,6 +326,10 @@ def modifyProject():
 @app.route('/api/projects', methods=['DELETE'])
 @jwt_required()
 def deleteProject():
+    credentials=get_jwt()
+    role_id=credentials.get('role_id')
+    if Roles.query.filter_by(role='Manager').first().id != role_id:
+        return jsonify({'msg': 'Unauthorised access'}), 401
     project_id = request.args.get('id')
     if project_id is None:
         return jsonify({'msg': 'You must specify a project ID'}), 400
@@ -329,6 +347,10 @@ def deleteProject():
 @app.route('/api/assignations', methods=['GET'])
 @jwt_required()
 def getAssignations():
+    credentials=get_jwt()
+    role_id=credentials.get('role_id')
+    if Roles.query.filter_by(role='Manager').first().id != role_id:
+        return jsonify({'msg': 'Unauthorised access'}), 401
     assignations = Assignations.query.all()
     serialized_assignations = list(map(lambda assignation: assignation.serialize(), assignations))
     return jsonify(serialized_assignations), 200
@@ -336,6 +358,10 @@ def getAssignations():
 @app.route('/api/assignations', methods=['POST'])
 @jwt_required()
 def createAssignations():
+    credentials=get_jwt()
+    role_id=credentials.get('role_id')
+    if Roles.query.filter_by(role='Manager').first().id != role_id:
+        return jsonify({'msg': 'Unauthorised access'}), 401
     body = request.get_json(silent=True)
     if body is None:
         return jsonify({'msg': 'Body must contain something'}), 400
@@ -360,6 +386,10 @@ def createAssignations():
 @app.route('/api/assignations', methods=['PUT'])
 @jwt_required()
 def modifyAssignations():
+    credentials=get_jwt()
+    role_id=credentials.get('role_id')
+    if Roles.query.filter_by(role='Manager').first().id != role_id:
+        return jsonify({'msg': 'Unauthorised access'}), 401
     assignation_id = request.args.get('id')
     if assignation_id is None:
         return jsonify({'msg': 'You must specify an assignation ID'}),400
@@ -389,6 +419,10 @@ def modifyAssignations():
 @app.route('/api/assignations', methods=['DELETE'])
 @jwt_required()
 def deleteAssignation():
+    credentials=get_jwt()
+    role_id=credentials.get('role_id')
+    if Roles.query.filter_by(role='Manager').first().id != role_id:
+        return jsonify({'msg': 'Unauthorised access'}), 401
     assignation_id = request.args.get('id')
     if assignation_id is None:
         return jsonify({'msg': 'You must specify an assignation ID'}), 400
@@ -403,8 +437,12 @@ def deleteAssignation():
     return jsonify({'msg': 'Assignation with ID {} has been succesfully deleted'.format(assignation.id)}), 200
 
 @app.route('/api/budgets', methods=['GET'])
-#@jwt_required()
+@jwt_required()
 def get_budgets():
+    credentials=get_jwt()
+    role_id=credentials.get('role_id')
+    if Roles.query.filter_by(role='Manager').first().id != role_id:
+        return jsonify({'msg': 'Unauthorised access'}), 401
     id = request.args.get('id')
     client_name = request.args.get('client_name')
     client_surname = request.args.get('client_surname')
@@ -467,8 +505,12 @@ def post_budgets():
     return jsonify({'msg': 'New budget added. Pending of review'}), 201
 
 @app.route('/api/budgets', methods=['PUT'])
-#@jwt_required()
+@jwt_required()
 def put_budget():
+    credentials=get_jwt()
+    role_id=credentials.get('role_id')
+    if Roles.query.filter_by(role='Manager').first().id != role_id:
+        return jsonify({'msg': 'Unauthorised access'}), 401
     id = request.args.get('id')
     if id is None:
         return jsonify({'msg': 'You must specify the budget ID'}), 400
@@ -491,8 +533,12 @@ def put_budget():
     return jsonify({'msg': 'Budget with ID {} succesfully updated'.format(id)}), 200
 
 @app.route('/api/budgets', methods=['DELETE'])
-#@jwt_required()
+@jwt_required()
 def delete_budgets():
+    credentials=get_jwt()
+    role_id=credentials.get('role_id')
+    if Roles.query.filter_by(role='Manager').first().id != role_id:
+        return jsonify({'msg': 'Unauthorised access'}), 401
     id = request.args.get('id')
     if id is None:
         return jsonify({'msg': 'You must specify a budget ID'}), 400
@@ -510,11 +556,12 @@ def getRoles():
     id = request.args.get('id')
     if id is None:
         roles = Roles.query.all()
-        serialized_roles = [role.serialize() for role in roles]
+        serialized_roles = list(map(lambda role: role.serialize(), roles))
         return jsonify(serialized_roles), 200
-    roles = Roles.query.filter_by(id=id).all()
-    serialized_roles = [role.serialize() for role in roles]
-    return jsonify(serialized_roles), 200
+    role = Roles.query.filter_by(id=id).first()
+    if role is None:
+        return jsonify({'msg': 'Role not found'}), 404
+    return jsonify(role.serialize()), 200
 
 @app.route('/api/countries', methods=['GET'])
 @cross_origin(supports_credentials=True)
@@ -522,11 +569,12 @@ def getCountries():
     id = request.args.get('id')
     if id is None:
         countries = Countries.query.all()
-        serialized_countries = [country.serialize() for country in countries]
+        serialized_countries = list(map(lambda country: country.serialize(), countries))
         return jsonify(serialized_countries), 200
-    countries = Countries.query.filter_by(id=id).all()
-    serialized_countries = [country.serialize() for country in countries]
-    return jsonify(serialized_countries), 200
+    country = Countries.query.filter_by(id=id).first()
+    if country is None:
+        return jsonify({'msg': 'Country not found'}), 404
+    return jsonify(country.serialize()), 200
 
 
 @app.route('/api/nationalities', methods=['GET'])
@@ -582,6 +630,7 @@ def getCrewId():
 @app.route('/api/employee', methods=['GET'])
 @jwt_required()
 def getEmployeeByCrewID():
+    credentials=get_jwt()
     crew_id = get_jwt_identity()
     if crew_id is None:
         return jsonify({'msn': 'You must specify a employee ID'}), 400
@@ -590,12 +639,16 @@ def getEmployeeByCrewID():
         return jsonify({'msg': 'The employee does not exists'}), 404
     if not employee.is_active:
         return jsonify({'msg': 'The employee does not exists'}), 404
-    
     return jsonify(employee.serialize()), 200
+    
 
 @app.route('/api/filterEmployees', methods=['GET'])
-#@jwt_required()
+@jwt_required()
 def filter_employees():
+    credentials=get_jwt()
+    role_id=credentials.get('role_id')
+    if Roles.query.filter_by(role='Manager').first().id != role_id:
+        return jsonify({'msg': 'Unauthorised access'}), 401
     role_id = request.args.get('role_id')
     department_id = request.args.get('department_id')
     id = request.args.get('id')
@@ -606,19 +659,21 @@ def filter_employees():
     if role_id is not None: 
         employees = Employees.query.filter_by(role_id=role_id).all()
         serialized_employees = list(map(lambda employee: employee.serialize(), employees))
-        return jsonify(serialized_employees)
+        return jsonify(serialized_employees), 200
     if department_id is not None: 
         employees = Employees.query.filter_by(department_id=department_id).all()
-        serialized_employees = list(map(lambda employee: employee.serialize(), employees))
-        return jsonify(serialized_employees)
-    if role_id is None and department_id is None and id is None:
-        return jsonify({'msg': 'You must specify a role or a department ID'})
-
-
+        serialized_employees = list(map(lambda employee: employee.serialize(), employees)
+        return jsonify(serialized_employees), 200
+    return jsonify({'msg': 'You must specify a role or a department ID'}), 400
+    
 @app.route('/api/signupEmployee', methods=['POST'])
-#@jwt_required
+@jwt_required()
 @cross_origin(supports_credentials=True)
-def signupUser():
+def signup_user():
+    credentials=get_jwt()
+    role_id=credentials.get('role_id')
+    if Roles.query.filter_by(role='Manager').first().id != role_id:
+        return jsonify({'msg': 'Unauthorised access'}), 401
     body = request.get_json(silent=True)
     if body is None:
         return jsonify({'msg': "You can not send empty info"}), 400
@@ -663,27 +718,34 @@ def signupUser():
 @app.route('/api/employee', methods=['PUT'])
 @cross_origin(supports_credentials=True)
 @jwt_required()
-def modifyEmployee():
-    employee_id = request.args.get('id')
-    if employee_id is None:
-        return jsonify({'msg': 'You must specify an Employee ID'}), 400
+def put_employee():
+    credentials=get_jwt()
+    role_id=credentials.get('role_id')
     body = request.get_json(silent=True)
     if body is None:
         return jsonify({'msg': "You can not send empty info"}), 400
+    if Roles.query.filter_by(role='Manager').first().id != role_id:
+        employee_id = credentials.get('employee_id')
+        if ('department' in body or 'role' in body):
+            return jsonify({'msg': 'You are not authorised to perform certain changes'}), 401
+    else:
+        employee_id = request.args.get('id')
+    if employee_id is None:
+        return jsonify({'msg': 'You must specify an Employee ID'}), 400
     if( "crew_id" not in body and
         "name" not in body and
         "surname" not in body and
         "email" not in body and
         "phone" not in body and
-        "role" not in body and
-        "department" not in body and
+        "role_id" not in body and
+        "department_id" not in body and
         "gender" not in body and
-        "nationality" not in body and
+        "nationality_id" not in body and
         "address" not in body and
         "address2" not in body and
         "address3" not in body and
-        "country" not in body and
-        "state" not in body and
+        "country_id" not in body and
+        "state_id" not in body and
         "city" not in body and
         "zipcode" not in body and
         "birthday" not in body and
@@ -695,25 +757,21 @@ def modifyEmployee():
         return jsonify({'msg': 'Employee does not exist'}), 404
     if not employee.is_active:
         return jsonify({'msg': 'Employee does not exist'}), 404
-    print(body.items())
-    body["country_id"] = body.pop("country")
-    body["nationality_id"] = body.pop("nationality")
-    body["state_id"] = body.pop("state")
-    body["department_id"] = body.pop("department")
-    body["role_id"] = body.pop("role")
     for key, value in body.items():
         if hasattr(employee, key) and key!="id":
-            print(employee, key, value)
             setattr(employee, key, value)
-  #      else:
-  #          return jsonify({'msg': 'Invalid field: {}'.format(key)}), 400
-    print(employee.serialize())
+        else:
+            return jsonify({'msg': 'Invalid field: {}'.format(key)}), 400
     db.session.commit()
     return jsonify({'msg': "Employee {} successfully modified".format(employee.crew_id)}), 200
 
 @app.route('/api/employee', methods=['DELETE'])
 @jwt_required()
 def deleteEmployee():
+    credentials=get_jwt()
+    role_id=credentials.get('role_id')
+    if Roles.query.filter_by(role='Manager').first().id != role_id:
+        return jsonify({'msg': 'Unauthorised access'}), 401
     employee_id = request.args.get('id')
     if employee_id is None:
         return jsonify({'msg': 'You must specify an Employee ID'}), 400
@@ -729,10 +787,16 @@ def deleteEmployee():
 
 @app.route('/api/inflight', methods=['GET'])
 @jwt_required()
-def getInflight():
-    employee_id = request.args.get('employee_id')
-    if employee_id is None:
-        return jsonify({'msg': 'You must specify the Employee ID'}), 400
+def get_inflight():
+    credentials=get_jwt()
+    role_id=credentials.get('role_id')
+    if Roles.query.filter_by(role='Manager').first().id != role_id:
+        employee_id = credentials.get('employee_id')
+        print(employee_id)
+    else:
+        employee_id = request.args.get('employee_id')
+        if employee_id is None:
+            return jsonify({'msg': 'You must specify the Employee ID'}), 400
     employee = Employees.query.filter_by(id=employee_id).first()
     department = Departments.query.filter_by(department='Inflight').first()
     if employee is None:
@@ -749,18 +813,41 @@ def getInflight():
 @app.route('/api/inflight', methods=['POST'])
 @jwt_required()
 def postInflight():
-    body = request.get_json(silent=True)
-    if body is None:
-        return jsonify({'msg': 'Body must contain something'}), 400
-    if ('employee_id' not in body or
-        'license' not in body or
-        'passport' not in body or
-        'pass_expiration' not in body or
-        'certificate_id' not in body or
-        'cert_expiration' not in body or
-        'home_base_id' not in body):
-        return jsonify({'msg': 'There are mandatory fields missing in body'}), 400
-    inflight_data = Inflight()
+    credentials=get_jwt()
+    role_id=credentials.get('role_id')
+    if Roles.query.filter_by(role='Manager').first().id != role_id:
+        employee_id = credentials.get('employee_id')
+        body = request.get_json(silent=True)
+        if body is None:
+            return jsonify({'msg': 'Body must contain something'}), 400
+        if ('license' not in body or
+            'passport' not in body or
+            'pass_expiration' not in body or
+            'certificate_id' not in body or
+            'cert_expiration' not in body or
+            'home_base_id' not in body):
+            return jsonify({'msg': 'There are mandatory fields missing in body'}), 400
+        inflight_data = Inflight.query.filter_by(employee_id=employee_id).first()
+        if inflight_data is not None:
+            return jsonify({'msg': 'The data already exists'}), 400
+        inflight_data = Inflight()
+        inflight_data.employee_id=employee_id
+    else:
+        body = request.get_json(silent=True)
+        if body is None:
+            return jsonify({'msg': 'Body must contain something'}), 400
+        if ('employee_id' not in body or
+            'license' not in body or
+            'passport' not in body or
+            'pass_expiration' not in body or
+            'certificate_id' not in body or
+            'cert_expiration' not in body or
+            'home_base_id' not in body):
+            return jsonify({'msg': 'There are mandatory fields missing in body'}), 400
+        inflight_data = Inflight.query.filter_by(employee_id=employee_id).first()
+        if inflight_data is not None:
+            return jsonify({'msg': 'The data already exists'}), 400
+        inflight_data = Inflight()
     for key, value in body.items():
         if hasattr(inflight_data, key):
             setattr(inflight_data, key, value)
@@ -787,32 +874,60 @@ def postInflight():
 @app.route('/api/inflight', methods=['PUT'])
 @jwt_required()
 def editInflight():
-    id = request.args.get('id')
-    if id is None: 
-        return jsonify({'msg': 'You must specify an ID'}), 400
-    body = request.get_json(silent=True)
-    if body is None:
-        return jsonify({'msg': 'Body must contain something'}), 400
-    if ('license' not in body and
-        'passport' not in body and
-        'pass_expiration' not in body and
-        'certificate_id' not in body and
-        'cert_expiration' not in body and
-        'certificate_id2' not in body and
-        'cert_expiration2' not in body and
-        'certificate_id3' not in body and
-        'cert_expiration3' not in body and
-        'certificate_id4' not in body and
-        'cert_expiration4' not in body and
-        'home_base_id' not in body and
-        'roster_assigned' not in body and
-        "monthly_BH" not in body and
-        "monthly_DH" not in body and
-        "yearly_BH" not in body and
-        "yearly_DH" not in body and
-        "total_BH" not in body):
-        return jsonify({'msg': 'None of the fields included in body can be modified'}), 400
-    inflight_data = Inflight.query.filter_by(id=id).first()
+    credentials=get_jwt()
+    role_id=credentials.get('role_id')
+    if Roles.query.filter_by(role='Manager').first().id != role_id:
+        employee_id = credentials.get('employee_id')
+        body = request.get_json(silent=True)
+        if body is None:
+            return jsonify({'msg': 'Body must contain something'}), 400
+        if ('license' not in body and
+            'passport' not in body and
+            'pass_expiration' not in body and
+            'certificate_id' not in body and
+            'cert_expiration' not in body and
+            'certificate_id2' not in body and
+            'cert_expiration2' not in body and
+            'certificate_id3' not in body and
+            'cert_expiration3' not in body and
+            'certificate_id4' not in body and
+            'cert_expiration4' not in body and
+            'home_base_id' not in body and
+            'roster_assigned' not in body and
+            "monthly_BH" not in body and
+            "monthly_DH" not in body and
+            "yearly_BH" not in body and
+            "yearly_DH" not in body and
+            "total_BH" not in body):
+            return jsonify({'msg': 'None of the fields included in body can be modified'}), 400
+        inflight_data = Inflight.query.filter_by(employee_id=employee_id).first()
+    else:
+        id = request.args.get('id')
+        if id is None: 
+            return jsonify({'msg': 'You must specify an ID'}), 400
+        body = request.get_json(silent=True)
+        if body is None:
+            return jsonify({'msg': 'Body must contain something'}), 400
+        if ('license' not in body and
+            'passport' not in body and
+            'pass_expiration' not in body and
+            'certificate_id' not in body and
+            'cert_expiration' not in body and
+            'certificate_id2' not in body and
+            'cert_expiration2' not in body and
+            'certificate_id3' not in body and
+            'cert_expiration3' not in body and
+            'certificate_id4' not in body and
+            'cert_expiration4' not in body and
+            'home_base_id' not in body and
+            'roster_assigned' not in body and
+            "monthly_BH" not in body and
+            "monthly_DH" not in body and
+            "yearly_BH" not in body and
+            "yearly_DH" not in body and
+            "total_BH" not in body):
+            return jsonify({'msg': 'None of the fields included in body can be modified'}), 400
+        inflight_data = Inflight.query.filter_by(id=id).first()
     if inflight_data is None:
         return jsonify({'msg': 'The ID is incorrect.'}), 400
     for key, value in body.items():
@@ -827,12 +942,20 @@ def editInflight():
 @app.route('/api/inflight', methods=['DELETE'])
 @jwt_required()
 def delete_inflight():
-    inflight_id = request.args.get('id')
-    if inflight_id is None:
-        return jsonify({'msg': 'You must specify an ID'}), 400
-    inflight_data = Inflight.query.filter_by(id=inflight_id).first()
-    if inflight_data is None:
-        return jsonify({'msg': 'There is no data in Database'}), 404
+    credentials=get_jwt()
+    role_id=credentials.get('role_id')
+    if Roles.query.filter_by(role='Manager').first().id != role_id:
+        employee_id = credentials.get('employee_id')
+        inflight_data = Inflight.query.filter_by(employee_id=employee_id).first()
+        if inflight_data is None:
+            return jsonify({'msg': 'There is no data in Database'}), 404
+    else:
+        inflight_id = request.args.get('id')
+        if inflight_id is None:
+            return jsonify({'msg': 'You must specify an ID'}), 400
+        inflight_data = Inflight.query.filter_by(id=inflight_id).first()
+        if inflight_data is None:
+            return jsonify({'msg': 'There is no data in Database'}), 404
     
     db.session.delete(inflight_data)
     db.session.commit()
@@ -854,39 +977,88 @@ def get_airports():
     serialized_airports = list(map(lambda airport: airport.serialize(), airports))
     return jsonify(serialized_airports), 200
 
-@app.route('/api/flights', methods=['GET'])
-#@jwt_required()
-def get_flights():
+@app.route('/api/duties', methods=['GET'])
+@jwt_required()
+def get_duties():
     id = request.args.get('id')
-    flight_number = request.args.get('flight_number')
-    date = request.args.get('date')
-    arrival = request.args.get('arrival_id')
-    departure = request.args.get('departure_id')
-    
-    conditions = []
+    if id is None: 
+        duties = Duties.query.all()
+        serialized_duties = list(map(lambda duty: duty.serialize(), duties))
+        return jsonify(serialized_duties), 200
+    duties = Duties.query.filter_by(id=id).all()
+    serialized_duties = list(map(lambda duty: duty.serialize, duties))
+    return jsonify (serialized_duties), 200
 
-    if id:
-        conditions.append(Flights.id == id)
-    if flight_number:
-        conditions.append(Flights.flight_number == flight_number)
-    if date:
-        conditions.append(Flights.date == date)
-    if arrival:
-        conditions.append(Flights.arrival_id == arrival)
-    if departure:
-        conditions.append(Flights.departure_id == departure)
-    
-    if conditions:
-        flights = Flights.query.filter(and_(*conditions)).all()
+@app.route('/api/flights', methods=['GET'])
+@jwt_required()
+def get_flights():
+    credentials=get_jwt()
+    role_id=credentials.get('role_id')
+    if Roles.query.filter_by(role='Crew Control').first().id != role_id:
+        employee = credentials.get('employee_id')
+
+        id= request.args.get('id')
+        date = request.args.get('date')
+        duty_id = Duties.query.filter_by(duty='FLT').first().id
+
+        if date:
+            rosters = Rosters.query.filter_by(employee_id=employee, duty_id=duty_id, date=date).all()
+        else:
+            rosters = Rosters.query.filter_by(employee_id=employee, duty_id=duty_id).all()
+
+        flights = []
+        if id is not None:
+            for roster in rosters:
+                for i in range(1, 7):
+                    if getattr(roster, f"flight{i}_id") == int(id):
+                        print(roster)
+                        flight=Flights.query.filter_by(id=id).first()
+                        if flight is not None:
+                            flights.append(flight)
+        else:
+            for roster in rosters:
+                for i in range(1, 7):
+                    id = getattr(roster, f"flight{i}_id")
+                    flight = Flights.query.filter_by(id=id).first()
+                    if flight is not None:
+                        flights.append(flight)
+
+
     else:
-        flights = Flights.query.all()
+        id = request.args.get('id')
+        flight_number = request.args.get('flight_number')
+        date = request.args.get('date')
+        arrival = request.args.get('arrival_id')
+        departure = request.args.get('departure_id')
+        
+        conditions = []
+
+        if id:
+            conditions.append(Flights.id == id)
+        if flight_number:
+            conditions.append(Flights.flight_number == flight_number)
+        if date:
+            conditions.append(Flights.date == date)
+        if arrival:
+            conditions.append(Flights.arrival_id == arrival)
+        if departure:
+            conditions.append(Flights.departure_id == departure)
+    
+        if conditions:
+            flights = Flights.query.filter(and_(*conditions)).all()
+        else:
+            flights = Flights.query.all()
 
     serialized_flights = [flight.serialize() for flight in flights]
     return jsonify(serialized_flights), 200
 
 @app.route('/api/flights', methods=['POST'])
-#@jwt_required()
+@jwt_required()
 def post_flights():
+    credentials=get_jwt()
+    role_id=credentials.get('role_id')
+    if Roles.query.filter_by(role='Crew Control').first().id != role_id:
+        return jsonify({'msg': 'Unauthorise access'}), 401
     body = request.get_json(silent=True)
     if body is None:
         return jsonify({'msg': 'Body must contain something'}), 400
@@ -1034,8 +1206,12 @@ def post_flights():
 
 
 @app.route('/api/flights', methods=['PUT'])
-#@jwt_required()
+@jwt_required()
 def update_flights():
+    credentials=get_jwt()
+    role_id=credentials.get('role_id')
+    if Roles.query.filter_by(role='Crew Control').first().id != role_id:
+        return jsonify({'msg': 'Unauthorise access'}), 401
     flight_id = request.args.get('id')
     if flight_id is None:
         return jsonify({'msg': 'Yoy must specify a Flight ID'}), 400
@@ -1089,8 +1265,12 @@ def update_flights():
     return jsonify({'msg': 'Flight {} succesfully updated'.format(flight.flight_number)})
 
 @app.route('/api/flights', methods=['DELETE'])
-#@jwt_required()
+@jwt_required()
 def delete_flight():
+    credentials=get_jwt()
+    role_id=credentials.get('role_id')
+    if Roles.query.filter_by(role='Crew Control').first().id != role_id:
+        return jsonify({'msg': 'Unauthorise access'}), 401
     flight_id = request.args.get('id')
     if flight_id is None:
         return jsonify({'msg': 'You must specify a Flight ID'}), 400
@@ -1118,27 +1298,43 @@ def get_hotels():
     return jsonify(serialized_hotels), 200
 
 @app.route('/api/roster', methods=['GET'])
-#@jwt_required()
+@jwt_required()
 def get_roster():
-    id = request.args.get('id')
-    employee = request.args.get('employee_id')
-    base = request.args.get('base_id')
-    duty = request.args.get('duty_id')
-    date = request.args.get('date')
-    
-    conditions = []
+    credentials=get_jwt()
+    role_id=credentials.get('role_id')
+    if Roles.query.filter_by(role='Crew Control').first().id != role_id:
+        employee = credentials.get('employee_id')
+        id = id = request.args.get('id')
+        date = request.args.get('date')
 
-    if id:
-        conditions.append(Rosters.id == id)
-    if employee:
-        conditions.append(Rosters.employee_id == employee)
-    if base:
-        conditions.append(Rosters.base_id == base)
-    if duty:
-        conditions.append(Rosters.duty_id == duty)
-    if date:
-        conditions.append(Rosters.date == date)
-    
+        conditions = []
+
+        if id:
+            conditions.append(Rosters.id == id)
+        if employee:
+            conditions.append(Rosters.employee_id == employee)
+        if date:
+            conditions.append(Rosters.date == date)
+    else:
+        id = request.args.get('id')
+        employee = request.args.get('employee_id')
+        base = request.args.get('base_id')
+        duty = request.args.get('duty_id')
+        date = request.args.get('date')
+        
+        conditions = []
+
+        if id:
+            conditions.append(Rosters.id == id)
+        if employee:
+            conditions.append(Rosters.employee_id == employee)
+        if base:
+            conditions.append(Rosters.base_id == base)
+        if duty:
+            conditions.append(Rosters.duty_id == duty)
+        if date:
+            conditions.append(Rosters.date == date)
+        
     if conditions:
         rosters = Rosters.query.filter(and_(*conditions)).all()
     else:
@@ -1148,8 +1344,12 @@ def get_roster():
     return jsonify(serialized_rosters), 200
 
 @app.route('/api/roster', methods=['POST'])
-#@jwt_required()
+@jwt_required()
 def post_roster():
+    credentials=get_jwt()
+    role_id=credentials.get('role_id')
+    if Roles.query.filter_by(role='Crew Control').first().id != role_id:
+        return jsonify({'msg': 'Unauthorise access'}), 401
     body = request.get_json(silent=True)
     if body is None:
         return jsonify({'msg': "Body must contain something"}), 400
@@ -1179,8 +1379,12 @@ def post_roster():
         return jsonify({'msg': 'The employee already has a duty on that date. You can\'t create a new one'}), 400
 
 @app.route('/api/roster', methods=['PUT'])
-#@jwt_required()
+@jwt_required()
 def put_roster():
+    credentials=get_jwt()
+    role_id=credentials.get('role_id')
+    if Roles.query.filter_by(role='Crew Control').first().id != role_id:
+        return jsonify({'msg': 'Unauthorise access'}), 401
     id = request.args.get('id')
     if id is None:
         return jsonify({'msg': 'You must specify the roster ID'}), 400
@@ -1214,8 +1418,12 @@ def put_roster():
     return jsonify({'msg': 'Duty {} updated for employee {}'.format(roster.duty, roster.employee)}), 200
 
 @app.route('/api/roster', methods=['DELETE'])
-#@jwt_required()
+@jwt_required()
 def delete_roster():
+    credentials=get_jwt()
+    role_id=credentials.get('role_id')
+    if Roles.query.filter_by(role='Crew Control').first().id != role_id:
+        return jsonify({'msg': 'Unauthorise access'}), 401
     id = request.args.get('id')
     if id is None:
         return jsonify({'msg': 'You must specify the roster ID'}), 400
@@ -1229,8 +1437,12 @@ def delete_roster():
     return jsonify({'msg': 'Roster with ID {} succesfully deleted'.format(id)}), 200
 
 @app.route('/api/salary_prices', methods=['GET'])
-#@jwt_required()
+@jwt_required()
 def get_salary_prices():
+    credentials=get_jwt()
+    role_id=credentials.get('role_id')
+    if Roles.query.filter_by(role='Manager').first().id != role_id:
+        return jsonify({'msg': 'Unauthorise access'}), 401
     role_id = request.args.get('role_id')
     if role_id is None:
         return jsonify({'msg': 'You must specify a Role ID'}), 400
@@ -1238,18 +1450,357 @@ def get_salary_prices():
     if salary_prices is None:
         return jsonify({'msg': 'There is no salary table for this role'}), 404
     return jsonify(salary_prices.serialize()), 200
+                                    
+@app.route('/api/bank_details', methods=['GET'])
+@jwt_required()
+def get_bank_details():
+    credentials=get_jwt()
+    role_id=credentials.get('role_id')
+    if Roles.query.filter_by(role='Manager').first().id != role_id:
+        employee_id = credentials.get('employee_id')
+        bank_details = Bank_Details.query.filter_by(employee_id=employee_id).first()
+        if bank_details is None:
+            return jsonify({'msg': 'There is no bank details for this employee'}), 404
+    else:
+        id = request.args.get('id')
+        employee_id = credentials.get('employee_id')
+        if id is None:
+            bank_details = Bank_Details.query.filter_by(employee_id=employee_id).first()
+        else:
+            bank_details = Bank_Details.query.filter_by(id=id).first()
+        if bank_details is None:
+            return jsonify({'msg': 'There is no bank details with this ID'}), 404
+    return jsonify(bank_details.serialize()), 200
 
-@app.route('/api/duties', methods=['GET'])
-def get_duties():
-    id = request.args.get('id')
-    if id is None: 
-        duties = Duties.query.all()
-        serialized_duties = list(map(lambda duty: duty.serialize(), duties))
-        return jsonify(serialized_duties), 200
-    duties = Duties.query.filter_by(id=id).all()
-    serialized_duties = list(map(lambda duty: duty.serialize(), duties))
-    return jsonify (serialized_duties), 200
+@app.route('/api/bank_details', methods=['POST'])
+@jwt_required()
+def post_bank_details():
+    credentials=get_jwt()
+    role_id=credentials.get('role_id')
+    if Roles.query.filter_by(role='Manager').first().id != role_id:
+        employee_id = credentials.get('employee_id')
+        body = request.get_json(silent=True)
+        if body is None:
+            return jsonify({'msg': 'Body must contain something'}), 400
+        if 'IBAN' not in body:
+            return jsonify({'msg': 'One or more of the mandatory fields are missing in body'}), 400
+        bank_details = Bank_Details.query.filter_by(employee_id=employee_id).first()
+        if bank_details is not None:
+            return jsonify({'msg': 'This employee already have bank details registered in DB.'}), 400
+        bank_details = Bank_Details()
+        for key, value in body.items():
+            if hasattr(bank_details, key):
+                setattr(bank_details, key, value)
+            else:
+                return jsonify({'msg': 'Invalid field: {}'.format(key)}), 400
+    else:
+        body = request.get_json(silent=True)
+        if body is None:
+            return jsonify({'msg': 'Body must contain something'}), 400
+        if ('employee_id' not in body or
+            'IBAN' not in body):
+            return jsonify({'msg': 'One or more of the mandatory fields are missing in body'}), 400
+        bank_details = Bank_Details.query.filter_by(employee_id=body['employee_id']).first()
+        if bank_details is not None:
+            return jsonify({'msg': 'This employee already have bank details registered in DB.'}), 400
+        bank_details = Bank_Details()
+        for key, value in body.items():
+            if hasattr(bank_details, key):
+                setattr(bank_details, key, value)
+            else:
+                return jsonify({'msg': 'Invalid field: {}'.format(key)}), 400
+        
+    db.session.add(bank_details)
+    db.session.commit()
+    return jsonify({'msg': 'Bank details added for employee {}'.format(bank_details.employee)})
+
  
+@app.route('/api/bank_details', methods=['PUT'])
+@jwt_required()
+def put_bank_details():
+    credentials=get_jwt()
+    role_id=credentials.get('role_id')
+    if Roles.query.filter_by(role='Manager').first().id != role_id:
+        employee_id = credentials.get('employee_id')
+        body = request.get_json(silent=True)
+        if body is None:
+            return jsonify({'msg': 'Body must contain something'}), 400
+        if ('IBAN' not in body and 'tax_number' not in body):
+            return jsonify({'msg': 'You must specify at least on of the fields to be updated'}), 400
+        bank_details = Bank_Details.query.filter_by(employee_id=employee_id).first()
+        if bank_details is None:
+            return jsonify({'msg': 'There are no bank details with this ID'}), 404
+        for key, value in body.items():
+            if hasattr(bank_details, key):
+                setattr(bank_details, key, value)
+            else:
+                return jsonify({'msg': 'Invalid field: {}'.format(key)}), 400
+    else:
+        id = request.args.get('id')
+        if id is None:
+            return jsonify({'msg': 'You must specify a bank details ID'}), 400
+        body = request.get_json(silent=True)
+        if body is None:
+            return jsonify({'msg': 'Body must contain something'}), 400
+        if ('IBAN' not in body and 'tax_number' not in body):
+            return jsonify({'msg': 'You must specify at least on of the fields to be updated'}), 400
+        bank_details = Bank_Details.query.filter_by(id=id).first()
+        if bank_details is None:
+            return jsonify({'msg': 'There are no bank details with this ID'}), 404
+        for key, value in body.items():
+            if hasattr(bank_details, key):
+                setattr(bank_details, key, value)
+            else:
+                return jsonify({'msg': 'Invalid field: {}'.format(key)}), 400
+    db.session.commit()
+    return jsonify({'msg': 'Bank details succesfully updated for employee {}'.format(bank_details.employee)}), 200
+
+@app.route('/api/bank_details', methods=['DELETE'])
+@jwt_required()
+def delete_bank_details():
+    credentials=get_jwt()
+    role_id=credentials.get('role_id')
+    if Roles.query.filter_by(role='Manager').first().id != role_id:
+        employee_id = credentials.get('employee_id')
+        bank_details = Bank_Details.query.filter_by(employee_id=employee_id).first()
+        if bank_details is None:
+            return jsonify({'msg': 'There are no details for this employee'}), 404
+    else:
+        id = request.args.get('id')
+        if id is None:
+            return jsonify({'msg': 'You must specify an ID'}), 400
+        bank_details = Bank_Details.query.filter_by(id=id).first()
+        if bank_details is None:
+            return jsonify({'msg': 'There are no details with this ID'}), 404
+    db.session.delete(bank_details)
+    db.session.commit()
+    return jsonify({'msg': 'Bank details succesfully deleted'}), 200
+
+@app.route('/api/payslips', methods=['GET'])
+@jwt_required()
+def get_payslips():
+    credentials=get_jwt()
+    role_id=credentials.get('role_id')
+    if Roles.query.filter_by(role='Manager').first().id != role_id:
+        employee_id = credentials.get("employee_id")
+        if employee_id is None:
+            return jsonify({'msg': 'You must specify an Employee ID'}), 400
+        payslips = Payslips.query.filter_by(employee_id=employee_id).all()
+        serialized_payslips = list(map(lambda payslip: payslip.serialize(), payslips))
+        return jsonify(serialized_payslips), 200
+    else:
+        employee_id = request.args.get('employee_id')
+        if employee_id is None:
+            payslips = Payslips.query.all()
+        else:
+            payslips = Payslips.query.filter_by(employee_id=employee_id).all()
+        serialized_payslips = list(map(lambda payslip: payslip.serialize(), payslips))
+        return jsonify(serialized_payslips), 200
+
+@app.route('/api/payslips', methods=['POST'])
+@jwt_required()
+def post_payslips():
+    credentials=get_jwt()
+    role_id=credentials.get('role_id')
+    if Roles.query.filter_by(role='Manager').first().id != role_id:
+        return jsonify({'msg': 'You have no permission to do this task'}), 401
+    body = request.get_json(silent=True)
+    if body is None:
+        return jsonify({'msg': 'Body must contain something'}), 400
+    if ('employee_id' not in body or
+        'month' not in body or
+        'year' not in body or
+        'href' not in body):
+        return jsonify({'msg': 'One or more mandatory fields are missing'}), 400
+    payslip = Payslips.query.filter_by(employee_id=body['employee_id'], month=body['month'], year=body['year']).first()
+    if payslip is not None:
+        return jsonify({'msg': 'There is alread a payslip for this employee on the selected dates'}), 405
+    payslip = Payslips()
+    for key, value in body.items():
+        if hasattr(payslip, key):
+            setattr(payslip, key, value)
+        else:
+            return jsonify({'msg': 'Invalid field: {}'.format(key)}), 400
+    db.session.add(payslip)
+    db.session.commit()
+    return jsonify({'msg': 'Payslip created succesfully for employee {}'.format(payslip.employee)}), 201
+
+@app.route('/api/payslips', methods=['PUT'])
+@jwt_required()
+def put_payslips():
+    credentials=get_jwt()
+    role_id=credentials.get('role_id')
+    if Roles.query.filter_by(role='Manager').first().id != role_id:
+        return jsonify({'msg': 'You have no permission to do this task'}), 401
+    id = request.args.get('id')
+    if id is None:
+        return jsonify({'msg': 'You must specify a Payslip ID'}), 400
+    body = request.get_json(silent=True)
+    if body is None:
+        return jsonify({'msg': 'Body must contain something'}), 400
+    if 'href' not in body:
+        return jsonify({'msg': 'You must specify the new route to the file'}), 400
+    payslip = Payslips.query.filter_by(id=id).first()
+    if payslip is None:
+        return jsonify({'msg': 'There is no payslip with this ID'}), 404
+    setattr(payslip, 'href', body['href'])
+    db.session.commit()
+    return jsonify({'msg': 'Payslip updated succesfully'}), 200
+
+@app.route('/api/payslips', methods=['DELETE'])
+@jwt_required()
+def delete_payslips():
+    credentials=get_jwt()
+    role_id=credentials.get('role_id')
+    if Roles.query.filter_by(role='Manager').first().id != role_id:
+        return jsonify({'msg': 'You have no permission to do this task'}), 401
+    id = request.args.get('id')
+    if id is None:
+        return jsonify({'msg': 'You must specify a Payslip ID'}), 400
+    payslip = Payslips.query.filter_by(id=id).first()
+    if payslip is None:
+        return jsonify({'msg': 'There is no payslip with this ID'}), 404
+    db.session.delete(payslip)
+    db.session.commit()
+    return jsonify({'msg': 'Payslip deleted succesfully'}), 200
+
+@app.route('/api/documents', methods=['GET'])
+@jwt_required()
+def get_documents():
+    credentials=get_jwt()
+    role_id=credentials.get('role_id')
+    id = request.args.get('id')
+    if role_id is None:
+        return jsonify({'msg': 'You have no authorisation'}), 401
+    if id is None:
+        visibility = Visibility.query.filter_by(role_id=role_id).all()
+        documents = []
+        for item in visibility:
+            documents.append(Documents.query.filter_by(id=item.document_id).first())
+        serialize_documents = list(map(lambda document: document.serialize(), documents))
+        return jsonify(serialize_documents), 200
+    visibility = Visibility.query.filter_by(document_id=id, role_id=role_id).first()
+    if visibility is None:
+        return jsonify({'msg': 'You have no authorisation to access this document'}), 401
+    document = Documents.query.filter_by(id=id).first()
+    return jsonify(document.serialize()), 200
+
+@app.route('/api/documents', methods=['POST'])
+@jwt_required()
+def post_documents():
+    credentials=get_jwt()
+    role_id=credentials.get('role_id')
+    if Roles.query.filter_by(role='Manager').first().id != role_id:
+        return jsonify({'msg': 'You have no permission to do this task'}), 401
+    body = request.get_json(silent=True)
+    if body is None:
+        return jsonify({'msg': 'Body must contain something'}), 400
+    if ('document_name' not in body or 'path' not in body):
+        return jsonify({'msg': 'One or more mandatory fields are missing'}), 400
+    document = Documents()
+    if 'visibility' not in body:
+        for key, value in body.items():
+            if hasattr(document, key):
+                setattr(document, key, value)
+            else:
+                return jsonify({'msg': 'Invalid field: {}'.format(key)}), 400
+        db.session.add(document)
+        visibility = Visibility()
+        role_id = Roles.query.filter_by(role='Manager').first().id
+        visibility.role_id=role_id
+        visibility.document_id=document.id
+        db.session.add(visibility)
+        db.session.commit()
+        return jsonify({'msg': 'New document added succesfully'}), 201
+    else:
+        for key, value in body.items():
+            if hasattr(document, key):
+                setattr(document, key, value)
+            elif key != 'visibility':
+                return jsonify({'msg': 'Invalid field: {}'.format(key)}), 400        
+        db.session.add(document)
+        visibility = []
+        for item in body['visibility']:
+            role_id = Roles.query.filter_by(role=item).first().id
+            if role_id is None:
+                return jsonify({'msg': 'Specific role in visibility {} not valid'.format(item)}), 400
+            new_document_visibility = Visibility()
+            new_document_visibility.role_id=role_id
+            new_document_visibility.document_id= document.id
+            visibility.append(new_document_visibility)
+        db.session.add_all(visibility)
+        db.session.commit()
+        return jsonify({'msg': 'New document added succesfully'}), 201
+
+@app.route('/api/documents', methods=['PUT'])
+@jwt_required()
+def put_documents():
+    credentials=get_jwt()
+    role_id=credentials.get('role_id')
+    if Roles.query.filter_by(role='Manager').first().id != role_id:
+        return jsonify({'msg': 'You have no permission to do this task'}), 401
+    id = request.args.get('id')
+    if id is None:
+        return jsonify({'msg': 'You must specify a Document ID'}), 400
+    body = request.get_json(silent=True)
+    if body is None:
+        return jsonify({'msg': 'Body must contain something'}), 400
+    if ('document_name' not in body and 'path' not in body and 'visibility' not in body):
+        return jsonify({'msg': 'You must specify at least one of the fields to be updated'}), 400
+    if 'visibility' not in body:
+        document = Documents.query.filter_by(id=id).first()
+        for key, value in body.items():
+            if hasattr(document, key):
+                setattr(document, key, value)
+            else:
+                return jsonify({'msg': 'Invalid field: {}'.format(key)}), 400    
+        db.session.commit()
+        return jsonify({'msg': 'Document {} succesfully updated'.format(document.document_name)}), 200
+    document = Documents.query.filter_by(id=id).first()
+    for key, value in body.items():
+        if hasattr(document, key):
+            setattr(document, key, value)
+        elif key != 'visibility':
+            return jsonify({'msg': 'Invalid field: {}'.format(key)}), 400   
+    visibility = Visibility.query.filter_by(document_id=id).all()
+    for item in visibility:
+        if item.role.role not in body['visibility']:
+            db.session.delete(item)
+            visibility.remove(item)
+    for item in body['visibility']:
+        role_id = Roles.query.filter_by(role=item).first().id
+        if role_id is None:
+            return jsonify({'msg': 'Specific role in visibility {} not valid'.format(item)}), 400
+        visibility = Visibility.query.filter_by(document_id=id, role_id=role_id).first()
+        if visibility is None:
+            visibility = Visibility()
+            visibility.document_id=id
+            visibility.role_id=role_id
+            db.session.add(visibility)
+    db.session.commit()
+    return jsonify({'msg': 'Document {} succesfully updated'.format(document.document_name)}), 200
+
+@app.route('/api/documents', methods=['DELETE'])
+@jwt_required()
+def delete_documents():
+    credentials=get_jwt()
+    role_id=credentials.get('role_id')
+    if Roles.query.filter_by(role='Manager').first().id != role_id:
+        return jsonify({'msg': 'You have no permission to do this task'}), 401
+    id = request.args.get('id')
+    if id is None:
+        return jsonify({'msg': 'You must specify a Document ID'}), 400
+    document = Documents.query.filter_by(id=id).first()
+    if document is None:
+        return jsonify({'msg': 'Document does not exist in DB'}), 404
+    visibility = Visibility.query.filter_by(document_id=id).all()
+    if visibility != []:
+        for item in visibility:
+            db.session.delete(item)
+    db.session.delete(document)
+    db.session.commit()
+    return jsonify({'msg': 'Document succesfully deleted'}), 200
+
 @app.route('/api/login', methods=['POST'])
 @cross_origin(supports_credentials=True)
 def login():
@@ -1270,7 +1821,12 @@ def login():
     if not user.is_active:
         return jsonify({'msg': 'User {} is not active'.format(user.crew_id)}), 400
     
-    access_token = create_access_token(identity=user.crew_id)
+    other_employee_info = {
+        "employee_id": user.id,
+        "role_id": user.role_id
+    }
+
+    access_token = create_access_token(identity=user.crew_id, additional_claims=other_employee_info)
     return jsonify({'msg': 'Login successful', 'token': access_token}), 200
 
 
@@ -1280,9 +1836,13 @@ def login():
 def protected():
     # Access the identity of the current user with get_jwt_identity
     current_user = get_jwt_identity() #Este método me devuelve la identidad con el que fue creado
-    return jsonify(logged_in_as=current_user), 200
+    additional_claims = get_jwt()
+    return jsonify(logged_in_as=current_user, additional_claims=additional_claims), 200
 
-
+@app.route('/api/dbfiller', methods=['GET'])
+def dbfiller():
+    insert_data()
+    return jsonify({'msg': "Funciona"}), 201
 
 # this only runs if `$ python src/main.py` is executed
 if __name__ == '__main__':
