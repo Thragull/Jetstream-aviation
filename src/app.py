@@ -21,7 +21,7 @@ from flask_jwt_extended import JWTManager
 from flask_jwt_extended import get_jwt
 from flask_bcrypt import Bcrypt
 from datetime import datetime, timedelta, timezone, time
-from api.dbfiller import insert_data, insert_data2
+from api.dbfiller import insert_data, insert_data2, insert_data3
 
 def calculate_check_in(hora):
     check_in = hora.replace(hour=hora.hour - 1)
@@ -1843,9 +1843,14 @@ def dbfiller():
     return jsonify({'msg': "Funciona"}), 201
 
 @app.route('/api/dbfiller2', methods=['GET'])
-def dbfiller():
+def dbfiller2():
     insert_data2()
     return jsonify({'msg': "Funciona2"}), 201
+
+@app.route('/api/dbfiller3', methods=['GET'])
+def dbfiller3():
+    insert_data3()
+    return jsonify({'msg': "Funciona3"}), 201
 
 # this only runs if `$ python src/main.py` is executed
 if __name__ == '__main__':
