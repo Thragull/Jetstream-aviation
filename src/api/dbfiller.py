@@ -2182,14 +2182,15 @@ def insert_data():
     insert_roles()
     insert_departments()
     insert_countries()
+    
+def insert_data2():
     insert_nationalities()
     insert_worldwide_states()
     insert_airports()
     insert_hotels()
     insert_employees()
 
-
-def insert_data2():
+def insert_data3():
     insert_inflight_details()
     insert_duties()
     insert_salary_prices()
