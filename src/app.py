@@ -598,6 +598,11 @@ def getEmployeeByCrewID():
 def filter_employees():
     role_id = request.args.get('role_id')
     department_id = request.args.get('department_id')
+    id = request.args.get('id')
+    if id is not None: 
+        employees = Employees.query.filter_by(id=id).all()
+        serialized_employees = list(map(lambda employee: employee.serialize(), employees))
+        return jsonify(serialized_employees)
     if role_id is not None: 
         employees = Employees.query.filter_by(role_id=role_id).all()
         serialized_employees = list(map(lambda employee: employee.serialize(), employees))
@@ -606,7 +611,7 @@ def filter_employees():
         employees = Employees.query.filter_by(department_id=department_id).all()
         serialized_employees = list(map(lambda employee: employee.serialize(), employees))
         return jsonify(serialized_employees)
-    if role_id is None or department_id is None:
+    if role_id is None and department_id is None and id is None:
         return jsonify({'msg': 'You must specify a role or a department ID'})
 
 
@@ -1242,7 +1247,7 @@ def get_duties():
         serialized_duties = list(map(lambda duty: duty.serialize(), duties))
         return jsonify(serialized_duties), 200
     duties = Duties.query.filter_by(id=id).all()
-    serialized_duties = list(map(lambda duty: duty.serialize, duties))
+    serialized_duties = list(map(lambda duty: duty.serialize(), duties))
     return jsonify (serialized_duties), 200
  
 @app.route('/api/login', methods=['POST'])
