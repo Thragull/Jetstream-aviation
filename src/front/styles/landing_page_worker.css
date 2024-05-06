@@ -1,0 +1,63 @@
+
+
+
+#board{
+    padding-top: 10vh;
+    padding-left: 10vh;
+    position: relative;
+    padding-bottom: 10vh;
+    height: 100%;
+
+    
+}
+
+.link{
+    text-decoration: none;
+}
+
+.background{
+    height: 100%;
+    width: 100%;
+}
+
+.infoUser{
+    color: white; 
+}
+
+
+#verticalNavbar {
+    background-color:rgba(255,255,255,0.5);
+    align-items: center;
+    justify-content: center;
+    border-top-left-radius: 20%;
+    border-bottom-left-radius: 10%;  
+    position: relative;
+    padding: 0px;
+    height: 100%;
+}
+
+.ProfileImageContainer{
+    position: relative; 
+    
+}
+
+.navbarComponent{
+    display: flex;
+    color: white;
+    position: relative;
+    padding: 3vh 0vh;
+    font-size: 2vh;
+    border-radius: -20px 0 0 -20px;
+}
+
+.navbar-icon-text{
+    display: flex; 
+    width: 20vh;
+    
+}
+
+.component{
+    background-color: rgba(255,255,255,0.5);
+    border-top-right-radius: 5%;
+    border-bottom-right-radius: 5%;
+}
