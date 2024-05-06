@@ -1855,7 +1855,7 @@ def dbfiller():
     return jsonify({'msg': "Funciona"}), 201
 
 @app.route('/api/dbfiller2', methods=['GET'])
-def dbfiller():
+def dbfiller2():
     insert_data2()
     return jsonify({'msg': "Funciona2"}), 201
 
