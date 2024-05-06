@@ -651,18 +651,21 @@ def filter_employees():
         return jsonify({'msg': 'Unauthorised access'}), 401
     role_id = request.args.get('role_id')
     department_id = request.args.get('department_id')
+    id = request.args.get('id')
+    if id is not None: 
+        employees = Employees.query.filter_by(id=id).all()
+        serialized_employees = list(map(lambda employee: employee.serialize(), employees))
+        return jsonify(serialized_employees)
     if role_id is not None: 
         employees = Employees.query.filter_by(role_id=role_id).all()
         serialized_employees = list(map(lambda employee: employee.serialize(), employees))
         return jsonify(serialized_employees), 200
     if department_id is not None: 
         employees = Employees.query.filter_by(department_id=department_id).all()
-        serialized_employees = list(map(lambda employee: employee.serialize(), employees))
+        serialized_employees = list(map(lambda employee: employee.serialize(), employees)
         return jsonify(serialized_employees), 200
     return jsonify({'msg': 'You must specify a role or a department ID'}), 400
     
-
-
 @app.route('/api/signupEmployee', methods=['POST'])
 @jwt_required()
 @cross_origin(supports_credentials=True)
@@ -1447,7 +1450,7 @@ def get_salary_prices():
     if salary_prices is None:
         return jsonify({'msg': 'There is no salary table for this role'}), 404
     return jsonify(salary_prices.serialize()), 200
-
+                                    
 @app.route('/api/bank_details', methods=['GET'])
 @jwt_required()
 def get_bank_details():
@@ -1510,6 +1513,7 @@ def post_bank_details():
     db.session.add(bank_details)
     db.session.commit()
     return jsonify({'msg': 'Bank details added for employee {}'.format(bank_details.employee)})
+
  
 @app.route('/api/bank_details', methods=['PUT'])
 @jwt_required()
