@@ -17,7 +17,7 @@ import Lottie from "react-lottie";
 import animationData from "../../img/animation_data.json";
 import Logo from "../../img/logoconfondo.jpeg";
 import CrewControllerComponent from "../component/landingPageComponents/CrewControllerComponent.js";
-
+import Budgets from "../component/Budgets/Budgets.js";
 
 
 export const LandingPageWorker = () => {
@@ -105,7 +105,11 @@ export const LandingPageWorker = () => {
 
     const renderComponent = () => {
         switch (activeComponent) {
-            case 'Dashboard': {
+            case 'Dashboard': 
+            if (store.loggedInEmployee.department_id == 1){
+                return <Budgets />
+            }
+            else{
                 return <DashboardComponent />;
             }
             case 'Profile': {

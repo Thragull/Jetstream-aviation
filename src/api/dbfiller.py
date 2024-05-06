@@ -2187,6 +2187,9 @@ def insert_data():
     insert_airports()
     insert_hotels()
     insert_employees()
+
+
+def insert_data2():
     insert_inflight_details()
     insert_duties()
     insert_salary_prices()
