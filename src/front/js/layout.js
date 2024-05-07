@@ -11,11 +11,12 @@ import injectContext from "./store/appContext";
 
 import Contact from "./component/Contact";
 import { Footer } from "./component/footer";
-import LandingPageCliente from "./component/LandingPageCliente";
+import LandingPageCliente from "./component/Welcome";
 import AboutUs from "./component/AboutUs";
 import Fleet from "./component/Fleet";
 import Services from "./component/Services";
 import LoginPage from "./pages/LoginPage";
+import Welcome from "./component/Welcome";
 
 
 
@@ -44,9 +45,10 @@ const Layout = () => {
             <Route element={<AboutUs />} path="/aboutUs" />
             <Route element={<Fleet />} path="/fleet" />
             <Route element={<Services />} path="/services" />
+            <Route element={<Welcome />} path="/welcome" />
             <Route element={<LoginPage/>} path="/login" />
           </Routes>
-          {/* <Footer /> */}
+          <Footer />
         </ScrollToTop>
       </BrowserRouter>
     </div>

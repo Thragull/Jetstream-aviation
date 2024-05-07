@@ -18,33 +18,35 @@ export const Home = () => {
       <div>
         <div>
           <nav className="NavbarHome ">
-            <div className="container">
-              <div className="navbar-brand">
-                <img
-                  src={LogoJetstream}
-                  className="LogoJetstream"
-                  alt="LogoJetstream"
-                  width="300"
-                  height="300"
-                />
-                <div>
-                  <h1 id="tittle">Jetstream</h1>
+            <div>
+              <div className="row navbar-brand d-flex ">
+                <div className="col-4">
+                  <p id="Title1">JetStream</p>
+                </div>
+                <div className="col-4"></div>
+                <div className= "col-4">
+                  <img
+                    src={LogoJetstream}
+                    className="LogoJetstream"
+                    alt="LogoJetstream"
+                  />
                 </div>
               </div>
             </div>
           </nav>
         </div>
 
-        <div className="row ps-5 ms-5">
-          <div className="col-3 pt-5">
+        <div className="RowWindows row ms-3">
+          <div className="col-3 text-center">
+            
             <img
               src={Window1Img}
               alt="Window1Img"
-              className="img1 img-fluid rounded-pill w-100 h-75"
+              className="img img-fluid rounded-pill"
             />
             <div className="d-grid mx-auto text-center">
-              <Link to="/client"> 
-                <button className="btn1 btn" type="button">
+              <Link to="/client">
+                <button className="btn btn" type="button">
                   <i class="fa-solid fa-plane"></i>
                   <b> Customer</b>
                 </button>
@@ -52,15 +54,15 @@ export const Home = () => {
             </div>
           </div>
 
-          <div className="col-3 pt-5">
+          <div className="col-3 text-center">
             <img
               src={Window2Img}
               alt="Window2Img"
-              className="img2 img-fluid rounded-pill w-100 h-75"
+              className="img img-fluid rounded-pill"
             />
-            <div className="d-grid mx-auto">
+            <div className="d-grid mx-auto text-center">
               <Link to="/login">
-                <button className="btn2 btn" type="button">
+                <button className="btn btn" type="button">
                   <i class="fa-regular fa-circle-user"></i>
                   <b> Employee</b>
                 </button>
@@ -68,24 +70,26 @@ export const Home = () => {
             </div>
           </div>
 
-          <div className="col-3 pt-5">
+          <div className="col-3 text-center">
+            
             <img
               src={Window3Img}
               alt="Window3Img"
-              className="img3 img-fluid rounded-pill w-100 h-75"
+              className="img img-fluid rounded-pill"
             />
+           
+            
             <div className="d-grid mx-auto">
-              <button className="btn3 btn" type="button">
-                <i class="fa-solid fa-earth-americas"></i>
-                <b> Socials</b>
+              <button className="btn btn" type="button">
+              <i className="fa-solid fa-earth-americas"></i>
+                <b> Promotions</b>
               </button>
             </div>
           </div>
+          <div className="col-3 bg-white opacity-0"></div>
         </div>
       </div>
     </div>
-
-  
   );
 };
 
