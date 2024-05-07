@@ -23,15 +23,18 @@ const Fleet = () => {
       <div>
         <Navbar />
       </div>
-      <div>
+      <div className="FleetCards row ">
+
         {fleetInfo.map((value, index) => {
           return (
-            <Plane
+            <div className="col-4">
+              <Plane
               key={index}
               title={value.title}
               text={value.text}
               imgSrc={value.imgSrc}
             />
+            </div>
           );
         })}
         {/* <Navbar/>

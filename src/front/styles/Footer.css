@@ -1,0 +1,51 @@
+.FooterBar {
+    background-color: #7CB9E8;
+    height: 500px;
+    width: 100%;
+    margin-top: 50px;
+}
+
+@media (max-width: 1600px){
+    .FooterBar {
+        height: 600px;
+    }
+}
+
+@media (max-width: 1200px){
+    .FooterBar {
+        height: 600px;
+    }
+}
+@media (min-width: 1600px){
+    .FooterBar {
+        height: 600px;
+    }
+}
+
+@media (min-width: 1600px){
+    #LogoFooter {
+        height: 370px;
+        width:370px;
+    }
+}
+
+@media (max-width: 1600px){
+    #LogoFooter {
+        height: 290px;
+        width:290px;
+    }
+}
+
+@media (max-width: 1200px){
+    #LogoFooter {
+        height: 190px;
+        width:190px;
+    }
+}
+
+@media (max-width: 900px){
+    #LogoFooter {
+        height: 150px;
+        width:150px;
+    }
+}

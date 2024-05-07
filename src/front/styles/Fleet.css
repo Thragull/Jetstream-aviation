@@ -1,0 +1,17 @@
+@media (min-width: 2600px){
+.FleetCards {
+    margin-top: 390px;
+}}
+@media (max-width: 2600px){
+    .FleetCards {
+        margin-top: 200px;
+    }}
+@media (max-width: 2400px){
+    .FleetCards {
+        margin-top: 200px;
+    }}
+
+@media (max-width: 2000px){
+    .FleetCards {
+        margin-top: 180px;
+    }}

@@ -1,0 +1,48 @@
+.HalfWindowImage {
+   
+   height:70hv;
+   width: 100%;
+
+}
+
+@media (min-width: 2400px){
+    .Welcome {font-size: 90px;
+
+}}
+
+@media (max-width: 2000px){
+    .Welcome {font-size: 36px;
+
+}}
+
+@media (max-width: 1600px){
+    .Welcome {font-size: 26px;
+
+}}
+
+
+
+
+
+/* @media (max-width: 2000px){
+    .Welcome {font-size: 43px;
+
+}}
+
+@media (max-width: 1700px){
+    .Welcome {font-size: 30px;
+
+}}
+@media (max-width: 1400px){
+    .Welcome {font-size: 33px;
+
+}}
+
+@media (max-width: 1200px){
+    .Welcome {font-size: 27px;
+
+}}
+@media (max-width: 1100px){
+    .Welcome {font-size: 24px;
+
+}} */
