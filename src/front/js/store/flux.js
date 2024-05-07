@@ -10,7 +10,6 @@ const getState = ({ getStore, getActions, setStore }) => {
 			pendingBudgets: true,
 			acceptedBudgets: true,
 			singleBudget: null
-
 		},
 		actions: {
 			// Use getActions to call a function within a fuction
