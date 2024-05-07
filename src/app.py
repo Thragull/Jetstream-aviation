@@ -22,7 +22,7 @@ from flask_jwt_extended import get_jwt
 from flask_jwt_extended import unset_jwt_cookies
 from flask_bcrypt import Bcrypt
 from datetime import datetime, timedelta, timezone, time
-from api.dbfiller import insert_data
+from api.dbfiller import insert_data, insert_data2, insert_data3
 
 
 def calculate_check_in(hora):
@@ -137,7 +137,9 @@ app.url_map.strict_slashes = False
 CORS(app, support_credentials=True)
 
 app.config["JWT_SECRET_KEY"] = "J3t$r34m-$up3r-P0w3r"  # Change this!
+
 jwt = JWTManager(app)
+app.config["JWT_ACCESS_TOKEN_EXPIRES"] = 3600
 bcrypt = Bcrypt(app)
 
 # database condiguration
@@ -1851,6 +1853,16 @@ def protected():
 def dbfiller():
     insert_data()
     return jsonify({'msg': "Funciona"}), 201
+
+@app.route('/api/dbfiller2', methods=['GET'])
+def dbfiller2():
+    insert_data2()
+    return jsonify({'msg': "Funciona2"}), 201
+
+@app.route('/api/dbfiller3', methods=['GET'])
+def dbfiller3():
+    insert_data3()
+    return jsonify({'msg': "Funciona3"}), 201
 
 # this only runs if `$ python src/main.py` is executed
 if __name__ == '__main__':

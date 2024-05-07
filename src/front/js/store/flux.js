@@ -6,18 +6,11 @@ const getState = ({ getStore, getActions, setStore }) => {
 			roles: null,
 			departments: null, 
 			message: null,
-			demo: [
-				{
-					title: "FIRST",
-					background: "white",
-					initial: "white"
-				},
-				{
-					title: "SECOND",
-					background: "white",
-					initial: "white"
-				}
-			]
+			budgets: [],
+			pendingBudgets: true,
+			acceptedBudgets: true,
+			singleBudget: null
+
 		},
 		actions: {
 			// Use getActions to call a function within a fuction
@@ -27,6 +20,48 @@ const getState = ({ getStore, getActions, setStore }) => {
 			checkToken: () => {
 
 			},
+			getBudgets: (params) =>{
+				const authToken = localStorage.getItem("jwt-token");
+				let url = process.env.BACKEND_URL + '/api/budgets';
+
+				if (params) {
+					const urlParams = Object.keys(params).map(key => `${key}=${params[key]}`).join('&');
+					url += `?${urlParams}`
+				}
+
+				fetch(url, {
+						headers: {
+							Authorization: `Bearer ${authToken}`
+						}
+				})
+				.then((response)=> response.json())
+				.then((data) => {setStore({budgets: data})})
+				.catch((err) => err)
+			},
+			getSingleBudget: (id) => {
+				const authToken = localStorage.getItem("jwt-token");
+				let url = process.env.BACKEND_URL + `/api/budgets?id=${id}`;
+				return new Promise((resolve, reject) =>{
+					fetch(url, {
+							headers: {
+								Authorization: `Bearer ${authToken}`
+							}
+					})
+					.then((response)=> response.json())
+					.then((data) => {setStore({singleBudget: data[0]})
+									resolve()})
+					.catch((err) => reject(err))
+				})
+			},
+			setSingleBudget: (value) => {
+				setStore({singleBudget: value})
+			},
+			setPendingBudgets: (value) => {
+                setStore({ pendingBudgets: value });
+            },
+            setAcceptedBudgets: (value) => {
+                setStore({ acceptedBudgets: value });
+            },
 			getMessage: async () => {
 				try {
 					// fetching data from the backend
