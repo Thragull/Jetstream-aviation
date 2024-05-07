@@ -6,7 +6,13 @@
     padding-left: 10vh;
     position: relative;
     padding-bottom: 10vh;
+    height: 100%;
+
     
+}
+
+.link{
+    text-decoration: none;
 }
 
 .background{
@@ -26,14 +32,11 @@
     border-top-left-radius: 20%;
     border-bottom-left-radius: 10%;  
     position: relative;
-    padding: 0px
+    padding: 0px;
+    height: 100%;
 }
 
 .ProfileImageContainer{
-    background-color: green;
-    width: 7vh;
-    height: 7vh;
-    border-radius: 50%;
     position: relative; 
     
 }

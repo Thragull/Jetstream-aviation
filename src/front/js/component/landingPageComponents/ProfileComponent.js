@@ -23,14 +23,11 @@ export const ProfileComponent = () => {
     const [state, setState] = useState(null)
     const [nationality, setNationality] = useState(null)
 
-    useEffect(()=>{
-        console.log(nationality)
-    }, [nationality])
 
 
     useEffect(() => {
         const fetchDepartment = async () => {
-            console.log('departmemts')
+            console.log('departments')
             try {
                 const departmentData = await actions.getDepartmentById(store.loggedInEmployee.department_id);
                 setDepartment(departmentData);
@@ -78,7 +75,7 @@ export const ProfileComponent = () => {
         const fetchInflight = async () => {
                 try{
                      await actions.getInflight(store.loggedInEmployee.id)
-                    
+                    console.log('fetchInflight')
                 }
                 catch(error) {
                     error

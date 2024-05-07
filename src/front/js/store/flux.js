@@ -202,6 +202,18 @@ const getState = ({ getStore, getActions, setStore }) => {
 					console.log(error)
 				}
 			},
+			getAirportDataById: async (airport_id) => {
+				try{
+					const resp = await fetch(
+						process.env.BACKEND_URL + `/api/airports?id=${airport_id}`
+					)
+					const data = await resp.json()
+					const airport = data[0]
+					return airport
+				} catch(error) {
+					console.log(error)
+				}
+			},
 			getAirportById: async (airport_id) => {
 				try{
 					const resp = await fetch(
@@ -357,7 +369,24 @@ const getState = ({ getStore, getActions, setStore }) => {
 					console.log(allEmployees)
 					return allEmployees;
 				} catch (error) {
-
+					console.log(error)
+				}
+			},
+			getEmployeeById: async (employee_id) => {
+				let employee = []
+				const authToken = localStorage.getItem("jwt-token");
+				try {
+					const resp = await fetch(
+						process.env.BACKEND_URL + `/api/filterEmployees?id=${employee_id}`, {
+							headers: {
+								Authorization: `Bearer ${authToken}`
+							}})
+					const data = await resp.json()
+					employee = data[0];
+					console.log(employee)
+					return employee
+				} catch (error) {
+					console.log(error)
 				}
 			},
 			getEmployeesByRol: async (role_id) => {
@@ -408,23 +437,82 @@ const getState = ({ getStore, getActions, setStore }) => {
 						)
 						const data = await resp.json()
 						employee = data
+						setStore({ loggedInEmployee: employee });
 						setTimeout(() => {
-							setStore({ loggedInEmployee: employee });
-						}, 5000);
+							
+						}, 1000);
 						return employee
 					} catch (error) {
 
 					}
 				}
 			},
-			getRoster: async() => {
+			getEmployeeRoster: async(employee_id) => {
+				const authToken = localStorage.getItem("jwt-token");
 				try {
 					const resp = await fetch(
-						process.env.BACKEND_URL + `/api/employee`
+						process.env.BACKEND_URL + `/api/roster?employee_id=${employee_id}`, {
+							headers: {
+								Authorization: `Bearer ${authToken}`
+							}
+						}
+						
 					)
+					const data = await resp.json()
+					console.log(data)
+					return data
 				} catch (error) {
 					console.log(error)
 				}
+			},
+			getDutiesById: async (duty_id) => {
+				let duty
+				const authToken = localStorage.getItem("jwt-token");
+				try {
+					const resp = await fetch(
+						process.env.BACKEND_URL + `/api/duties?id=${duty_id}`, {
+							headers: {
+								Authorization: `Bearer ${authToken}`
+							}})
+					const data = await resp.json()
+					duty = data[0].duty; 
+					return duty; 
+				} catch (error) {
+					console.log(error)
+				}
+			},
+			getFlightById: async (flight_id) => {
+				let flight
+				const authToken = localStorage.getItem("jwt-token");
+				try {
+					const resp = await fetch(
+						process.env.BACKEND_URL + `/api/flights?id=${flight_id}`, {
+							headers: {
+								Authorization: `Bearer ${authToken}`
+							}})
+					const data = await resp.json()
+					flight = data[0]; 
+					return flight 
+				} catch (error) {
+					console.log(error)
+				}
+			},
+			logout: async () => {
+				const authToken = localStorage.getItem("jwt-token");
+				try {
+					const resp = await fetch(process.env.BACKEND_URL + '/api/logout', {
+						headers: {
+							Authorization: `Bearer ${authToken}`
+						}
+					})
+				} catch (error) {
+					console.log(error)
+				}
+				localStorage.removeItem('jwt-token');
+				setStore({loggedInEmployee: null})
+				setStore({inflightEmployee: null})
+				setStore({roles: null})
+				setStore({departments: null})
 			},
 			changeColor: (index, color) => {
 				//get the store

@@ -17,6 +17,7 @@
 .rbc-day-bg{
     background-color: rgb(255,255,255,0.5);
     border: 0.5px solid black;
+    color: rgba(251, 11, 11, 0.404);
     border-width: 1px;
     margin: 0px;
     
@@ -24,6 +25,7 @@
 
 .rbc-off-range-bg{
     background-color: grey;
+    color: rgba(255, 166, 0, 0.537)
 }
 
 .rbc-row-content{
@@ -33,11 +35,17 @@
 
 .rbc-today{
   background-color: lightblue;
-}
+} 
 
 .accordion-header {
     background: blue;
 }
+
+.rbc-event{
+    background-color: transparent;
+    padding: 0px
+}
+
 
 
 

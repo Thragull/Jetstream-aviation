@@ -2,8 +2,9 @@ import React, { useContext, useState, useEffect } from "react";
 import { Context } from "../store/appContext";
 import airplanebackground from "../../img/aviondesdeabajo.jpeg";
 import "../../styles/landing_page_worker.css";
+import {useNavigate, Link } from "react-router-dom";
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome'
-import { faCalendarCheck, faHouse, faUser, faMoneyBills, faUserGraduate, faFile, faUmbrellaBeach, faBarsProgress, faFileInvoice } from '@fortawesome/free-solid-svg-icons'
+import { faCalendarCheck, faDoorOpen, faHouse, faUser, faMoneyBills, faUserGraduate, faFile, faUmbrellaBeach, faBarsProgress, faFileInvoice } from '@fortawesome/free-solid-svg-icons'
 import DashboardComponent from "../component/landingPageComponents/DashboardComponent.js"
 import ProfileComponent from "../component/landingPageComponents/ProfileComponent.js"
 import PayslipComponent from "../component/landingPageComponents/PayslipComponent.js"
@@ -14,24 +15,22 @@ import RosterComponent from "../component/landingPageComponents/RosterComponent.
 import ManagementComponent from "../component/landingPageComponents/ManagementComponent.js";
 import Lottie from "react-lottie";
 import animationData from "../../img/animation_data.json";
+import Logo from "../../img/logoconfondo.jpeg";
 import CrewControllerComponent from "../component/landingPageComponents/CrewControllerComponent.js";
 import Budgets from "../component/Budgets/Budgets.js";
 
 
-
-
-
-
-
 export const LandingPageWorker = () => {
 
-      const defaultOptions = {
+    const navigate = useNavigate();
+
+    const defaultOptions = {
             loop: true,
             autoplay: true,
             animationData: animationData, 
             renderSettings: {
                 preserveAspectRatio: "xMidYMid slice"
-            }
+        }
     }
     
 
@@ -101,7 +100,7 @@ export const LandingPageWorker = () => {
     }, [activeComponent]);
 
 
-
+ 
 
 
     const renderComponent = () => {
@@ -139,7 +138,11 @@ export const LandingPageWorker = () => {
         }
 
     }
-    console.log(store.loggedInEmployee)
+
+    if(localStorage.getItem('jwt-token') == null) {
+        navigate("/login")
+    } 
+
     return (
         <>
             {store.loggedInEmployee == null ? 
@@ -148,17 +151,18 @@ export const LandingPageWorker = () => {
                     options={defaultOptions}
                     height={400}
                     width={400}
+                    
                 />
             </div> :
                 <div className="text-center" style={{ backgroundImage: `url(${airplanebackground})`, backgroundSize: "100% 100%" }}>
                     <div className="row" id="board">
                         <div className="col-3" id="verticalNavbar" >
-                            <div className="py-2" style={{ backgroundColor: `${inactiveColor}`, borderTopLeftRadius: "50px" }}>
-                                <div className="py-3 mx-auto ProfileImageContainer">
-                                    <p>Image</p>
+                            <div className="py-2" style={{ backgroundColor: `${inactiveColor}`, borderTopLeftRadius: "50px", backgroundImage: '' }}>
+                                <div className="mx-auto ProfileImageContainer">
+                                    <img className="rounded-circle" style={{height: '11vh', width: '11vh', backgroundColor: 'white'}} src={Logo} />
                                 </div>
                             </div>
-                            <p className="infoUser" style={{ margin: "0", fontSize: "3vh", backgroundColor: `${inactiveColor}` }}>{store.loggedInEmployee.name}</p>
+                            <p className="infoUser" style={{ margin: "0", fontSize: "3vh", backgroundColor: `${inactiveColor}`, borderBottomRightRadius: `${dashboardRadius}` }}>{store.loggedInEmployee.name}</p>
                             <div style={{ display: "inline-block", width: "100%", margin: "0" }}>
                                 <div className="navbarComponent" style={{ color: `${textColorDashboard}`, backgroundColor: `${colorDashboard}`, borderBottomRightRadius: `${profileRadius}` }} onClick={() => setActiveComponent('Dashboard')}>
                                     <div className="mx-auto navbar-icon-text col-2" >
@@ -209,13 +213,19 @@ export const LandingPageWorker = () => {
                                         <p>Moodels</p>
                                     </div>
                                 </div>
-                                <div className="navbarComponent" style={{ color: `${textColorHolidays}`, backgroundColor: `${colorHolidays}`, borderTopRightRadius: `${moodelsRadius}`, borderBottomRightRadius: `${inactiveRadius}` }} onClick={() => setActiveComponent('Holidays')}>
-                                    <div className="mx-auto navbar-icon-text">
-                                        <FontAwesomeIcon icon={faUmbrellaBeach} />
+                                <Link to="/" style={{ textDecoration: 'none' }}>
+                                <div className="navbarComponent" style={{ color: `${textColorHolidays}`, borderBottomLeftRadius: '30px', backgroundColor: 'red', borderTopRightRadius: `${moodelsRadius}`, borderBottomRightRadius: `${inactiveRadius}` }}
+                                    onClick={() => {
+                                        actions.logout()
+
+                                     }}>
+                                    <div className="mx-auto navbar-icon-text" style={{textDecoration: 'none'}}>
+                                        <FontAwesomeIcon icon={faDoorOpen} />
                                         <div className="mx-1"></div>
-                                        <p>Holidays</p>
+                                        <p className="link">Log Out</p>
                                     </div>
                                 </div>
+                                </Link>
                             </div>
                         </div>
                         <div className="col-8 component">
