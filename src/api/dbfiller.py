@@ -1,4 +1,3 @@
-
 import click, random
 from api.models import (db, Models, Configurations, Fleet, Prices, Projects, Assignations, Budgets, Roles, Countries,
                     Nationalities, States, Employees, Airports, Inflight, Duties, Flights, Hotels, Rosters, Salary_Prices,
@@ -1910,296 +1909,289 @@ duties=['OFFH', 'OFFD', 'HOL', 'SBYM', 'SBYA', 'SBYN', 'RES', 'POS', 'GTR', 'FLT
 
 
 
-def setup_commands(app):
     
-    """ 
-    This is an example command "insert-test-users" that you can run from the command line
-    by typing: $ flask insert-test-users 5
-    Note: 5 is the number of users to add
-    """
+def insert_models():
+    print("Creating models")
+    for model in models:
+        model_token = Models()
+        model_token.model_name = model
+        db.session.add(model_token)
+        db.session.commit()
+        print(f"Model {model} created")
 
-    @app.cli.command("insert-test-data")
-    def insert_test_data():
-        pass
-    
-    def insert_models():
-        print("Creating models")
-        for model in models:
-            model_token = Models()
-            model_token.model_name = model
-            db.session.add(model_token)
-            db.session.commit()
-            print(f"Model {model} created")
+def insert_configurations():
+    print("Creating configurations")
+    for configuration in configurations:
+        config_token = Configurations()
+        model = Models.query.filter_by(model_name=configuration["model"]).first()
+        config_token.model_id = model.id
+        if "business" in configuration:
+            config_token.business = configuration["business"]
+        config_token.economy = configuration["economy"]
+        db.session.add(config_token)
+        db.session.commit()
+        print("Configuration created for model {}".format(configuration['model']))
 
-    def insert_configurations():
-        print("Creating configurations")
-        for configuration in configurations:
-            config_token = Configurations()
-            model = Models.query.filter_by(model_name=configuration["model"]).first()
-            config_token.model_id = model.id
-            if "business" in configuration:
-                config_token.business = configuration["business"]
-            config_token.economy = configuration["economy"]
-            db.session.add(config_token)
-            db.session.commit()
-            print("Configuration created for model {}".format(configuration['model']))
+def insert_fleet():
+    print("Creating Fleet")
+    for plane in fleet:
+        aeroplane = Fleet()
+        model = Models.query.filter_by(model_name=plane["model"]).first()
+        aeroplane.model_id = model.id
+        configuration = Configurations.query.filter_by(
+                                                        model_id=model.id,
+                                                        business=plane.get("business", 0),
+                                                        economy=plane.get("economy")
+                                                        ).first()
+        aeroplane.configuration_id = configuration.id
+        aeroplane.registration=plane["registration"]
+        db.session.add(aeroplane)
+        db.session.commit()
+        print("Airplane {} added to the fleet".format(plane["model"]))
 
-    def insert_fleet():
-        print("Creating Fleet")
-        for plane in fleet:
-            aeroplane = Fleet()
-            model = Models.query.filter_by(model_name=plane["model"]).first()
-            aeroplane.model_id = model.id
-            configuration = Configurations.query.filter_by(
-                                                            model_id=model.id,
-                                                            business=plane.get("business", 0),
-                                                            economy=plane.get("economy")
-                                                          ).first()
-            aeroplane.configuration_id = configuration.id
-            aeroplane.registration=plane["registration"]
-            db.session.add(aeroplane)
-            db.session.commit()
-            print("Airplane {} added to the fleet".format(plane["model"]))
-    
-    def insert_plane_prices():
-        print("Creating prices")
-        for price in prices:
-            price_token=Prices()
-            model = Models.query.filter_by(model_name=price["model"]).first()
-            price_token.model_id = model.id
-            configuration = Configurations.query.filter_by(
-                                                            model_id=model.id,
-                                                            business=price.get("business", 0),
-                                                            economy=price.get("economy")
-                                                          ).first()
-            price_token.configuration_id=configuration.id
-            price_token.crew = price["crew"]
-            price_token.price = price["price"]
-            db.session.add(price_token)
-            db.session.commit()
-            print("Airplane {} costs {}€ per day".format(price["model"], price["price"]))
+def insert_plane_prices():
+    print("Creating prices")
+    for price in prices:
+        price_token=Prices()
+        model = Models.query.filter_by(model_name=price["model"]).first()
+        price_token.model_id = model.id
+        configuration = Configurations.query.filter_by(
+                                                        model_id=model.id,
+                                                        business=price.get("business", 0),
+                                                        economy=price.get("economy")
+                                                        ).first()
+        price_token.configuration_id=configuration.id
+        price_token.crew = price["crew"]
+        price_token.price = price["price"]
+        db.session.add(price_token)
+        db.session.commit()
+        print("Airplane {} costs {}€ per day".format(price["model"], price["price"]))
 
-    def insert_roles():
-        print("Creating enterprise roles")
-        for role in roles:
-            role_token=Roles()
-            role_token.role = role
-            db.session.add(role_token)
-            db.session.commit()
-            print("Role {} added to the enterprise".format(role))
-    
-    def insert_departments():
-        print("Creating enterprise departments")
-        for department in departments:
-            department_token=Departments()
-            department_token.department = department
-            db.session.add(department_token)
-            db.session.commit()
-            print("Role {} added to the enterprise".format(department))
+def insert_roles():
+    print("Creating enterprise roles")
+    for role in roles:
+        role_token=Roles()
+        role_token.role = role
+        db.session.add(role_token)
+        db.session.commit()
+        print("Role {} added to the enterprise".format(role))
 
-    def insert_countries():
-        print("Creating list of Countries")
-        for country in countries:
-            country_token=Countries()
-            country_token.country = country
-            db.session.add(country_token)
-            db.session.commit()
-            print("Country {} added to DataBase".format(country))
+def insert_departments():
+    print("Creating enterprise departments")
+    for department in departments:
+        department_token=Departments()
+        department_token.department = department
+        db.session.add(department_token)
+        db.session.commit()
+        print("Role {} added to the enterprise".format(department))
 
-    def insert_nationalities():
-        print("Creating list of Nationalities")
-        for nationality in nationalities:
-            nationality_token=Nationalities()
-            nationality_token.nationality = nationality
-            db.session.add(nationality_token)
-            db.session.commit()
-            print("Nationality {} added to DataBase".format(nationality))
-    
-    def insert_worldwide_states():
-        print("Creating list of States around the World")
-        for state in states:
-            state_token=States()
-            country = Countries.query.filter_by(country=state["country"]).first()
-            state_token.country_id = country.id
-            state_token.state= state["state"]
-            db.session.add(state_token)
-            db.session.commit()
-            print("{} from {} added to DataBase".format(state["state"], state["country"]))
+def insert_countries():
+    print("Creating list of Countries")
+    for country in countries:
+        country_token=Countries()
+        country_token.country = country
+        db.session.add(country_token)
+        db.session.commit()
+        print("Country {} added to DataBase".format(country))
 
-    def insert_airports():
-        print("Creating lists of Airports")
-        for airport in airports:
-            airport_token=Airports()
-            country = Countries.query.filter_by(country=airport["country"]).first()
-            airport_token.country_id = country.id
-            airport_token.IATA_code = airport['IATA_code']
-            airport_token.ICAO_code = airport['ICAO_code']
-            airport_token.airport_name = airport['airport_name']
-            airport_token.category = airport['category']
-            db.session.add(airport_token)
-            db.session.commit()
-            print("{}: {}".format(airport['IATA_code'], airport['airport_name']))
+def insert_nationalities():
+    print("Creating list of Nationalities")
+    for nationality in nationalities:
+        nationality_token=Nationalities()
+        nationality_token.nationality = nationality
+        db.session.add(nationality_token)
+        db.session.commit()
+        print("Nationality {} added to DataBase".format(nationality))
 
-    def insert_hotels():
-        print("Creating lists of Hotels in bases")
-        for hotel in hotels:
-            hotel_token=Hotels()
-            base = Airports.query.filter_by(IATA_code=hotel["base"]).first()
-            hotel_token.base_id = base.id
-            hotel_token.name = hotel["name"]
-            db.session.add(hotel_token)
-            db.session.commit()
-            print("{} in {} base".format(hotel["name"], base.IATA_code))
+def insert_worldwide_states():
+    print("Creating list of States around the World")
+    for state in states:
+        state_token=States()
+        country = Countries.query.filter_by(country=state["country"]).first()
+        state_token.country_id = country.id
+        state_token.state= state["state"]
+        db.session.add(state_token)
+        db.session.commit()
+        print("{} from {} added to DataBase".format(state["state"], state["country"]))
 
-    def insert_salary_prices():
-        print("Creating lists of salaries by roles")
-        for price in prices_salaries:
-            price_token=Salary_Prices()
-            role = Roles.query.filter_by(role=price["role"]).first()
-            price_token.role_id = role.id
-            price_token.basic = price["basic"]
-            price_token.main_service = price["main_service"]
-            price_token.instruction = price["instruction"]
-            price_token.sec_bonus = price["sec_bonus"]
-            price_token.per_diem = price["per_diem"]
-            price_token.cleaning_serv = price["cleaning_serv"]
-            price_token.birthday_bonus = price["birthday_bonus"]
-            price_token.additional_bonus = price["additional_bonus"]
-            price_token.special_project_bonus = price["special_project_bonus"]
-            price_token.bought_days = price["bought_days"]
-            price_token.standby_days = price["standby_days"]
-            price_token.theory_bonus = price["theory_bonus"]
-            price_token.sick_leave = price["sick_leave"]
-            price_token.office_day = price["office_day"]
-            price_token.office_day_holidays = price["office_day_holidays"]
-            db.session.add(price_token)
-            db.session.commit()
-            print("Salary table for {}".format(role.role))
-    
-    def insert_employees():
-        print("Creating list of Employees")
-        for employee in employees:
-            employee_token= Employees()
-            role = Roles.query.filter_by(role=employee["role"]).first()
-            employee_token.role_id = role.id
-            department = Departments.query.filter_by(department=employee["department"]).first()
-            employee_token.department_id = department.id
-            employee_token.crew_id = employee['crew_id']
-            employee_token.name = employee['name']
-            employee_token.surname = employee['surname']
-            employee_token.email = employee['email']
-            employee_token.phone = random.randint(100000000, 999999999)
-            employee_token.password = employee['password']
-            employee_token.gender = employee['gender']
-            db.session.add(employee_token)
-            db.session.commit()
-            print("Employee {} with crew id {} created".format(employee['name'], employee['crew_id']))
+def insert_airports():
+    print("Creating lists of Airports")
+    for airport in airports:
+        airport_token=Airports()
+        country = Countries.query.filter_by(country=airport["country"]).first()
+        airport_token.country_id = country.id
+        airport_token.IATA_code = airport['IATA_code']
+        airport_token.ICAO_code = airport['ICAO_code']
+        airport_token.airport_name = airport['airport_name']
+        airport_token.category = airport['category']
+        db.session.add(airport_token)
+        db.session.commit()
+        print("{}: {}".format(airport['IATA_code'], airport['airport_name']))
 
-    
+def insert_hotels():
+    print("Creating lists of Hotels in bases")
+    for hotel in hotels:
+        hotel_token=Hotels()
+        base = Airports.query.filter_by(IATA_code=hotel["base"]).first()
+        hotel_token.base_id = base.id
+        hotel_token.name = hotel["name"]
+        db.session.add(hotel_token)
+        db.session.commit()
+        print("{} in {} base".format(hotel["name"], base.IATA_code))
 
-    def createRandomPassport():
-        return ''.join(random.choices('ABCDEFGHIJKLMNOPQRSTUVWXYZ123456789012345678901234567890', k=random.randint(6,9)))
-    
-    def createRandomLicense():
-        return ''.join(random.choices('ABCDEFGHIJKLMNOPQRSTUVWXYZ123456789012345678901234567890', k=random.randint(5,8)))
+def insert_salary_prices():
+    print("Creating lists of salaries by roles")
+    for price in prices_salaries:
+        price_token=Salary_Prices()
+        role = Roles.query.filter_by(role=price["role"]).first()
+        price_token.role_id = role.id
+        price_token.basic = price["basic"]
+        price_token.main_service = price["main_service"]
+        price_token.instruction = price["instruction"]
+        price_token.sec_bonus = price["sec_bonus"]
+        price_token.per_diem = price["per_diem"]
+        price_token.cleaning_serv = price["cleaning_serv"]
+        price_token.birthday_bonus = price["birthday_bonus"]
+        price_token.additional_bonus = price["additional_bonus"]
+        price_token.special_project_bonus = price["special_project_bonus"]
+        price_token.bought_days = price["bought_days"]
+        price_token.standby_days = price["standby_days"]
+        price_token.theory_bonus = price["theory_bonus"]
+        price_token.sick_leave = price["sick_leave"]
+        price_token.office_day = price["office_day"]
+        price_token.office_day_holidays = price["office_day_holidays"]
+        db.session.add(price_token)
+        db.session.commit()
+        print("Salary table for {}".format(role.role))
 
-    def insert_inflight_details():
-        print("creating Licenses and passports for Cabin crew and pilots")
-        passports=[]
-        licenses=[]
-        for employee in employees:
-            if employee['department'] == 'Inflight':
-                details_token = Inflight()
-                crew_member = Employees.query.filter_by(crew_id=employee['crew_id']).first()
-                details_token.employee_id = crew_member.id
+def insert_employees():
+    print("Creating list of Employees")
+    for employee in employees:
+        employee_token= Employees()
+        role = Roles.query.filter_by(role=employee["role"]).first()
+        employee_token.role_id = role.id
+        department = Departments.query.filter_by(department=employee["department"]).first()
+        employee_token.department_id = department.id
+        employee_token.crew_id = employee['crew_id']
+        employee_token.name = employee['name']
+        employee_token.surname = employee['surname']
+        employee_token.email = employee['email']
+        employee_token.phone = random.randint(100000000, 999999999)
+        employee_token.password = employee['password']
+        employee_token.gender = employee['gender']
+        db.session.add(employee_token)
+        db.session.commit()
+        print("Employee {} with crew id {} created".format(employee['name'], employee['crew_id']))
+
+
+
+def createRandomPassport():
+    return ''.join(random.choices('ABCDEFGHIJKLMNOPQRSTUVWXYZ123456789012345678901234567890', k=random.randint(6,9)))
+
+def createRandomLicense():
+    return ''.join(random.choices('ABCDEFGHIJKLMNOPQRSTUVWXYZ123456789012345678901234567890', k=random.randint(5,8)))
+
+def insert_inflight_details():
+    print("creating Licenses and passports for Cabin crew and pilots")
+    passports=[]
+    licenses=[]
+    for employee in employees:
+        if employee['department'] == 'Inflight':
+            details_token = Inflight()
+            crew_member = Employees.query.filter_by(crew_id=employee['crew_id']).first()
+            details_token.employee_id = crew_member.id
+            passport=createRandomPassport()
+            while passport in passports:
                 passport=createRandomPassport()
-                while passport in passports:
-                    passport=createRandomPassport()
-                passports.append(passport)
-                license=createRandomLicense()
-                while license in licenses:
-                    license = createRandomLicense()
-                licenses.append(license)
-                details_token.passport = passport
-                details_token.license = license
-                details_token.pass_expiration = datetime.now()+ timedelta(days=random.randint(180, 1825))
-                model = Models.query.filter_by(model_name='A320').first()
-                details_token.certificate_id = model.id
-                details_token.cert_expiration = datetime.now()+ timedelta(days=random.randint(60, 365))
-                models_assigned = ['A320']
-                number_of_licenses=1
+            passports.append(passport)
+            license=createRandomLicense()
+            while license in licenses:
+                license = createRandomLicense()
+            licenses.append(license)
+            details_token.passport = passport
+            details_token.license = license
+            details_token.pass_expiration = datetime.now()+ timedelta(days=random.randint(180, 1825))
+            model = Models.query.filter_by(model_name='A320').first()
+            details_token.certificate_id = model.id
+            details_token.cert_expiration = datetime.now()+ timedelta(days=random.randint(60, 365))
+            models_assigned = ['A320']
+            number_of_licenses=1
+            random_cert = random.randint(0,len(models)-1)
+            certificates = []
+            while models[random_cert] not in models_assigned and number_of_licenses < 4:
+                model = Models.query.filter_by(model_name=models[random_cert]).first()
+                models_assigned.append(models[random_cert])
+                certificates.append(model.id)
                 random_cert = random.randint(0,len(models)-1)
-                certificates = []
-                while models[random_cert] not in models_assigned and number_of_licenses < 4:
-                    model = Models.query.filter_by(model_name=models[random_cert]).first()
-                    models_assigned.append(models[random_cert])
-                    certificates.append(model.id)
-                    random_cert = random.randint(0,len(models)-1)
-                    number_of_licenses+=1
-                if number_of_licenses > 1:
-                    details_token.certificate_id2 = certificates[0]
-                    details_token.cert_expiration2 = datetime.now()+ timedelta(days=random.randint(60, 365))
-                if number_of_licenses > 2:
-                    details_token.certificate_id3 = certificates[1]
-                    details_token.cert_expiration3 = datetime.now()+ timedelta(days=random.randint(60, 365))
-                if number_of_licenses > 3:
-                    details_token.certificate_id4 = certificates[2]
-                    details_token.cert_expiration4 = datetime.now()+ timedelta(days=random.randint(60, 365))
-                base = Airports.query.filter_by(IATA_code=airports[random.randint(0,107)]['IATA_code']).first()
-                details_token.home_base_id = base.id
-                details_token.roster_assigned = random.randint(1,3)
-                details_token.monthly_BH = random.randint(0,100)
-                details_token.monthly_DH = details_token.monthly_BH + details_token.monthly_BH*0.25
-                details_token.yearly_BH = random.randint(details_token.monthly_BH,900)
-                details_token.yearly_DH = details_token.yearly_BH + details_token.yearly_BH*0.25
-                details_token.total_BH = random.randint(details_token.yearly_BH, 15000)
-                db.session.add(details_token)
-                db.session.commit()
-                print("Added inflight details for employee {}".format(employee['crew_id']))
-
-    def insert_duties():
-        print("Creating duties")
-        for duty in duties:
-            duty_token = Duties()
-            duty_token.duty = duty
-            db.session.add(duty_token)
+                number_of_licenses+=1
+            if number_of_licenses > 1:
+                details_token.certificate_id2 = certificates[0]
+                details_token.cert_expiration2 = datetime.now()+ timedelta(days=random.randint(60, 365))
+            if number_of_licenses > 2:
+                details_token.certificate_id3 = certificates[1]
+                details_token.cert_expiration3 = datetime.now()+ timedelta(days=random.randint(60, 365))
+            if number_of_licenses > 3:
+                details_token.certificate_id4 = certificates[2]
+                details_token.cert_expiration4 = datetime.now()+ timedelta(days=random.randint(60, 365))
+            base = Airports.query.filter_by(IATA_code=airports[random.randint(0,107)]['IATA_code']).first()
+            details_token.home_base_id = base.id
+            details_token.roster_assigned = random.randint(1,3)
+            details_token.monthly_BH = random.randint(0,100)
+            details_token.monthly_DH = details_token.monthly_BH + details_token.monthly_BH*0.25
+            details_token.yearly_BH = random.randint(details_token.monthly_BH,900)
+            details_token.yearly_DH = details_token.yearly_BH + details_token.yearly_BH*0.25
+            details_token.total_BH = random.randint(details_token.yearly_BH, 15000)
+            db.session.add(details_token)
             db.session.commit()
-            print(f"Duty {duty} created")
+            print("Added inflight details for employee {}".format(employee['crew_id']))
 
-    def generate_iban():
-        country_code = ''.join(random.choices('ABCDEFGHIJKLMNOPQRSTUVWXYZ', k=2))
-        bban = ''.join(random.choices('1234567890', k=18))
-        iban = f'{country_code}{bban}'
-        return iban
+def insert_duties():
+    print("Creating duties")
+    for duty in duties:
+        duty_token = Duties()
+        duty_token.duty = duty
+        db.session.add(duty_token)
+        db.session.commit()
+        print(f"Duty {duty} created")
+
+def generate_iban():
+    country_code = ''.join(random.choices('ABCDEFGHIJKLMNOPQRSTUVWXYZ', k=2))
+    bban = ''.join(random.choices('1234567890', k=18))
+    iban = f'{country_code}{bban}'
+    return iban
+
+def insert_bank_details():
+    for employee in employees:
+        bank_token = Bank_Details()
+        person = Employees.query.filter_by(crew_id=employee['crew_id']).first()
+        bank_token.employee_id = person.id
+        bank_token.IBAN = generate_iban()
+        db.session.add(bank_token)
+        db.session.commit()
+        print("IBAN created for {}".format(employee['crew_id']))
+
+
+
+
+
+def insert_data():
+    insert_models()
+    insert_configurations()
+    insert_fleet()
+    insert_plane_prices()
+    insert_roles()
+    insert_departments()
+    insert_countries()
     
-    def insert_bank_details():
-        for employee in employees:
-            bank_token = Bank_Details()
-            person = Employees.query.filter_by(crew_id=employee['crew_id']).first()
-            bank_token.employee_id = person.id
-            bank_token.IBAN = generate_iban()
-            db.session.add(bank_token)
-            db.session.commit()
-            print("IBAN created for {}".format(employee['crew_id']))
+def insert_data2():
+    insert_nationalities()
+    insert_worldwide_states()
+    insert_airports()
+    insert_hotels()
+    insert_employees()
 
-
-
-    
-    @app.cli.command("insert-data")
-    def insert_data():
-        insert_models()
-        insert_configurations()
-        insert_fleet()
-        insert_plane_prices()
-        insert_roles()
-        insert_departments()
-        insert_countries()
-        insert_nationalities()
-        insert_worldwide_states()
-        insert_airports()
-        insert_hotels()
-        insert_employees()
-        insert_inflight_details()
-        insert_duties()
-        insert_salary_prices()
-        insert_bank_details()
+def insert_data3():
+    insert_inflight_details()
+    insert_duties()
+    insert_salary_prices()
+    insert_bank_details()

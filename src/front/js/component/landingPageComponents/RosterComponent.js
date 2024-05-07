@@ -12,10 +12,10 @@ export const RosterComponent = () => {
 
     const todayDate = new Date(); 
 
+
 	return (
         <div>
             <h1>Roster</h1>
-            <InfoComponent label="BH"/>
             <div>
                 <CalendarComponent/>
             </div>

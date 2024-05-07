@@ -12,6 +12,7 @@ const Contact = () => {
         <p className="contact-title">Contact</p>
       </div>
 
+
       <div classNameName="row">
         <div className="col-8 mb-3 ps-5">
           <label htmlFor="exampleFormControlInput1" className="form-label">
@@ -34,6 +35,7 @@ const Contact = () => {
             id="exampleFormControlInput1"
           />
         </div>
+
 
         <div className="col-8 mb-3 ps-5">
           <label for="exampleFormControlInput1" className="form-label">
@@ -69,6 +71,7 @@ const Contact = () => {
         </div>
       </div>
 
+
       <div className="row ms-1">
         <div className="col-4 mb-3 ps-5 pb-4">
           <label for="exampleFormControlInput1" className="form-label">
@@ -92,6 +95,7 @@ const Contact = () => {
           />
         </div>  
         </div>
+
       <div className="row ms-1">
         <div className="col-4 mb-3 ps-5 pb-4">
         <label htmlFor="exampleFormControlSelect1" className="form-label">
@@ -121,7 +125,6 @@ const Contact = () => {
    
   </select>
         </div>  
-
       </div>
       
 

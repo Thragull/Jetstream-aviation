@@ -2,13 +2,9 @@ import React, { useContext, useState, useEffect } from "react";
 import { Context } from "../store/appContext";
 import airplanebackground from "../../img/aviondesdeabajo.jpeg";
 import "../../styles/landing_page_worker.css";
+import {useNavigate, Link } from "react-router-dom";
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome'
-import { faCalendarCheck, faHouse } from '@fortawesome/free-solid-svg-icons'
-import { faUser } from '@fortawesome/free-solid-svg-icons'
-import { faMoneyBills } from '@fortawesome/free-solid-svg-icons'
-import { faUserGraduate } from '@fortawesome/free-solid-svg-icons'
-import { faFile } from '@fortawesome/free-solid-svg-icons'
-import { faUmbrellaBeach } from '@fortawesome/free-solid-svg-icons'
+import { faCalendarCheck, faDoorOpen, faHouse, faUser, faMoneyBills, faUserGraduate, faFile, faUmbrellaBeach, faBarsProgress, faFileInvoice } from '@fortawesome/free-solid-svg-icons'
 import DashboardComponent from "../component/landingPageComponents/DashboardComponent.js"
 import ProfileComponent from "../component/landingPageComponents/ProfileComponent.js"
 import PayslipComponent from "../component/landingPageComponents/PayslipComponent.js"
@@ -19,25 +15,22 @@ import RosterComponent from "../component/landingPageComponents/RosterComponent.
 import ManagementComponent from "../component/landingPageComponents/ManagementComponent.js";
 import Lottie from "react-lottie";
 import animationData from "../../img/animation_data.json";
-
-
-
-
-
-
+import Logo from "../../img/logoconfondo.jpeg";
+import CrewControllerComponent from "../component/landingPageComponents/CrewControllerComponent.js";
+import Budgets from "../component/Budgets/Budgets.js";
 
 
 export const LandingPageWorker = () => {
 
+    const navigate = useNavigate();
 
-  
     const defaultOptions = {
             loop: true,
             autoplay: true,
             animationData: animationData, 
             renderSettings: {
                 preserveAspectRatio: "xMidYMid slice"
-            }
+        }
     }
     
 
@@ -107,12 +100,16 @@ export const LandingPageWorker = () => {
     }, [activeComponent]);
 
 
-
+ 
 
 
     const renderComponent = () => {
         switch (activeComponent) {
-            case 'Dashboard': {
+            case 'Dashboard': 
+            if (store.loggedInEmployee.department_id == 1){
+                return <Budgets />
+            }
+            else{
                 return <DashboardComponent />;
             }
             case 'Profile': {
@@ -127,15 +124,24 @@ export const LandingPageWorker = () => {
             case 'Holidays':
                 return <HolidaysComponent />
             case 'Roster':
-                if (store.loggedInEmployee.department == 3) {
+                if (store.loggedInEmployee.department_id == 3) {
                     return <RosterComponent />
-                } else { return <ManagementComponent /> }
+                } else if(store.loggedInEmployee.department_id == 2)
+                     { return  <CrewControllerComponent/> 
+                } 
+                    else {
+                    return <ManagementComponent/>
+                }
             default:
                 return <DashboardComponent />
 
         }
 
     }
+
+    if(localStorage.getItem('jwt-token') == null) {
+        navigate("/login")
+    } 
 
     return (
         <>
@@ -145,23 +151,27 @@ export const LandingPageWorker = () => {
                     options={defaultOptions}
                     height={400}
                     width={400}
+                    
                 />
             </div> :
-                <div className="text-center" style={{ backgroundImage: `url(${airplanebackground})`, backgroundSize: "100% 100%" }}>
+                <div id="bgPlane" className="text-center" style={{ backgroundImage: `url(${airplanebackground})`}}>
                     <div className="row" id="board">
                         <div className="col-3" id="verticalNavbar" >
-                            <div className="py-2" style={{ backgroundColor: `${inactiveColor}`, borderTopLeftRadius: "50px" }}>
-                                <div className="py-3 mx-auto ProfileImageContainer">
-                                    <p>Image</p>
+                            <div className="py-2" style={{ backgroundColor: `${inactiveColor}`, borderTopLeftRadius: "50px", backgroundImage: '' }}>
+                                <div className="mx-auto ProfileImageContainer">
+                                    <img className="rounded-circle" style={{height: '11vh', width: '11vh', backgroundColor: 'white'}} src={Logo} />
                                 </div>
                             </div>
-                            <p className="infoUser" style={{ margin: "0", fontSize: "3vh", backgroundColor: `${inactiveColor}` }}>{store.loggedInEmployee.name}</p>
+                            <p className="infoUser" style={{ margin: "0", fontSize: "3vh", backgroundColor: `${inactiveColor}`, borderBottomRightRadius: `${dashboardRadius}` }}>{store.loggedInEmployee.name}</p>
                             <div style={{ display: "inline-block", width: "100%", margin: "0" }}>
                                 <div className="navbarComponent" style={{ color: `${textColorDashboard}`, backgroundColor: `${colorDashboard}`, borderBottomRightRadius: `${profileRadius}` }} onClick={() => setActiveComponent('Dashboard')}>
                                     <div className="mx-auto navbar-icon-text col-2" >
-                                        <FontAwesomeIcon icon={faHouse} />
+                                        {store.loggedInEmployee.department_id == 1 ?
+                                        <FontAwesomeIcon icon={faFileInvoice} />:
+                                        <FontAwesomeIcon icon={faHouse} />}
                                         <div className="mx-1"></div>
-                                        <p>Dashboard</p>
+                                        {store.loggedInEmployee.department_id ==1 ? <p>Budgets</p> :
+                                        <p>Dashboard</p>}
                                     </div>
                                 </div>
                                 <div className="navbarComponent" style={{ color: `${textColorProfile}`, backgroundColor: `${colorProfile}`, borderTopRightRadius: `${dashboardRadius}`, borderBottomRightRadius: `${roosterRadius}` }} onClick={() => setActiveComponent('Profile')}>
@@ -173,9 +183,13 @@ export const LandingPageWorker = () => {
                                 </div>
                                 <div className="navbarComponent" style={{ color: `${textColorRoster}`, backgroundColor: `${colorRoster}`, borderTopRightRadius: `${profileRadius}`, borderBottomRightRadius: `${payslipRadius}` }} onClick={() => setActiveComponent('Roster')}>
                                     <div className="mx-auto navbar-icon-text">
-                                        <FontAwesomeIcon icon={faCalendarCheck} />
+                                        {store.loggedInEmployee.departments_id == 1 ? 
+                                        <FontAwesomeIcon icon={faBarsProgress} /> :
+                                        <FontAwesomeIcon icon={faCalendarCheck} />}
                                         <div className="mx-1"></div>
-                                        {store.loggedInEmployee.department !=3 ? <p>Management</p> : <p>Roster</p>}
+                                        {store.loggedInEmployee.department_id ==3 ? <p>Roster</p> : 
+                                        store.loggedInEmployee.department_id == 2 ? <p>Crew Control</p> : 
+                                        <p>Management</p>}
                                     </div>
                                 </div>
                                 <div className="navbarComponent" style={{ color: `${textColorPayslip}`, backgroundColor: `${colorPayslip}`, borderTopRightRadius: `${roosterRadius}`, borderBottomRightRadius: `${documentsRadius}` }} onClick={() => setActiveComponent('Payslip')}>
@@ -199,13 +213,19 @@ export const LandingPageWorker = () => {
                                         <p>Moodels</p>
                                     </div>
                                 </div>
-                                <div className="navbarComponent" style={{ color: `${textColorHolidays}`, backgroundColor: `${colorHolidays}`, borderTopRightRadius: `${moodelsRadius}`, borderBottomRightRadius: `${inactiveRadius}` }} onClick={() => setActiveComponent('Holidays')}>
-                                    <div className="mx-auto navbar-icon-text">
-                                        <FontAwesomeIcon icon={faUmbrellaBeach} />
+                                <Link to="/" style={{ textDecoration: 'none' }}>
+                                <div className="navbarComponent" style={{ color: `${textColorHolidays}`, borderBottomLeftRadius: '30px', backgroundColor: 'red', borderTopRightRadius: `${moodelsRadius}`, borderBottomRightRadius: `${inactiveRadius}` }}
+                                    onClick={() => {
+                                        actions.logout()
+
+                                     }}>
+                                    <div className="mx-auto navbar-icon-text" style={{textDecoration: 'none'}}>
+                                        <FontAwesomeIcon icon={faDoorOpen} />
                                         <div className="mx-1"></div>
-                                        <p>Holidays</p>
+                                        <p className="link">Log Out</p>
                                     </div>
                                 </div>
+                                </Link>
                             </div>
                         </div>
                         <div className="col-8 component">

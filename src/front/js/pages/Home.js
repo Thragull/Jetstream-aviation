@@ -45,9 +45,10 @@ export const Home = () => {
               className="img img-fluid rounded-pill"
             />
             <div className="d-grid mx-auto text-center">
+
               <Link to="/client">
-                <button className="btn btn" type="button">
-                  <i class="fa-solid fa-plane"></i>
+                <button className="btn" type="button">
+                  <i className="fa-solid fa-plane"></i>
                   <b> Customer</b>
                 </button>
               </Link>
@@ -62,8 +63,9 @@ export const Home = () => {
             />
             <div className="d-grid mx-auto text-center">
               <Link to="/login">
-                <button className="btn btn" type="button">
-                  <i class="fa-regular fa-circle-user"></i>
+
+                <button className="btn" type="button">
+                  <i className="fa-regular fa-circle-user"></i>
                   <b> Employee</b>
                 </button>
               </Link>
@@ -80,7 +82,8 @@ export const Home = () => {
            
             
             <div className="d-grid mx-auto">
-              <button className="btn btn" type="button">
+
+              <button className="btn" type="button">
               <i className="fa-solid fa-earth-americas"></i>
                 <b> Promotions</b>
               </button>

@@ -132,7 +132,9 @@ class Budgets(db.Model):
     client_phone = db.Column(db.BigInteger, nullable=False)
     start_date = db.Column(db.DateTime, nullable=False)
     end_date = db.Column(db.DateTime, nullable=False)
-    total_price = db.Column(db.Integer, nullable=False)
+    total_price = db.Column(db.BigInteger, nullable=False)
+    pending = db.Column(db.Boolean, nullable=False, default=True)
+    accepted = db.Column(db.Boolean)
 
     def __repr__(self):
         return "We can negotiate with {}".format(self.client_business)
@@ -140,14 +142,16 @@ class Budgets(db.Model):
     def serialize(self):
         return {
             "id": self.id,
-            "name": self.client_name,
-            "surname": self.client_surname,
-            "business": self.client_business,
-            "email": self.client_email,
-            "phone": self.client_phone,
-            "start": self.start_date,
-            "end": self.end_date,
-            "price": self.total_price
+            "client_name": self.client_name,
+            "client_surname": self.client_surname,
+            "client_business": self.client_business,
+            "client_email": self.client_email,
+            "client_phone": self.client_phone,
+            "start_date": str(self.start_date),
+            "end_date": str(self.end_date),
+            "total_price": self.total_price,
+            "pending": self.pending,
+            "accepted": self.accepted
         }
     
 #Database structure for Employees registration
@@ -265,15 +269,15 @@ class Employees(db.Model):
             "surname": self.surname,
             "email": self.email,
             "phone": self.phone,
-            "role": self.role_id,
-            "department": self.department_id,
+            "role_id": self.role_id,
+            "department_id": self.department_id,
             "gender": self.gender,
-            "nationality": self.nationality_id,
+            "nationality_id": self.nationality_id,
             "address": self.address,
             "address2": self.address2,
             "address3": self.address3,
-            "country": self.country_id,
-            "state": self.state_id,
+            "country_id": self.country_id,
+            "state_id": self.state_id,
             "city": self.city,
             "zipcode": self.zipcode,
             "birthday": self.birthday,
@@ -459,6 +463,8 @@ class Rosters(db.Model):
     __tablename__ = 'rosters'
     id = db.Column(db.Integer, primary_key=True)
     date = db.Column(db.Date, nullable=False)
+    employee_id = db.Column(db.Integer, db.ForeignKey('employees.id'), nullable=False)
+    employee = db.relationship(Employees)
     base_id = db.Column(db.Integer, db.ForeignKey('airports.id'), nullable=False)
     base = db.relationship(Airports)
     duty_id = db.Column(db.Integer, db.ForeignKey('duties.id'), nullable=False)
@@ -481,8 +487,8 @@ class Rosters(db.Model):
     flight6 = db.relationship(Flights, foreign_keys=flight6_id)
     check_out_UTC = db.Column(db.Time)
     check_out_LT = db.Column(db.Time)
-    block_hours = db.Column(db.Integer)
-    duty_hours = db.Column(db.Integer)
+    block_hours = db.Column(db.Float)
+    duty_hours = db.Column(db.Float)
 
     def __repr__(self):
         return "Duty: {} for the {}".format(self.duty.duty, str(self.date))
@@ -490,20 +496,21 @@ class Rosters(db.Model):
     def serialize(self):
         return{
             "id": self.id,
-            "date": self.date,
+            "date": str(self.date),
+            "employee_id": self.employee_id,
             "base": self.base_id,
             "duty": self.duty_id,
             "hotel": self.hotel_id,
-            "check_in_UTC": self.check_in_UTC,
-            "check_in_LT": self.check_in_LT,
+            "check_in_UTC": str(self.check_in_UTC),
+            "check_in_LT": str(self.check_in_LT),
             "flight1": self.flight1_id,
             "flight2": self.flight2_id,
             "flight3": self.flight3_id,
             "flight4": self.flight4_id,
             "flight5": self.flight5_id,
             "flight6": self.flight6_id,
-            "check_out_UTC": self.check_out_UTC,
-            "check_out_LT": self.check_out_LT,
+            "check_out_UTC": str(self.check_out_UTC),
+            "check_out_LT": str(self.check_out_LT),
             "block_hours": self.block_hours,
             "duty_hours": self.duty_hours
         }
@@ -535,7 +542,7 @@ class Salary_Prices(db.Model):
     def serialize(self):
         return {
             "id": self.id,
-            "role": self.role_id,
+            "role_id": self.role_id,
             "basic": self.basic,
             "main_service": self.main_service,
             "instruction": self.instruction,
@@ -567,7 +574,7 @@ class Bank_Details(db.Model):
     def serialize(self):
         return {
             "id": self.id,
-            "employee": self.employee_id,
+            "employee_id": self.employee_id,
             "IBAN": self.IBAN,
             "tax_number": self.tax_number
         }
@@ -575,7 +582,7 @@ class Bank_Details(db.Model):
 class Payslips(db.Model):
     __tablename__ = 'payslips'
     id = db.Column(db.Integer, primary_key=True)
-    employee_id = db.Column(db.Integer, db.ForeignKey('employees.id'), unique=True, nullable=False)
+    employee_id = db.Column(db.Integer, db.ForeignKey('employees.id'), nullable=False)
     employee = db.relationship(Employees)
     month = db.Column(db.String(10), nullable=False)
     year = db.Column(db.Integer, nullable=False)
@@ -587,7 +594,7 @@ class Payslips(db.Model):
     def serialize(self):
         return {
             "id": self.id,
-            "employee": self.employee_id,
+            "employee_id": self.employee_id,
             "month": self.month,
             "year": self.year,
             "href": self.href
@@ -624,5 +631,5 @@ class Visibility(db.Model):
         return {
             "id": self.id,
             "role": self.role_id,
-            "document": self.document_id
+            "document_id": self.document_id
         }
