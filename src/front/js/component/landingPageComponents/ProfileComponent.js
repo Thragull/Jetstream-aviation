@@ -84,8 +84,11 @@ export const ProfileComponent = () => {
                     error
                 }
             }
+            
+        if (store.loggedInEmployee.department_id == 3){
             fetchInflight();
- 
+        }
+        
         if (store.loggedInEmployee.department_id != null){
             fetchDepartment();
         }
@@ -101,6 +104,7 @@ export const ProfileComponent = () => {
         if (store.loggedInEmployee.nationality_id != null){
             fetchNationality();
         }
+
     }, []);
     
     
@@ -123,7 +127,7 @@ export const ProfileComponent = () => {
         <div>
         <div>
             <h1 className="mb-5">Profile</h1>
-            {   store.loggedInEmployee.department != 3 ? <></> :
+            {   store.loggedInEmployee.department_id != 3 ? <></> :
                 <div className="row" style={{justifyContent: "space-between"}}>
                 <div className="tab col-6" style={{background: `${activeProfileColor}`, color: `${activeTabProfileTextColor}`  }} onClick={()=> setSeeInflight(false)}>
                     Profile

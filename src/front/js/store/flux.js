@@ -8,7 +8,9 @@ const getState = ({ getStore, getActions, setStore }) => {
 			message: null,
 			budgets: [],
 			pendingBudgets: true,
-			acceptedBudgets: true
+			acceptedBudgets: true,
+			singleBudget: null
+
 		},
 		actions: {
 			// Use getActions to call a function within a fuction
@@ -35,6 +37,24 @@ const getState = ({ getStore, getActions, setStore }) => {
 				.then((response)=> response.json())
 				.then((data) => {setStore({budgets: data})})
 				.catch((err) => err)
+			},
+			getSingleBudget: (id) => {
+				const authToken = localStorage.getItem("jwt-token");
+				let url = process.env.BACKEND_URL + `/api/budgets?id=${id}`;
+				return new Promise((resolve, reject) =>{
+					fetch(url, {
+							headers: {
+								Authorization: `Bearer ${authToken}`
+							}
+					})
+					.then((response)=> response.json())
+					.then((data) => {setStore({singleBudget: data[0]})
+									resolve()})
+					.catch((err) => reject(err))
+				})
+			},
+			setSingleBudget: (value) => {
+				setStore({singleBudget: value})
 			},
 			setPendingBudgets: (value) => {
                 setStore({ pendingBudgets: value });
