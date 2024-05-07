@@ -154,7 +154,7 @@ export const LandingPageWorker = () => {
                     
                 />
             </div> :
-                <div className="text-center" style={{ backgroundImage: `url(${airplanebackground})`, backgroundSize: "100% 100%" }}>
+                <div id="bgPlane" className="text-center" style={{ backgroundImage: `url(${airplanebackground})`}}>
                     <div className="row" id="board">
                         <div className="col-3" id="verticalNavbar" >
                             <div className="py-2" style={{ backgroundColor: `${inactiveColor}`, borderTopLeftRadius: "50px", backgroundImage: '' }}>

@@ -1,13 +1,19 @@
 
 
+#bgPlane{
+    background-repeat: no-repeat;
+    background-size: cover;
+    background-position: center;
+}
 
 #board{
-    padding-top: 10vh;
+    padding-top: 4.37vh;
     padding-left: 10vh;
+    padding-right: 0;
     position: relative;
-    padding-bottom: 10vh;
+    padding-bottom: 4.37vh;
     height: 100%;
-
+    width:100%;
     
 }
 
@@ -15,10 +21,10 @@
     text-decoration: none;
 }
 
-.background{
+/*.background{
     height: 100%;
     width: 100%;
-}
+}*/
 
 .infoUser{
     color: white; 
