@@ -20,3 +20,11 @@
 .nav-tabs {
     border-color: rgba(95, 174, 219);
 }
+.budget-row:hover{
+    background-color: rgba(255, 255, 255, 0.9);
+    cursor: pointer
+}
+.nav-link{
+    color: black;
+    font-weight: bold;
+}

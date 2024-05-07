@@ -17,6 +17,7 @@ import Fleet from "./component/Fleet";
 import Services from "./component/Services";
 import LoginPage from "./pages/LoginPage";
 import Budgets from "./component/Budgets/Budgets";
+import EditBudget from "./component/Budgets/EditBudget";
 
 
 
@@ -36,7 +37,6 @@ const Layout = () => {
           {/* <Navbar /> */}
           <Routes>
             <Route element={<Home />} path="/" />
-            <Route element={<Demo />} path="/demo" />
             <Route element={<Single />} path="/single/:theid" />
             <Route element={<h1>Not found!</h1>} />
             <Route element={<LandingPageCliente />} path="/client" />
@@ -46,7 +46,6 @@ const Layout = () => {
             <Route element={<Fleet />} path="/fleet" />
             <Route element={<Services />} path="/services" />
             <Route element={<LoginPage/>} path="/login" />
-            <Route element={<Budgets/>} path="/prueba"/>
           </Routes>
           {/* <Footer /> */}
         </ScrollToTop>

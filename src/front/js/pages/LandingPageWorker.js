@@ -4,7 +4,7 @@ import airplanebackground from "../../img/aviondesdeabajo.jpeg";
 import "../../styles/landing_page_worker.css";
 import {useNavigate, Link } from "react-router-dom";
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome'
-import { faCalendarCheck, faDoorOpen, faHouse, faUser, faMoneyBills, faUserGraduate, faFile, faUmbrellaBeach } from '@fortawesome/free-solid-svg-icons'
+import { faCalendarCheck, faDoorOpen, faHouse, faUser, faMoneyBills, faUserGraduate, faFile, faUmbrellaBeach, faBarsProgress, faFileInvoice } from '@fortawesome/free-solid-svg-icons'
 import DashboardComponent from "../component/landingPageComponents/DashboardComponent.js"
 import ProfileComponent from "../component/landingPageComponents/ProfileComponent.js"
 import PayslipComponent from "../component/landingPageComponents/PayslipComponent.js"
@@ -166,9 +166,12 @@ export const LandingPageWorker = () => {
                             <div style={{ display: "inline-block", width: "100%", margin: "0" }}>
                                 <div className="navbarComponent" style={{ color: `${textColorDashboard}`, backgroundColor: `${colorDashboard}`, borderBottomRightRadius: `${profileRadius}` }} onClick={() => setActiveComponent('Dashboard')}>
                                     <div className="mx-auto navbar-icon-text col-2" >
-                                        <FontAwesomeIcon icon={faHouse} />
+                                        {store.loggedInEmployee.department_id == 1 ?
+                                        <FontAwesomeIcon icon={faFileInvoice} />:
+                                        <FontAwesomeIcon icon={faHouse} />}
                                         <div className="mx-1"></div>
-                                        <p>Dashboard</p>
+                                        {store.loggedInEmployee.department_id ==1 ? <p>Budgets</p> :
+                                        <p>Dashboard</p>}
                                     </div>
                                 </div>
                                 <div className="navbarComponent" style={{ color: `${textColorProfile}`, backgroundColor: `${colorProfile}`, borderTopRightRadius: `${dashboardRadius}`, borderBottomRightRadius: `${roosterRadius}` }} onClick={() => setActiveComponent('Profile')}>
@@ -180,11 +183,13 @@ export const LandingPageWorker = () => {
                                 </div>
                                 <div className="navbarComponent" style={{ color: `${textColorRoster}`, backgroundColor: `${colorRoster}`, borderTopRightRadius: `${profileRadius}`, borderBottomRightRadius: `${payslipRadius}` }} onClick={() => setActiveComponent('Roster')}>
                                     <div className="mx-auto navbar-icon-text">
-                                        <FontAwesomeIcon icon={faCalendarCheck} />
+                                        {store.loggedInEmployee.departments_id == 1 ? 
+                                        <FontAwesomeIcon icon={faBarsProgress} /> :
+                                        <FontAwesomeIcon icon={faCalendarCheck} />}
                                         <div className="mx-1"></div>
-                                        {store.loggedInEmployee.department ==3 ? <p>Roster</p> : 
-                                        store.loggedInEmployee.department == 2 ? <p>Crew Control</p> : 
-                                        <p>Roster</p>}
+                                        {store.loggedInEmployee.department_id ==3 ? <p>Roster</p> : 
+                                        store.loggedInEmployee.department_id == 2 ? <p>Crew Control</p> : 
+                                        <p>Management</p>}
                                     </div>
                                 </div>
                                 <div className="navbarComponent" style={{ color: `${textColorPayslip}`, backgroundColor: `${colorPayslip}`, borderTopRightRadius: `${roosterRadius}`, borderBottomRightRadius: `${documentsRadius}` }} onClick={() => setActiveComponent('Payslip')}>

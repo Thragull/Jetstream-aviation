@@ -81,8 +81,11 @@ export const ProfileComponent = () => {
                     error
                 }
             }
+            
+        if (store.loggedInEmployee.department_id == 3){
             fetchInflight();
- 
+        }
+        
         if (store.loggedInEmployee.department_id != null){
             fetchDepartment();
         }
@@ -98,6 +101,7 @@ export const ProfileComponent = () => {
         if (store.loggedInEmployee.nationality_id != null){
             fetchNationality();
         }
+
     }, []);
     
     
