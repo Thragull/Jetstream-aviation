@@ -1,0 +1,40 @@
+@media (max-width: 1200px) {
+        .CabinCrew {
+            width: 70vw;
+        }
+    }
+
+    @media (min-width: 2000px) {
+        .CabinCrew {
+            width: 80vw;
+        }
+    }
+
+    
+    @media (min-width: 2000px) {
+        .AUP {
+            font-size: 70px;
+        }
+    }    
+ 
+
+    @media (max-width: 2000px) {
+        .AUP {
+            font-size: 42px;
+        }
+    }    
+
+
+    @media (max-width: 1600px) {
+        .AUP {
+            font-size: 38px;
+        }
+    }
+
+    .AUTitle {
+        margin-top:190px;
+        font-size: 100px;
+    }
+
+
+    

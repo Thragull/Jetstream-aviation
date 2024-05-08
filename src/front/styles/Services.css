@@ -1,0 +1,49 @@
+.ImgServices {
+    object-fit: cover;
+    margin: auto;
+    width: 100%;
+    height: 900px;
+}
+
+
+@media (min-width: 2600px) {
+    .ServicesCards {
+        margin-top: 350px;
+    }
+}
+
+@media (max-width: 2600px) {
+    .ServicesCards {
+        margin-top: 200px;
+    }
+}
+@media (max-width: 2000px) {
+    .ServicesCards {
+        margin-top: 110px;
+    }
+}
+
+
+.ST {
+    font-size: 100px;
+}
+.SP {
+    font-size: 60px;
+}
+
+.btnServices {
+    background-color: #318CE7;
+    width: 70vw;
+    height: 120px;
+    font-size: 60px;
+    color: white;
+    
+}
+
+@media (max-width: 2000px){
+    .btnServices {
+        width: 1000px;
+        height: 120px;
+        font-size: 60px;
+    }
+}

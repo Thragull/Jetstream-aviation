@@ -7,10 +7,10 @@ const AboutUs = () => {
     <div>
       <Navbar />
 
-      <div className="text-center mt-5 text-primary-emphasis">
-        <h1> About us </h1>
+      <div className="AUTitle text-center">
+        <p> About us </p>
       </div>
-      <div className="p-5 text-center fs-4">
+      <div className="AUP p-5 text-center">
         <p>
           Welcome to JetStream, your gateway to bespoke air travel experiences.
           At JetStream, we pride ourselves on being more than just a
@@ -30,14 +30,14 @@ const AboutUs = () => {
         </p>
       </div>
       <div>
-        <img
+        <img 
           src={CabinCrew}
-          className="CabinCrew text-center ms-5 ps-2 pb-4"
+          className="CabinCrew mx-auto d-block ps-2 pb-5"
           alt="CabinCrew"
         />
       </div>
-      <div>
-        <p className="pb-2 text-center fs-4 ms-5 me-5">
+      <div className="AUP pb-2 text-center ms-5 me-5 pb-5">
+        <p>
           Our ethos is rooted in a deep understanding of the transformative
           power of travel. Beyond merely transporting passengers from one
           destination to another, we believe in fostering connections, creating
@@ -45,8 +45,8 @@ const AboutUs = () => {
           is an opportunity to embark on a journey of discovery, where the sky
           is not just a destination, but an infinite canvas of possibilities.
         </p>
-        <p className="pb-4 pt-2 text-center fs-4 ms-5 me-5">
-          At JetStream, we embrace innovation and excellence at every
+        <p>
+        At JetStream, we embrace innovation and excellence at every
           turn. From our cutting-edge technology to our impeccable service
           standards, we continuously strive to set new benchmarks in the world
           of charter aviation. With a steadfast commitment to sustainability and
@@ -54,6 +54,7 @@ const AboutUs = () => {
           impact on the planet, preserving the beauty of the skies for
           generations to come.
         </p>
+        
       </div>
     </div>
   );

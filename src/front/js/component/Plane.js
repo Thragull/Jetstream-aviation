@@ -8,25 +8,26 @@ import React from 'react'
 // import B787Img from "../../img/B787Img.jpg";
 
 const styles =() => {
-    width:"18rem"
+    width:"rem"
 }
+const imgStyles={width: "100%", height: "700px", objectFit: "cover"}
 const Plane = (props) => {
   return (
-    <div className="justify-content-center m-5">
+    <div className="justify-content-center mb-5">
       <div className="container">
-        <div className="col-md-5">
+        {/* <div className="col-md-5"> */}
           <div className="card" styles={styles}> 
           {/* o {{width:"18rem"}}> */}
-            <img src={props.imgSrc} className="card-img-top text-center" />
+            <img src={props.imgSrc} className="card-img-top text-center" style={imgStyles} />
             <div className="card-body">
-              <h5 className="card-title text-center">{props.title}</h5>
-              <p className="card-text text-center">{props.text}</p>
+              <h5 className="card-title text-center fs-1">{props.title}</h5>
+              <p className="card-text text-center fs-1">{props.text}</p>
              
             </div>
           </div>
         </div>
         </div>
-        </div>
+        // </div>
   )
 }
 
