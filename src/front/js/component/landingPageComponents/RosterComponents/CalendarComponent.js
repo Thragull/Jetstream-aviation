@@ -203,7 +203,7 @@ export const CalendarComponent = (props) => {
                                         data-bs-parent="#accordionExample"
                                     >
                                         <div className="accordion-body">
-                                            { event.title == 'FLT' ? 
+                                            { event.title.includes('JET') ? 
                                             <div>
                                                  <div style={{display: 'flex', justifyContent: 'space-between'}}>
                                                  <div>
