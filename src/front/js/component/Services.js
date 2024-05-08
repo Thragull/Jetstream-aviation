@@ -1,6 +1,7 @@
 import React from "react";
 import Navbar from "./Navbar";
 import { Link } from "react-router-dom";
+import { Footer } from "./footer";
 
 
 const Services = () => {
@@ -59,6 +60,7 @@ const Services = () => {
         </div>
 
       </div>
+      <Footer />
     </div>
   );
 };

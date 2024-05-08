@@ -7,6 +7,7 @@ import LogoJetstream from "../../img/LogoJetstream.png";
 import { Link } from "react-router-dom";
 // import Contact from "../component/Contact";
 // import Navbar from "../component/Navbar";
+import { Footer } from "../component/footer";
 
 export const Home = () => {
   return (
@@ -92,6 +93,7 @@ export const Home = () => {
           <div className="col-3 bg-white opacity-0"></div>
         </div>
       </div>
+      <Footer />
     </div>
   );
 };

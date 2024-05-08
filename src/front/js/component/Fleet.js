@@ -2,6 +2,7 @@ import React from "react";
 import Navbar from "./Navbar";
 import Plane from "./Plane";
 import A320Img from "../../img/A320Img.jpg";
+import { Footer } from "./footer";
 
 const Fleet = () => {
   let fleetInfo = [
@@ -46,6 +47,7 @@ const Fleet = () => {
       <Plane title="Boeing 777" text="x4"/>
       <Plane title="Boeing 787" text="x4"/> */}
       </div>
+      <Footer />
     </div>
   );
 };

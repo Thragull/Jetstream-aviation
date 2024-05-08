@@ -1,6 +1,7 @@
 import React from "react";
 import Navbar from "./Navbar";
 import Window2Img from "../../img/Window2Img.jpg";
+import { Footer } from "./footer";
 
 const LandingPageCliente = () => {
   return (
@@ -28,7 +29,7 @@ const LandingPageCliente = () => {
 </p>
       </div>
     </div>
-    
+    <Footer />
   </div>  
   )
 };
