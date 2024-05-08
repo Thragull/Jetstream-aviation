@@ -504,6 +504,7 @@ def post_budgets():
             setattr(budget, key, value)
         else:
             return jsonify({'msg': 'Invalid field {}'.format(key)}), 400
+    setattr(budget, 'pending', True)
     db.session.add(budget)
     db.session.commit()
     return jsonify({'msg': 'New budget added. Pending of review'}), 201

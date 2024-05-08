@@ -80,7 +80,6 @@ const getState = ({ getStore, getActions, setStore }) => {
 						process.env.BACKEND_URL + "/api/models")
 					const data = await resp.json()
  					allModels = data; 
- 					console.log(allModels)
 					return allModels;   
 				} catch(error) {
 					console.log(error)
@@ -98,16 +97,15 @@ const getState = ({ getStore, getActions, setStore }) => {
 					console.log(error)
 				}
 			},
-			getConfigurations: async (modelyId) => {
+			getConfigurations: async (modelId) => {
 				try {
-					const resp = await fetch(`${process.env.BACKEND_URL}/api/configurations?model_id=${modelId}`, {
+					const resp = await fetch(`${process.env.BACKEND_URL}/api/configurations?model=${modelId}`, {
 						method: 'GET',
 						headers: {
 							'Content-Type': 'application/json'
 						}
 					});
 					const data = await resp.json();
-					console.log(data);
 					return data;
 				} catch(error) {
 					console.log(error);
