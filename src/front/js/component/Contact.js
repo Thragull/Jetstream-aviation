@@ -3,6 +3,7 @@ import { Link, useNavigate } from "react-router-dom";
 import { Context } from "../store/appContext";
 import Navbar from "./Navbar";
 import "../../styles/Contact.css"
+import { Modal } from "react-bootstrap";
 
 const Contact = () => {
 
@@ -22,6 +23,17 @@ const Contact = () => {
   const [models, setModels] = useState([])
   const [configurations, setConfigurations] = useState([])
   const [unitaryPrice, setUnitaryPrice] = useState()
+
+  const [showModal, setShowModal] = useState(false);
+
+  const openModal = () => {
+    setShowModal(true);
+    console.log("debería abrir")
+  };
+
+  const closeModal = () => {
+    setShowModal(false);
+  };
 
   const calculateDaysDifference = () => {
     const oneDay = 24 * 60 * 60 * 1000; 
@@ -92,7 +104,7 @@ const Contact = () => {
         "total_price": totalPrice
       }
       postBudget(budget)
-      console.log(unitaryPrice)
+      openModal()
     }
   }, [model, selectedConfiguration, crew, unitaryPrice])
 
@@ -182,6 +194,27 @@ const Contact = () => {
             </div>
           </div>
         </form>
+        <Modal show={showModal} onHide={() => setShowModal(false)}>
+          <Modal.Header id="modalHeader" closeButton>
+            <Modal.Title><img className="stop" src={stop}/>Budget Created<img className="stop" src={stop}/> </Modal.Title>
+          </Modal.Header>
+          <Modal.Body className="bg-light">
+            <div>
+              <p><strong>Name:</strong> {name}</p>
+              <p><strong>Surname:</strong> {surname}</p>
+              <p><strong>Business:</strong> {business}</p>
+              <p><strong>Email:</strong> {email}</p>
+              <p><strong>Phone:</strong> {phone}</p>
+              <p><strong>Start Date:</strong> {startDate}</p>
+              <p><strong>End Date:</strong> {endDate}</p>
+              <p><strong>Plane Number:</strong> {planeNumber}</p>
+              <p><strong>Total Price:</strong> {unitaryPrice ? unitaryPrice * planeNumber * calculateDaysDifference() : '-'}</p>
+            </div>
+          </Modal.Body>
+          <Modal.Footer id="modalFooter">
+            <button className="btn btn-secondary" onClick={() => setShowModal(false)}>OK</button>
+          </Modal.Footer>
+        </Modal>
       </div>
     </div>
   );
