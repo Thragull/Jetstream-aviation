@@ -135,7 +135,7 @@ export const CalendarComponent = (props) => {
                 padding: '0px' ,
                 height:  currentView == 'agenda' ?  '' : '15vh', 
                 width: '20vw', 
-                backgroundColor: props.title == 'SBYM' ? standbyColor : props.title == 'OFFD' ? dayOffColor : flightColor,
+                backgroundColor: props.title.includes('SBY')  ? standbyColor : props.title == 'OFFD' ? dayOffColor : flightColor,
             
             }}>{props.title}</div>
 
@@ -145,7 +145,7 @@ export const CalendarComponent = (props) => {
                 padding: '0px' ,
                 height: '15vh' ,
                 width: '20vw', 
-                backgroundColor: props.title == 'SBYM' ? standbyColor : props.title == 'OFFD' ? dayOffColor : flightColor,
+                backgroundColor: props.title.includes('SBY') ? standbyColor : props.title == 'OFFD' ? dayOffColor : flightColor,
             
             }}>{props.title}</div>
 
@@ -203,28 +203,44 @@ export const CalendarComponent = (props) => {
                                         data-bs-parent="#accordionExample"
                                     >
                                         <div className="accordion-body">
-                                            <div style={{display: 'flex', justifyContent: 'space-between'}}>
-                                                <div>
-                                                    <FlightInfoComponent label="Departure LT" info={event.departure_LT} />
-                                                    <FlightInfoComponent label="Departure UTC" info={event.departure_UTC} />
-                                                </div>
-                                                <div>
-                                                    <FlightInfoComponent label="Departure LT" info={event.arrival_LT} />
-                                                    <FlightInfoComponent label="Departure UTC" info={event.arrival_UTC} />
-                                                </div>
-                                            </div>
-                                            <div style={{display: 'flex', justifyContent: 'space-between'}}>
-                                                <FlightInfoComponent label="Captain" info={event.cpt} />
-                                                <FlightInfoComponent label="First officer" info={event.fo} />
-                                            </div>
-                                            <div style={{display: 'flex', justifyContent: 'space-between'}}>
-                                                <FlightInfoComponent label="Senior" info={event.senior} />  
-                                                <FlightInfoComponent label="Crew 2" info={event.cc2} />                                        
-                                            </div>
-                                            <div style={{display: 'flex', justifyContent: 'space-between'}}>
-                                                <FlightInfoComponent label="Crew 3" info={event.cc3} />
-                                                <FlightInfoComponent label="Crew 4" info={event.cc4} />                                                
-                                            </div>                                            
+                                            { event.title == 'FLT' ? 
+                                            <div>
+                                                 <div style={{display: 'flex', justifyContent: 'space-between'}}>
+                                                 <div>
+                                                     <FlightInfoComponent label="Departure LT" info={event.departure_LT} />
+                                                     <FlightInfoComponent label="Departure UTC" info={event.departure_UTC} />
+                                                 </div>
+                                                 <div>
+                                                     <FlightInfoComponent label="Departure LT" info={event.arrival_LT} />
+                                                     <FlightInfoComponent label="Departure UTC" info={event.arrival_UTC} />
+                                                 </div>
+                                             </div>
+                                             <div style={{display: 'flex', justifyContent: 'space-between'}}>
+                                                 <FlightInfoComponent label="Captain" info={event.cpt} />
+                                                 <FlightInfoComponent label="First officer" info={event.fo} />
+                                             </div>
+                                             <div style={{display: 'flex', justifyContent: 'space-between'}}>
+                                                 <FlightInfoComponent label="Senior" info={event.senior} />  
+                                                 <FlightInfoComponent label="Crew 2" info={event.cc2} />                                        
+                                             </div>
+                                             <div style={{display: 'flex', justifyContent: 'space-between'}}>
+                                                 <FlightInfoComponent label="Crew 3" info={event.cc3} />
+                                                 <FlightInfoComponent label="Crew 4" info={event.cc4} />                                                
+                                             </div> 
+                                             </div>
+                                             : 
+                                             <div style={{display: 'flex', justifyContent: 'space-between'}}>
+                                                 <div>
+                                                     <FlightInfoComponent label="CHECK IN LT" info={event.start} />
+                                                     
+                                                 </div>
+                                                 <div>
+                                                    <FlightInfoComponent label="CHECK OUT LT" info={event.end} />
+                                                     
+                                                 </div>
+                                             </div>
+                                            }
+                                                                                      
                                         </div>
                                     </div>
                                 </div>)})}

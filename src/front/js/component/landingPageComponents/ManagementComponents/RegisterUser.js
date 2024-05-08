@@ -140,7 +140,7 @@ export const RegisterUser = (props) => {
 
     return (
         <div>
-            <h1 className="mb-5">Edit Profile</h1>
+            <h1 className="mb-5">Register User</h1>
             <div className="form">
                 <div style={{display: "flex"}}>
                     <InputComponent label="Name" placeholder="Name" name="name" value={newEmployee.name} handleScript={handleInputChange}/> 

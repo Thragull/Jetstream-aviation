@@ -47,8 +47,9 @@ export const ProfileComponent = () => {
         const fetchCountry = async() => {
             try{
                 const countryData = await actions.getCountryById(store.loggedInEmployee.country_id)
+                console.log(store.loggedInEmployee)
                 setCountry(countryData)
-
+                
             } catch (error) {
                 console.log(error)
             }
@@ -101,6 +102,7 @@ export const ProfileComponent = () => {
         if (store.loggedInEmployee.nationality_id != null){
             fetchNationality();
         }
+        fetchCountry();
 
     }, []);
     
@@ -118,8 +120,14 @@ export const ProfileComponent = () => {
       };
 
 	return (
-       editProfile ?   
-            <EditProfile saveChangesFunction={()=> setEditProfile(false)}/>    
+       editProfile ? 
+       <div>
+            <EditProfile saveChangesFunction={()=> setEditProfile(false)}/> 
+                <div  className="my-5">
+                <button onClick={()=> setEditProfile(false)} type="button" className="btn btn-info">Return</button>
+                </div> 
+                </div>         
+
                  :  
         <div>
         <div>
@@ -166,7 +174,7 @@ export const ProfileComponent = () => {
                         <InfoComponent label="City" name={store.loggedInEmployee.city ? store.loggedInEmployee.city : '' }/>
                     </div>
                     <Divider/> 
-                    <div className="my-5">
+                    <div  className="my-5">
                         <button onClick={()=> setEditProfile(true)} type="button" className="btn btn-info">Edit Profile</button>
                     </div> 
                 </div> 

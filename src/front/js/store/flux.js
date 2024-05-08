@@ -183,6 +183,7 @@ const getState = ({ getStore, getActions, setStore }) => {
 					)
 					const data = await resp.json()
 					const country = data[0].country
+					console.log(country)
 					return country
 				} catch(error) {
 					console.log(error)
@@ -439,7 +440,7 @@ const getState = ({ getStore, getActions, setStore }) => {
 						setStore({ loggedInEmployee: employee });
 						setTimeout(() => {
 							
-						}, 1000);
+						}, 5000);
 						return employee
 					} catch (error) {
 
