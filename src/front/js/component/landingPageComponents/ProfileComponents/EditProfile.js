@@ -1,4 +1,4 @@
-import React, {useState, useContext, useEffect, useRef } from "react";
+import React, {useState, useContext, useEffect, useRef} from "react";
 import { Context } from "../../../store/appContext";
 import InputComponent from "../reusableComponents/InputComponent";
 <script src="https://cdnjs.cloudflare.com/ajax/libs/air-datepicker/2.2.3/js/i18n/datepicker.en.js"></script>
@@ -21,7 +21,7 @@ export const EditProfile = (props) => {
         const { name, value } = event.target;
         // Si el nombre es 'state', 'country', o 'nationality', convierte el valor a entero
         let parsedValue = value;
-        if (name === 'state' || name === 'country' || name === 'nationality') {
+        if (name === 'state_id' || name === 'country_id' || name === 'nationality_id') {
             parsedValue = parseInt(value);
         }
         setEditedProfile({ ...editedProfile, [name]: parsedValue });
@@ -64,7 +64,8 @@ export const EditProfile = (props) => {
         const authToken = localStorage.getItem("jwt-token");
         try {
             console.log(authToken)
-            const response = await fetch(`${process.env.BACKEND_URL}/api/employee?id=${store.loggedInEmployee.id}`, {
+            delete editedProfile.id
+            const response = await fetch(`${process.env.BACKEND_URL}/api/employee`, {
                 method: "PUT",
                 headers: {
                     "Content-Type": "application/json",
@@ -73,9 +74,8 @@ export const EditProfile = (props) => {
                 body: JSON.stringify(editedProfile),
             });
             if (response.ok) {
-                console.log("Employee successfully added to database");
+                console.log("Employee successfully modified");
                 // Limpiar el formulario o realizar cualquier otra acción necesaria
-                setStore({ loggedInEmployee: employee });
             } else {
                 const data = await response.json();
                 console.error(data.msg);
@@ -105,7 +105,7 @@ export const EditProfile = (props) => {
                             aria-label="Large select example" 
                             style={{height: '6vh', fontSize: '2vh'}}
                             value={selectedNationality}
-                            name = "nationality"
+                            name = "nationality_id"
                             onChange={handleInputChange}
                             >
                             <option selected>Select a nationality</option>
@@ -131,7 +131,7 @@ export const EditProfile = (props) => {
                                 handleCountryChange(event)
                                 handleInputChange(event)
                             }}
-                            name = "country"
+                            name = "country_id"
                             >
                             <option selected>Select a country</option>
                             {
@@ -147,7 +147,7 @@ export const EditProfile = (props) => {
                     className="form-select form-select-lg mb-3" 
                     aria-label="Large select example" 
                     style={{height: '6vh', fontSize: '2vh'}}
-                    name="state"
+                    name="state_id"
                     onChange={handleInputChange}
                     >
                             <option selected>Select a State</option>
@@ -161,7 +161,7 @@ export const EditProfile = (props) => {
             <div style={{display: "flex"}}>
                  <InputComponent label="City" placeholder="city" name="city" handleScript={handleInputChange} /> 
             </div>
-            <div className="my-5">
+            <div style={{display: 'flex'}} className="my-5">
                 <button onClick={()=> {
                     editEmployee()}} 
                     type="button" className="btn btn-warning">Save changes</button>
