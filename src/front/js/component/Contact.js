@@ -4,6 +4,7 @@ import { Context } from "../store/appContext";
 import Navbar from "./Navbar";
 import "../../styles/Contact.css"
 import { Modal } from "react-bootstrap";
+import { Footer } from "./footer";
 
 const Contact = () => {
 
@@ -216,6 +217,7 @@ const Contact = () => {
           </Modal.Footer>
         </Modal>
       </div>
+      <Footer />
     </div>
   );
 };

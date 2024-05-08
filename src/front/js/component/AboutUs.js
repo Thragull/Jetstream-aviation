@@ -1,6 +1,7 @@
 import React from "react";
 import Navbar from "./Navbar";
 import CabinCrew from "../../img/CabinCrew.jpg";
+import { Footer } from "./footer";
 
 const AboutUs = () => {
   return (
@@ -56,6 +57,7 @@ const AboutUs = () => {
         </p>
         
       </div>
+      <Footer />
     </div>
   );
 };
