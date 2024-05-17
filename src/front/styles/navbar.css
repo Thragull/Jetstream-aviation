@@ -10,6 +10,7 @@
   font-family: 'Montserrat', sans-serif;
   height: 100%;
 }
+
 .LogoJetstream {
   height: 10rem;
   width: auto;
@@ -53,10 +54,15 @@
   margin-right: auto;
 }
 
-.link-nav{
+.link-nav {
   font-size: 1.6rem;
   font-family: 'Montserrat', sans-serif;
   color: #174A83;
+  transition: transform 0.5s;
+}
+
+.link-nav:hover {
+  transform: scale(1.1);
 }
 
 .NavBtn {

@@ -4,7 +4,7 @@
 
 .footer {
   background-color: #174A83;
-  color: #6cb4ee;
+  color: #95c8f1;
   padding: 3rem 0;
   font-size: 1.2rem;
   display: flex;
@@ -39,7 +39,7 @@
 
 .social-icons a {
   margin-right: 15px;
-  color: #61b5db;
+  color: #95c8f1;
   font-size: 1.6rem;
   transition: color 0.3s ease;
 }

@@ -1,6 +1,6 @@
 import React from "react";
 import Navbar from "./Navbar";
-import Window2Img from "../../img/Window2Img.jpg";
+import Window1Img from "../../img/Window1Img.jpg";
 import { Footer } from "./footer";
 import "../../styles/Welcome.css";
 
@@ -11,7 +11,7 @@ const LandingPageCliente = () => {
       <div className="flex-container">
         <div className="div-image">
           <img
-            src={Window2Img}
+            src={Window1Img}
             alt="Window2Img"
             className="img img-fluid rounded-pill"
           />
