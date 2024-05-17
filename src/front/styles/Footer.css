@@ -1,51 +1,80 @@
-.FooterBar {
-    background-color: #7CB9E8;
-    height: 500px;
+.footer-dad {
+  margin-bottom: 0;
+}
+
+.footer {
+  background-color: #174A83;
+  color: #6cb4ee;
+  padding: 3rem 0;
+  font-size: 1.2rem;
+  display: flex;
+  flex-wrap: wrap;
+  justify-content: space-around;
+  font-family: 'Montserrat', sans-serif;
+}
+
+.footer-section {
+  text-align: center;
+  width: 20%;
+  flex-grow: 1;
+}
+
+.footer-heading {
+  font-size: 1.2rem;
+  margin-bottom: 10px;
+  color: #fff;
+  margin-top: 0;
+}
+
+.footer-text {
+  line-height: 1.6;
+  font-size: 1rem;
+}
+
+.social-icons {
+  display: flex;
+  justify-content: center;
+  margin-top: 10px;
+}
+
+.social-icons a {
+  margin-right: 15px;
+  color: #61b5db;
+  font-size: 1.6rem;
+  transition: color 0.3s ease;
+}
+
+.social-icons a:hover {
+  color: #ffffff;
+}
+
+.footer-logo {
+  width: 8rem;
+  height: auto;
+  margin-bottom: 20px;
+}
+
+.copy-right {
+  font-size: 1rem;
+  text-align: center;
+  color: #d3e5f3;
+  flex-basis: 100%;
+  align-self: flex-end;
+  background-color: #174A83;
+  padding-bottom: 2rem;
+}
+
+.copy-right p {
+  margin: 0;
+}
+
+.copy-right span {
+  font-weight: bold;
+}
+
+@media screen and (max-width: 768px) {
+  .footer-section {
     width: 100%;
-    margin-top: 50px;
-}
-
-@media (max-width: 1600px){
-    .FooterBar {
-        height: 600px;
-    }
-}
-
-@media (max-width: 1200px){
-    .FooterBar {
-        height: 600px;
-    }
-}
-@media (min-width: 1600px){
-    .FooterBar {
-        height: 600px;
-    }
-}
-
-@media (min-width: 1600px){
-    #LogoFooter {
-        height: 370px;
-        width:370px;
-    }
-}
-
-@media (max-width: 1600px){
-    #LogoFooter {
-        height: 290px;
-        width:290px;
-    }
-}
-
-@media (max-width: 1200px){
-    #LogoFooter {
-        height: 190px;
-        width:190px;
-    }
-}
-
-@media (max-width: 900px){
-    #LogoFooter {
-        height: 150px;
-        width:150px;
-    }
+    padding-bottom: 1rem;
+  }
 }

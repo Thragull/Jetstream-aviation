@@ -1,10 +1,152 @@
 .NavbarHome {
-  height: 121px;
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  min-height: 100px; 
   background-color: #7cb9e8;
   background-image: linear-gradient(to right, #7cb9e8, white);
   border-bottom-right-radius: 95%;
+  padding: 1rem;
+  font-family: 'Montserrat', sans-serif;
+  height: 100%;
+}
+.LogoJetstream {
+  height: 10rem;
+  width: auto;
+  margin: 1rem;
 }
 
-.ContactButton {
-  text-decoration-line: none;
+.title-nav-home {
+  font-size: 4rem;
+  padding: 1rem;
+  font-weight: bold;
+  background: linear-gradient(to right, #174A83 20%, #b7dcf1 40%, #ffffff 60%, #174A83 80%);
+  background-size: 200%;
+  color: transparent;
+  -webkit-background-clip: text;
+  background-clip: text;
+  animation: shine 8s linear infinite;
+  text-decoration: none !important;
+}
+
+.title-nav-home:hover {
+  text-decoration: none !important;
+}
+
+.menu-btn {
+  display: none; 
+}
+
+.navbar-collapse {
+  display: flex;
+  align-items: center;
+  flex-grow: 1;
+  height: 100%; 
+}
+
+.nav-links {
+  display: flex;
+  flex-direction: row;
+  font-size: 1.6rem;
+  font-family: 'Montserrat', sans-serif;
+  color: #174A83;
+  margin-right: auto;
+}
+
+.link-nav{
+  font-size: 1.6rem;
+  font-family: 'Montserrat', sans-serif;
+  color: #174A83;
+}
+
+.NavBtn {
+  margin: 0.5rem 1rem;
+}
+
+@media (max-width: 1280px) {
+  .NavbarHome {
+    flex-direction: column;
+    align-items: center; 
+    border-bottom-right-radius: 0;
+    padding: 1rem; 
+  }
+
+  .navbar-collapse {
+    flex-direction: column;
+    align-items: center; 
+  }
+
+  .menu-btn {
+    display: block;
+    margin-right: auto;
+    margin-bottom: 1rem; 
+  }
+
+  .nav-links {
+    display: none;
+    width: 100%;
+  }
+
+  .NavBtn {
+    margin: 0.5rem; 
+  }
+
+  .NavBtn:last-child {
+    margin-bottom: 1rem; 
+  }
+
+  .nav-links.open {
+    display: flex;
+    flex-direction: column;
+    align-items: center; 
+  }
+
+  .title-nav-home {
+    font-size: 3rem;
+    margin-right: 0px;
+  }
+}
+
+@media (max-width: 1500px) {
+  .nav-links {
+    display: flex;
+    flex-direction: row;
+    font-size: 1.2rem;
+    font-family: 'Montserrat', sans-serif;
+    color: #174A83;
+    margin-right: auto;
+  }
+
+  .link-nav{
+    font-size: 1.2rem;
+    font-family: 'Montserrat', sans-serif;
+    color: #174A83;
+  }
+
+  .title-nav-home {
+    font-size: 3rem;
+  }
+}
+
+@media (max-width: 680px) {
+  .navbar-collapse {
+    flex-direction: column;
+    align-items: center;
+    max-width: 90%;
+    overflow-x: hidden;
+  }
+  
+  .nav-links {
+    font-size: 0.8rem;
+    display: flex;
+    flex-wrap: wrap;
+    justify-content: center;
+  }
+
+  .link-nav {
+    font-size: 0.8rem;
+    margin: 0.2rem;
+    max-width: calc(50% - 0.4rem);
+    text-align: center;
+  }
 }

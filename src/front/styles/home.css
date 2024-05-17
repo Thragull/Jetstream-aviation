@@ -1,193 +1,110 @@
-/*
-    home.css: This website contains selectors only used in home.css
+.nav-component {
+  font-family: 'Montserrat', sans-serif;
+  min-height: 100vh;
+}
 
-    All pages share the styles on index.css but you should create 
-    one more css for each page that will contain the selected used 
-    on that page only (the ones not reused in other pages).
-*/
 .NavbarHome {
-  height: 300px;
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  height: 250px;
   background-color: #7cb9e8;
   background-image: linear-gradient(to right, #7cb9e8, white);
   border-bottom-right-radius: 95%;
+  padding: 2rem 1rem;
 }
-
-@media (max-width: 1600px) {
-  .NavbarHome {
-    height:210px;
-  }
-}
-
-@media (max-width: 1200px) {
-  .NavbarHome {
-    height:180px;
-  }
-}
-
-@media (max-width: 900px) {
-  .NavbarHome {
-    height:140px;
-  }
-}
-
-#Title1 {
-  font-size: 220px;
-  color: white;
-  margin-left: 60px;
-  margin-top:20px;
-  
-}
-
-@media (max-width: 1600px){
-  #Title1 {
-    font-size: 90px;
-  }
-}
-
-@media (max-width: 1200px){
-  #Title1 {
-    font-size: 60px;
-  }
-}
-
-@media (max-width: 900px){
-  #Title1 {
-    font-size: 45px;
-  }}
 
 .LogoJetstream {
-  display: flex;
-  float: right;
-  
-
+  height: 20rem;
+  width: 20rem;
+  margin-top: 2rem; 
 }
 
-@media (min-width: 2400px){
-  .LogoJetstream{
-    width: 800px;
-    height: 800px;
-  }
+.title-nav-home {
+  font-size: 4.5vw;
+  padding: 3rem;
+  font-weight: bold;
+  background: linear-gradient(to right, #174A83 20%, #b7dcf1 40%, #ffffff 60%, #174A83 80%);
+  background-size: 200%;
+  color: transparent;
+  -webkit-background-clip: text;
+  background-clip: text;
+  animation: shine 8s linear infinite;
 }
 
-@media (max-width: 2400px){
-  .LogoJetstream{
-    width: 700px;
-    height: 700px;
-  }
+.nav-lessfot{
+  min-height: 100vh;
 }
 
-@media (max-width: 2000px){
-  .LogoJetstream{
-    width: 600px;
-    height: 600px;
-  }
-}
-@media (max-width: 1600px){
-  .LogoJetstream{
-    width: 500px;
-    height: 500px;
-  }
-}
-@media (max-width: 1200px){
-  .LogoJetstream{
-    width: 300px;
-    height: 300px;
-  }
-}
-
-@media (max-width: 900px){
-  .LogoJetstream{
-    width: 200px;
-    height: 200px;
-  }
-}
-
-
-
-@media (min-width: 2400px){
-  .RowWindows {
-    margin-top: 120px;
-    margin-bottom: 200px;
-    height: 1100px;
-  }
-}
-
-@media (max-width: 2400px){
-  .RowWindows {
-    margin-top: 100px;
-    margin-bottom: 200px;
-    height: 1100px;
-  }
-}
-
-@media (min-width: 2400px){
-  .img {
-    height: 900px;
-    width: 550px;
-  }
-}
-
-@media (max-width: 2400px){
-  .img {
-    height: 940px;
-    width: 700px;
-  }
-}
-@media (max-width: 2200px){
-  .img {
-    height: 880px;
-    width: 600px;
-  }
-}
-
-
-
-@media (max-width: 2000px){
-  .img {
-    height: 800px;
-    width: 550px;
-  }
-}
-
-@media (max-width: 1800px){
-  .img {
-    height: 750px;
-    width: 600px;
-  }
-}
-@media (max-width: 1600px){
-  .img {
-    height: 600px;
-    width: 450px;
-  }
-}
-@media (max-width: 1400px){
-  .img {
-    height: 550px;
-    width: 400px;
-  }
-}
-
-@media (max-width: 1200px){
-  .img {
-    height: 500px;
-    width: 350px;
+@keyframes shine {
+  to {
+    background-position: 200% center;
   }
 }
 
 .btn {
   background-color: white;
+  color: #174A83;
+  font-size: 1.5rem;
+  margin-top: 1rem;
+  transition: transform 0.5s ease;
+}
+
+.btn:hover {
+  background-color: white;
   color: #6cb4ee;
-  position: center;
-  font-size: 50px;
+  transform: scale(1.1);
 }
 
-@media (max-width:1600px){
-  .btn {font-size: 30px;
-}
+.RowWindows {
+  margin-top: 2rem;
+  display: flex;
+  justify-content: center;
 }
 
-@media (max-width:1200px){
-  .btn {font-size: 24px;
+.RowWindows .col-3 {
+  margin-bottom: 2rem;
 }
+
+.img {
+  width: 15rem;
+  height: auto;
+  margin-bottom: 1rem;
+}
+
+@media (max-width: 1280px) {
+  .NavbarHome {
+    flex-direction: column;
+    height: auto;
+    border-bottom-right-radius: 0;
+    text-align: center;
+  }
+
+  .LogoJetstream {
+    height: 10rem;
+    width: 10rem;
+  }
+
+  .title-nav-home {
+    font-size: 8vw;
+    padding: 1rem;
+  }
+
+  .RowWindows {
+    flex-direction: column;
+    align-items: center;
+  }
+
+  .RowWindows .col-3 {
+    margin-bottom: 1rem;
+    width: 100%;
+  }
+
+  .img {
+    width: 8rem;
+  }
+
+  .btn {
+    font-size: 1rem;
+  }
 }

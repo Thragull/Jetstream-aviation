@@ -1,47 +1,53 @@
-import React, { Component } from "react";
+import React from "react";
 import LogoJetstream from "../../img/LogoJetstream.png";
+import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
+import { faInstagram, faTwitter, faFacebook } from '@fortawesome/free-brands-svg-icons';
 
 export const Footer = () => (
-	
-	<div className="FooterBar" >
-	<footer className="footer mt-auto py-3 ms-5">
-		<div className="row">
-			<div className="col-5 text-white mt-5"> 
-			<h1><b>Adress:</b></h1>
-			<p className="fs-1">
-1234 Willow Street
-Oakwood, TX 78901
-United States</p>
-<h1><b> Social Medias:</b></h1>
-			<p className="fs-1 ">
-            Instagram
-			</p>
-			<p className="fs-1">Twitter</p>
-			<p className="fs-1">Facebook</p>
-
-			</div>
-
-			<div className="col-4 text-white mt-5 ">
-            <h1><b> Support</b></h1>
-			<div>-</div>
-			<h1><b> Work with Us</b></h1>
-			<div>-</div>
-			<h1><b>Terms and Conditions</b></h1>
-			<div>-</div>
-			<h1><b>Bagagge Policy</b></h1>
-			<div>-</div>
-			<h1><b>FAQs</b></h1>
-			</div>
-			
-			<div className="col-3">
-            <img
-			        id="LogoFooter"
-                    src={LogoJetstream}
-                    
-                  />
-			</div>
-		</div>
-	</footer>
-	</div>
-	
+  <div className="FooterBar">
+    <footer className="footer-dad">
+      <div className="footer">
+        <div className="footer-section text-center">
+          <img
+            src={LogoJetstream}
+            alt="Logo"
+            className="footer-logo"
+          />
+        </div>
+        <div className="footer-section">
+          <h2 className="footer-heading">Address</h2>
+          <p className="footer-text">
+            1234 Willow Street <br />
+            Oakwood, TX 78901 <br />
+            United States
+          </p>
+        </div>
+        <div className="footer-section">
+          <h2 className="footer-heading">Social Media</h2>
+          <div className="social-icons text-center">
+            <a href="https://www.instagram.com">
+              <FontAwesomeIcon icon={faInstagram} className="icon" />
+            </a>
+            <a href="https://www.twitter.com">
+              <FontAwesomeIcon icon={faTwitter} className="icon" />
+            </a>
+            <a href="https://www.facebook.com">
+              <FontAwesomeIcon icon={faFacebook} className="icon" />
+            </a>
+          </div>
+        </div>
+        <div className="footer-section">
+          <h2 className="footer-heading">Support</h2>
+          <p className="footer-text">Lorem ipsum dolor sit amet.</p>
+        </div>
+        <div className="footer-section">
+          <h2 className="footer-heading">Work with Us</h2>
+          <p className="footer-text">Lorem ipsum dolor sit amet.</p>
+        </div>
+      </div>
+      <div className="copy-right">
+        <p>&copy; {new Date().getFullYear()} JetStream. All rights reserved.</p>
+      </div>
+    </footer>
+  </div>
 );
