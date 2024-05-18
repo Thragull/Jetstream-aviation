@@ -1,49 +1,88 @@
+.ServicesCards {
+    font-family: 'Montserrat', sans-serif;
+    display: flex;
+    flex-wrap: wrap;
+    padding: 6rem;
+}
+
+.card-serv {
+    height: auto; 
+    margin: 2rem; 
+    color: #174A83;
+}
+
+.card-serv .card-body-serv {
+    height: 100%;
+    background-color: #ffffff;
+    border-radius: 10px;
+    padding: 1.5rem;
+    backface-visibility: hidden;
+}
+
 .ImgServices {
+    width: 100%; 
+    height: 300px; 
     object-fit: cover;
-    margin: auto;
-    width: 100%;
-    height: 900px;
+    border-radius: 10px;
+    transition: transform 0.5s ease, box-shadow 0.5s ease;
+    box-shadow: 0 4px 8px rgba(0, 0, 0, 0.2);
 }
 
-
-@media (min-width: 2600px) {
-    .ServicesCards {
-        margin-top: 350px;
-    }
+.ImgServices:hover {
+    transform: rotateY(-15deg);
+    box-shadow: 0 8px 16px rgba(0, 0, 0, 0.4);
 }
 
-@media (max-width: 2600px) {
-    .ServicesCards {
-        margin-top: 200px;
-    }
-}
-@media (max-width: 2000px) {
-    .ServicesCards {
-        margin-top: 110px;
-    }
+.card-title-serv {
+    font-size: 1.3rem;
+    margin-bottom: 10px;
+    font-weight: bold;
 }
 
-
-.ST {
-    font-size: 100px;
-}
-.SP {
-    font-size: 60px;
+.card-text-serv {
+    font-size: 1.1rem;
 }
 
 .btnServices {
-    background-color: #318CE7;
-    width: 70vw;
-    height: 120px;
-    font-size: 60px;
+    background-color: #174A83;
+    border: none;
     color: white;
-    
+    padding: 12px 24px;
+    text-align: center;
+    text-decoration: none;
+    display: inline-block;
+    font-size: 20px;
+    cursor: pointer;
+    border-radius: 8px;
+    box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
+    transition: all 0.3s ease;
+    font-weight: bold;
 }
 
-@media (max-width: 2000px){
-    .btnServices {
-        width: 1000px;
-        height: 120px;
-        font-size: 60px;
-    }
+.btnServices:hover {
+    background-color: #7cb9e8;
+    box-shadow: 0 8px 16px rgba(0, 0, 0, 0.2);
+    color: #174A83;
+}
+
+@media (max-width: 992px) {
+  .ServicesCards {
+    padding: 2rem;
+  }
+
+  .card-serv {
+    margin: 2rem auto;
+  }
+  .button-div-serv{
+    padding-bottom: 2rem;
+  }
+}
+
+@media (max-width: 768px) {
+  .ServicesCards {
+    padding: 1rem;
+  }
+  .button-div-serv{
+    padding-bottom: 2rem;
+  }
 }

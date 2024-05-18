@@ -1,17 +1,133 @@
-@media (min-width: 2600px){
-.FleetCards {
-    margin-top: 390px;
-}}
-@media (max-width: 2600px){
-    .FleetCards {
-        margin-top: 200px;
-    }}
-@media (max-width: 2400px){
-    .FleetCards {
-        margin-top: 200px;
-    }}
+.container-fleet {
+    padding: 7rem;
+    font-family: 'Montserrat', sans-serif;
+    color: #174A83;
+    position: relative;
+    min-height: 80vh;
+}
 
-@media (max-width: 2000px){
-    .FleetCards {
-        margin-top: 180px;
-    }}
+.fleet-cards {
+    display: flex;
+    flex-wrap: nowrap;
+    overflow-x: auto;
+    gap: 20px;
+    padding: 20px 0;
+}
+
+.fleet-cards::-webkit-scrollbar {
+    height: 12px;
+}
+
+.fleet-cards::-webkit-scrollbar-track {
+    background: #ebf7ff;
+    border-radius: 10px;
+}
+
+.fleet-cards::-webkit-scrollbar-thumb {
+    background: #174A83;
+    border-radius: 10px;
+}
+
+.fleet-cards::-webkit-scrollbar-thumb:hover {
+    background: #145a99;
+}
+
+.plane-card {
+    width: 30rem;
+    min-height: 25rem;
+    flex: 0 0 auto;
+    perspective: 1000px;
+}
+
+.card {
+    border: none;
+    border-radius: 10px;
+    box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
+    transition: transform 0.3s ease-in-out;
+    transform-style: preserve-3d;
+}
+
+.card:hover {
+    transform: rotateY(-10deg);
+}
+
+.card-img-top {
+    width: 100%;
+    height: 20rem;
+    object-fit: cover;
+    border-top-left-radius: 10px;
+    border-top-right-radius: 10px;
+}
+
+.card-body {
+    background-color: #ebf7ff;
+    border-bottom-left-radius: 10px;
+    border-bottom-right-radius: 10px;
+    padding: 20px;
+    backface-visibility: hidden;
+}
+
+.card-title {
+    font-size: 1.5rem;
+    margin-bottom: 10px;
+    font-weight: bold;
+}
+
+.card-text {
+    font-size: 1.2rem;
+}
+
+@media (max-width: 850px) {
+    .plane-card {
+        width: 25rem;
+        min-height: 20rem;
+    }
+
+    .card-img-top {
+        height: 17rem;
+    }
+
+    .card-body {
+        padding: 20px;
+    }
+
+    .card-title {
+        font-size: 1.2rem;
+        margin-bottom: 10px;
+        font-weight: bold;
+    }
+
+    .card-text {
+        font-size: 1rem;
+    }
+}
+
+@media (max-width: 665px) {
+    .plane-card {
+        width: 17rem;
+        min-height: 11rem;
+    }
+
+    .card-img-top {
+        height: 11rem;
+    }
+
+    .card-body {
+        padding: 20px;
+    }
+
+    .card-title {
+        font-size: 1rem;
+        margin-bottom: 5px;
+        font-weight: bold;
+    }
+
+    .card-text {
+        font-size: 0.6rem;
+    }
+
+    .container-fleet {
+        padding: 2rem;
+        min-height: 50vh;
+    }
+}
