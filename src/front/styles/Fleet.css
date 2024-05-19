@@ -4,38 +4,43 @@
     color: #174A83;
     position: relative;
     min-height: 80vh;
+    display: flex;
+    justify-content: center;
+    align-items: center;
 }
 
 .fleet-cards {
     display: flex;
-    flex-wrap: nowrap;
-    overflow-x: auto;
-    gap: 20px;
-    padding: 20px 0;
+    justify-content: center;
+    align-items: center;
+    width: 50rem;
+    position: relative;
 }
 
-.fleet-cards::-webkit-scrollbar {
-    height: 12px;
+.arrow {
+    background: none;
+    border: none;
+    font-size: 3rem;
+    color: #174A83;
+    cursor: pointer;
+    user-select: none;
+    position: absolute;
+    top: 50%;
+    transform: translateY(-50%);
+    z-index: 10;
 }
 
-.fleet-cards::-webkit-scrollbar-track {
-    background: #ebf7ff;
-    border-radius: 10px;
+.left-arrow {
+    left: -3.5rem;
 }
 
-.fleet-cards::-webkit-scrollbar-thumb {
-    background: #174A83;
-    border-radius: 10px;
-}
-
-.fleet-cards::-webkit-scrollbar-thumb:hover {
-    background: #145a99;
+.right-arrow {
+    right: -3.5rem;
 }
 
 .plane-card {
-    width: 30rem;
-    min-height: 25rem;
-    flex: 0 0 auto;
+    width: 100%;
+    min-height: 30rem;
     perspective: 1000px;
 }
 
@@ -48,12 +53,12 @@
 }
 
 .card:hover {
-    transform: rotateY(-10deg);
+    transform: rotateY(-7deg);
 }
 
 .card-img-top {
     width: 100%;
-    height: 20rem;
+    height: 30rem;
     object-fit: cover;
     border-top-left-radius: 10px;
     border-top-right-radius: 10px;
@@ -78,13 +83,25 @@
 }
 
 @media (max-width: 850px) {
+    .fleet-cards {
+        width: 33rem;
+    }
+
+    .left-arrow {
+        left: -2.5rem;
+    }
+
+    .right-arrow {
+        right: -2.5rem;
+    }
+
     .plane-card {
-        width: 25rem;
-        min-height: 20rem;
+        width: 100%;
+        min-height: 27rem;
     }
 
     .card-img-top {
-        height: 17rem;
+        height: 22rem;
     }
 
     .card-body {
@@ -103,13 +120,25 @@
 }
 
 @media (max-width: 665px) {
+    .fleet-cards {
+        width: 18rem;
+    }
+
+    .left-arrow {
+        left: -2.5rem;
+    }
+
+    .right-arrow {
+        right: -2.5rem;
+    }
+
     .plane-card {
-        width: 17rem;
-        min-height: 11rem;
+        width: 100%;
+        min-height: 15rem;
     }
 
     .card-img-top {
-        height: 11rem;
+        height: 12rem;
     }
 
     .card-body {
@@ -123,7 +152,7 @@
     }
 
     .card-text {
-        font-size: 0.6rem;
+        font-size: 0.8rem;
     }
 
     .container-fleet {

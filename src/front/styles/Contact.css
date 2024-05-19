@@ -1,66 +1,77 @@
-.page-contact{
-    min-height: 100vh;
+.page-contact {
+  min-height: 100vh;
 }
 
 .container {
-    background-color: #f8f9fa;
-    padding: 3rem;
-    border-radius: 10px;
-    box-shadow: 0px 0px 10px rgba(0, 0, 0, 0.1);
-    margin-top: 6rem;
-    margin-bottom: 6rem;
+  background-color: #f8f9fa;
+  padding: 3rem;
+  border-radius: 10px;
+  box-shadow: 0px 0px 10px rgba(0, 0, 0, 0.1);
+  margin-top: 6rem;
+  margin-bottom: 6rem;
+}
+
+.form-label {
+  font-weight: bold;
+}
+
+.form-control {
+  border-radius: 5px;
+}
+
+.btn-secondary {
+  background-color: #174a83;
+  border-color: #174a83;
+  color: #fff;
+  font-weight: bold;
+}
+
+.btn-secondary:hover {
+  background-color: #7cb9e8;
+  border-color: #7cb9e8;
+  color: #174a83;
+}
+
+.modal-content {
+  border-radius: 10px;
+}
+
+.modal-header {
+  background-color: #7cb9e8;
+  border-bottom: none;
+}
+
+.modal-title {
+  color: #fff;
+}
+
+.modal-body {
+  background-color: #fff;
+}
+
+.modal-footer {
+  background-color: #7cb9e8;
+  border-top: none;
+}
+
+#Switch {
+  margin-top: 20px;
+}
+
+@media (max-width: 768px) {
+  .container {
+    padding: 15px;
   }
-  
-  .form-label {
-    font-weight: bold;
+
+  .row > .col-12,
+  .row > .col-12.col-md-6,
+  .row > .col-12.col-md-4,
+  .row > .col-12.col-md-3,
+  .row > .col-12.col-md-1 {
+    margin-bottom: 1rem;
   }
-  
-  .form-control {
-    border-radius: 5px;
+
+  .form-check {
+    margin-top: 1rem;
   }
-  
-  .btn-secondary {
-    background-color: #174a83;
-    border-color: #174a83;
-    color: #fff;
-    font-weight: bold;
-  }
-  
-  .btn-secondary:hover {
-    background-color: #7cb9e8;
-    border-color: #7cb9e8;
-    color: #174a83;
-  }
-  
-  .modal-content {
-    border-radius: 10px;
-  }
-  
-  .modal-header {
-    background-color: #7cb9e8;
-    border-bottom: none;
-  }
-  
-  .modal-title {
-    color: #fff;
-  }
-  
-  .modal-body {
-    background-color: #fff;
-  }
-  
-  .modal-footer {
-    background-color: #7cb9e8;
-    border-top: none;
-  }
-  
-  #Switch {
-    margin-top: 20px;
-  }
-  
-  @media (max-width: 768px) {
-    .container {
-      padding: 15px;
-    }
-  }
-  
+ }

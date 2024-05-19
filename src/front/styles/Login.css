@@ -1,8 +1,8 @@
 .form-login {
-    background-color: rgba(255, 255, 255, 0.8);
+    background-color: rgba(255, 255, 255, 0.9);
     border-radius: 10px;
     padding: 30px;
-    box-shadow: 0px 0px 20px rgba(0, 0, 0, 0.2);
+    box-shadow: 0px 0px 20px rgba(0, 0, 0, 0.4);
     max-width: 400px;
     width: 100%;
     font-family: 'Montserrat', sans-serif;
@@ -17,6 +17,7 @@
 
 .form-group {
     margin-bottom: 20px;
+    position: relative;
 }
 
 .form-label {
@@ -36,4 +37,22 @@
 
 .btn-full-width {
     width: 100%;
-  }
+}
+
+.password-group {
+    position: relative;
+}
+
+.password-input-wrapper {
+    display: flex;
+    align-items: center;
+}
+
+.password-input {
+    flex: 1;
+}
+
+.password-toggle-icon {
+    margin-left: -30px;
+    cursor: pointer;
+}

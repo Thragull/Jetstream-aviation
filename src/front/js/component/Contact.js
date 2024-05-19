@@ -1,5 +1,5 @@
 import React, { useState, useEffect, useContext } from "react";
-import { Link, useNavigate } from "react-router-dom";
+import { useNavigate } from "react-router-dom";
 import { Context } from "../store/appContext";
 import Navbar from "./Navbar";
 import "../../styles/Contact.css"
@@ -116,71 +116,71 @@ const Contact = () => {
         <div id="budgetForm" className="container">
           <form>
             <div className="row">
-              <div className="mb-3 col-6">
-                <label for="ClientName" className="form-label">Name</label>
+              <div className="mb-3 col-12 col-md-6">
+                <label htmlFor="ClientName" className="form-label">Name</label>
                 <input required type="text" className="form-control" id="ClientName" value={name}
                   onChange={(element) => { setName(element.target.value) }} />
               </div>
-              <div className="mb-3 col-6">
-                <label for="ClientSurname" className="form-label">Surname</label>
+              <div className="mb-3 col-12 col-md-6">
+                <label htmlFor="ClientSurname" className="form-label">Surname</label>
                 <input required type="text" className="form-control" id="ClientSurname" value={surname}
                   onChange={(element) => { setSurname(element.target.value) }} />
               </div>
             </div>
             <div className="row">
-              <div className="mb-3 col-4">
-                <label for="ClientBusiness" className="form-label">Business</label>
+              <div className="mb-3 col-12 col-md-4">
+                <label htmlFor="ClientBusiness" className="form-label">Business</label>
                 <input required type="text" className="form-control" id="ClientBusiness" value={business}
                   onChange={(element) => { setBusiness(element.target.value) }} />
               </div>
-              <div className="mb-3 col-4">
-                <label for="ClientEmail" className="form-label">Email</label>
+              <div className="mb-3 col-12 col-md-4">
+                <label htmlFor="ClientEmail" className="form-label">Email</label>
                 <input required type="email" className="form-control" id="ClientEmail" value={email}
                   onChange={(element) => { setEmail(element.target.value) }} />
               </div>
-              <div className="mb-3 col-4">
-                <label for="ClientPhone" className="form-label">Phone</label>
+              <div className="mb-3 col-12 col-md-4">
+                <label htmlFor="ClientPhone" className="form-label">Phone</label>
                 <input required type="number" className="form-control" id="ClientPhone" value={phone}
                   onChange={(element) => { setPhone(element.target.value) }} />
               </div>
             </div>
             <div className="row">
-              <div className="mb-3 col-6">
-                <label for="StartDate" className="form-label">Start</label>
+              <div className="mb-3 col-12 col-md-6">
+                <label htmlFor="StartDate" className="form-label">Start</label>
                 <input type="date" className="form-control" id="StartDate" value={startDate}
                   onChange={(element) => { setStartDate(element.target.value) }} />
               </div>
-              <div className="mb-3 col-6">
-                <label for="EndDate" className="form-label">End</label>
+              <div className="mb-3 col-12 col-md-6">
+                <label htmlFor="EndDate" className="form-label">End</label>
                 <input type="date" className="form-control" id="EndDate" value={endDate}
                   onChange={(element) => { setEndDate(element.target.value) }} />
               </div>
             </div>
             <div className="row">
-              <div className="mb-3 col-1">
-                <label for="PlaneNumber" className="form-label">#</label>
+              <div className="mb-3 col-12 col-md-1">
+                <label htmlFor="PlaneNumber" className="form-label">#</label>
                 <input required type="number" className="form-control" id="PlaneNumber" min={0} value={planeNumber}
                   onChange={(element) => { setPlaneNumber(element.target.value) }} />
               </div>
-              <div className="mb-3 col-3">
-                <label for="Model" className="form-label">Models</label>
-                <select if="Model" className="form-select" aria-label="Model"
+              <div className="mb-3 col-12 col-md-3">
+                <label htmlFor="Model" className="form-label">Models</label>
+                <select id="Model" className="form-select" aria-label="Model"
                   onChange={(element) => { setModel(element.target.value) }}>
-                  <option selected>Select a model</option>
+                  <option value="">Select a model</option>
                   {models.map((item) => { return (<option key={item.id} value={item.id}>{item.model}</option>) })}
                 </select>
               </div>
-              <div className="mb-3 col-4">
-                <label for="Configurations" className="form-label">Configurations</label>
+              <div className="mb-3 col-12 col-md-4">
+                <label htmlFor="Configurations" className="form-label">Configurations</label>
                 <select id="Configurations" className="form-select" aria-label="Configurations"
                   onChange={(element) => { setSelectedConfiguration(element.target.value) }}>
-                  <option selected>Select a Configuration</option>
+                  <option value="">Select a Configuration</option>
                   {configurations.map((item) => { return (<option key={item.id} value={item.id}>C: {item.business} Y:{item.economy}</option>) })}
                 </select>
               </div>
-              <div className="mb-3 col-4">
+              <div className="mb-3 col-12 col-md-4">
                 <div id="Switch" className="form-check form-switch">
-                  <label className="form-check-label" for="flexSwitchCheckDefault">Do you want to hire crew?</label>
+                  <label className="form-check-label" htmlFor="flexSwitchCheckDefault">Do you want to hire crew?</label>
                   <input className="form-check-input" type="checkbox" role="switch" id="flexSwitchCheckDefault"
                     onChange={handleCrewChange} />
                 </div>
@@ -195,7 +195,7 @@ const Contact = () => {
           </form>
           <Modal show={showModal} onHide={() => setShowModal(false)}>
             <Modal.Header id="modalHeader" closeButton>
-              <Modal.Title><img className="stop" src={stop} />Budget Created<img className="stop" src={stop} /> </Modal.Title>
+              <Modal.Title>Budget Created</Modal.Title>
             </Modal.Header>
             <Modal.Body className="bg-light">
               <div>

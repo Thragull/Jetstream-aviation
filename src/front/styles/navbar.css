@@ -155,5 +155,11 @@
     margin: 0.2rem;
     max-width: calc(50% - 0.4rem);
     text-align: center;
+    white-space: nowrap;
+  }
+
+  .NavBtn {
+    margin: 0;
+    padding: 0.5rem;
   }
 }

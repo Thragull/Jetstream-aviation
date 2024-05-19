@@ -1,25 +1,29 @@
 import React, { useContext, useState } from "react";
 import { Context } from "../store/appContext";
-import cabin from "../../img/cabina-login.png";
+import cabin from "../../img/login-employe.webp";
 import { useNavigate } from "react-router-dom";
 import Swal from "sweetalert2";
-import "../../styles/Login.css"
+import "../../styles/Login.css";
 
 <script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
 
 export const LoginPage = () => {
     const { store, actions } = useContext(Context);
-    const [departments, setDepartments] = useState([])
     const [employee, setEmployee] = useState({
         crew_id: "",
         password: ""
-    })
+    });
+    const [showPassword, setShowPassword] = useState(false);
     const navigate = useNavigate();
 
     const handleInputChange = (event) => {
         const { name, value } = event.target;
-        setEmployee({ ...employee, [name]: value })
-    }
+        setEmployee({ ...employee, [name]: value });
+    };
+
+    const togglePasswordVisibility = () => {
+        setShowPassword(!showPassword);
+    };
 
     const login = async () => {
         try {
@@ -33,15 +37,15 @@ export const LoginPage = () => {
                 throw new Error("Incorrect crew_id or password");
             }
 
-            const data = await resp.json()
+            const data = await resp.json();
 
             localStorage.setItem("jwt-token", data.token);
 
-            actions.getEmployee()
+            actions.getEmployee();
 
-            navigate("/worker")
+            navigate("/worker");
 
-            return data
+            return data;
         } catch (error) {
             Swal.fire({
                 title: "Error",
@@ -50,21 +54,51 @@ export const LoginPage = () => {
                 button: "Ok"
             });
         }
-    }
+    };
 
     return (
-        <div style={{ backgroundImage: `url(${cabin})`, width: "100vw", height: "100vh", backgroundSize: "cover", display: "flex", alignItems: "center", justifyContent: "center" }}>
+        <div style={{
+            backgroundImage: `url(${cabin})`,
+            width: "100vw",
+            height: "100vh",
+            backgroundSize: "cover",
+            display: "flex",
+            alignItems: "center",
+            justifyContent: "center"
+        }}>
             <form className="form-login">
                 <h2 className="login-title">Login</h2>
                 <div className="form-group">
                     <label htmlFor="crew_id" className="form-label">Crew ID</label>
-                    <input handleScript={handleInputChange} className="input-login" />
+                    <input
+                        type="text"
+                        name="crew_id"
+                        value={employee.crew_id}
+                        onChange={handleInputChange}
+                        className="input-login"
+                        placeholder="Enter your Crew ID"
+                    />
                 </div>
-                <div className="form-group">
+                <div className="form-group password-group">
                     <label htmlFor="password" className="form-label">Password</label>
-                    <input type="password" handleScript={handleInputChange} className="input-login" />
+                    <div className="password-input-wrapper">
+                        <input
+                            type={showPassword ? "text" : "password"}
+                            name="password"
+                            value={employee.password}
+                            onChange={handleInputChange}
+                            className="input-login password-input"
+                            placeholder="Enter your password"
+                        />
+                        <span
+                            className="password-toggle-icon"
+                            onClick={togglePasswordVisibility}
+                        >
+                            <i className={showPassword ? "fas fa-eye-slash" : "fas fa-eye"}></i>
+                        </span>
+                    </div>
                 </div>
-                <button type="button" className="btn btn-secondary btn-full-width">Login</button>
+                <button type="button" onClick={login} className="btn btn-secondary btn-full-width">Login</button>
             </form>
         </div>
     );
