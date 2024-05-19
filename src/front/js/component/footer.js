@@ -1,4 +1,5 @@
 import React from "react";
+import { Link } from "react-router-dom";
 import LogoJetstream from "../../img/LogoJetstream.png";
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
 import { faInstagram, faTwitter, faFacebook } from '@fortawesome/free-brands-svg-icons';
@@ -37,12 +38,13 @@ export const Footer = () => (
           </div>
         </div>
         <div className="footer-section">
-          <h2 className="footer-heading">Support</h2>
-          <p className="footer-text">Lorem ipsum dolor sit amet.</p>
+          <h2 className="footer-heading">Quick Links</h2>
+          <p className="footer-text"><Link to="/Welcome">Welcome</Link></p>
+          <p className="footer-text"><Link to="">Support</Link></p>
         </div>
         <div className="footer-section">
           <h2 className="footer-heading">Work with Us</h2>
-          <p className="footer-text">Lorem ipsum dolor sit amet.</p>
+          <p className="footer-text"><Link to="">Contact</Link></p>
         </div>
       </div>
       <div className="copy-right">

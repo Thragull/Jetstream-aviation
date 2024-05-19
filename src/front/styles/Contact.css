@@ -1,13 +1,66 @@
-#modalHeader{
-    background-color: #7CB9E8;
+.page-contact{
+    min-height: 100vh;
 }
-#modalFooter{
-    background-color: #7CB9E8;
-}
-#budgetForm{
-    margin-top: 20vh;
-    margin-left: 5vw;
-}
-#Switch{
-    margin-top: 40px
-}
+
+.container {
+    background-color: #f8f9fa;
+    padding: 3rem;
+    border-radius: 10px;
+    box-shadow: 0px 0px 10px rgba(0, 0, 0, 0.1);
+    margin-top: 6rem;
+    margin-bottom: 6rem;
+  }
+  
+  .form-label {
+    font-weight: bold;
+  }
+  
+  .form-control {
+    border-radius: 5px;
+  }
+  
+  .btn-secondary {
+    background-color: #174a83;
+    border-color: #174a83;
+    color: #fff;
+    font-weight: bold;
+  }
+  
+  .btn-secondary:hover {
+    background-color: #7cb9e8;
+    border-color: #7cb9e8;
+    color: #174a83;
+  }
+  
+  .modal-content {
+    border-radius: 10px;
+  }
+  
+  .modal-header {
+    background-color: #7cb9e8;
+    border-bottom: none;
+  }
+  
+  .modal-title {
+    color: #fff;
+  }
+  
+  .modal-body {
+    background-color: #fff;
+  }
+  
+  .modal-footer {
+    background-color: #7cb9e8;
+    border-top: none;
+  }
+  
+  #Switch {
+    margin-top: 20px;
+  }
+  
+  @media (max-width: 768px) {
+    .container {
+      padding: 15px;
+    }
+  }
+  

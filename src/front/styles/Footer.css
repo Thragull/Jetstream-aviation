@@ -21,7 +21,7 @@
 
 .footer-heading {
   font-size: 1.2rem;
-  margin-bottom: 10px;
+  padding-bottom: 1.5rem;
   color: #fff;
   margin-top: 0;
 }
@@ -29,6 +29,15 @@
 .footer-text {
   line-height: 1.6;
   font-size: 1rem;
+}
+
+.footer-text a {
+  text-decoration: none;
+  color: inherit;
+}
+
+.footer-text a:hover {
+  color: #ffffff;
 }
 
 .social-icons {
@@ -75,6 +84,9 @@
 @media screen and (max-width: 768px) {
   .footer-section {
     width: 100%;
+    padding-bottom: 1.2rem;
+  }
+  .footer-heading{
     padding-bottom: 1rem;
   }
 }

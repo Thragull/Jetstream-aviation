@@ -12,9 +12,6 @@ const Navbar = () => {
       </Link>
       <div className="navbar-collapse" id="btnbarNavDropdown">
         <div className="nav-links">
-          <Link to="/Welcome" className="NavBtn nav-link">
-            <p className="link-nav">Welcome</p>
-          </Link>
           <Link to="/Fleet" className="NavBtn nav-link">
             <p className="link-nav">Fleet</p>
           </Link>
@@ -24,7 +21,7 @@ const Navbar = () => {
           <Link to="/contact" className="NavBtn nav-link">
             <p className="link-nav">Contact</p>
           </Link>
-          <Link to="/AboutUs" className="NavBtn nav-link">
+          <Link to="/aboutUs" className="NavBtn nav-link">
             <p className="link-nav">About Us</p>
           </Link>
         </div>
