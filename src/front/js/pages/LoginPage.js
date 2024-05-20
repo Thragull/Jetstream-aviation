@@ -62,6 +62,7 @@ export const LoginPage = () => {
             width: "100vw",
             height: "100vh",
             backgroundSize: "cover",
+            backgroundPosition: "center center",
             display: "flex",
             alignItems: "center",
             justifyContent: "center"
@@ -101,7 +102,7 @@ export const LoginPage = () => {
                 <button type="button" onClick={login} className="btn btn-secondary btn-full-width">Login</button>
             </form>
         </div>
-    );
+    );    
 };
 
 export default LoginPage;

@@ -11,7 +11,7 @@ const AboutUs = () => {
       <div className="about-us-container">
         <div className="overlay">
         <img src={CabinCrew} className="about-us-background" alt="CabinCrew" />
-          <div className="p-4">
+          <div className="text-about p-4">
             <p>
               Welcome to JetStream, your gateway to bespoke air travel experiences.
               At JetStream, we pride ourselves on being more than just a

@@ -16,7 +16,7 @@ const Services = () => {
               src="https://res.cloudinary.com/dhwe9frkd/image/upload/v1714073446/samples/JetStream/ACMI-Lease_xl6zm9.png"
             ></img>
             <div className="card-body-serv">
-              <h5 className="ST card-title-serv text-center p-2">ACMI lease</h5>
+              <h5 className="ST card-title-serv text-center p-2">ACMI Lease</h5>
               <p className="card-text-serv pt-2">
                 An ACMI lease refers to a specialized aircraft leasing arrangement encompassing Aircraft, Crew, Maintenance, and Insurance services.
               </p>

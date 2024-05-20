@@ -42,15 +42,16 @@
   }
 }
 
-.btn {
+.btn-home {
   background-color: white;
   color: #174A83;
   font-size: 1.5rem;
   margin-top: 1rem;
   transition: transform 0.5s ease;
+  border: none;
 }
 
-.btn:hover {
+.btn-home:hover {
   background-color: white;
   color: #6cb4ee;
   transform: scale(1.1);
