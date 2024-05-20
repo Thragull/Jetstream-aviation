@@ -57,16 +57,7 @@ export const LoginPage = () => {
     };
 
     return (
-        <div style={{
-            backgroundImage: `url(${cabin})`,
-            width: "100vw",
-            height: "100vh",
-            backgroundSize: "cover",
-            backgroundPosition: "center center",
-            display: "flex",
-            alignItems: "center",
-            justifyContent: "center"
-        }}>
+        <div className="page-login" style={{backgroundImage: `url(${cabin})`,}}>
             <form className="form-login">
                 <h2 className="login-title">Login</h2>
                 <div className="form-group">
@@ -82,7 +73,6 @@ export const LoginPage = () => {
                 </div>
                 <div className="form-group password-group">
                     <label htmlFor="password" className="form-label">Password</label>
-                    <div className="password-input-wrapper">
                         <input
                             type={showPassword ? "text" : "password"}
                             name="password"
@@ -97,7 +87,6 @@ export const LoginPage = () => {
                         >
                             <i className={showPassword ? "fas fa-eye-slash" : "fas fa-eye"}></i>
                         </span>
-                    </div>
                 </div>
                 <button type="button" onClick={login} className="btn btn-secondary btn-full-width">Login</button>
             </form>
