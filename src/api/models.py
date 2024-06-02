@@ -218,7 +218,7 @@ class Languages(db.Model):
             'flag': self.flag
         }
 
-class Int_Code(db.Model):
+class Int_Codes(db.Model):
     __tablename__ = 'int_code'
     id = db.Column(db.Integer, primary_key=True)
     int_code = db.Column(db.String(5), unique=True, nullable=False)

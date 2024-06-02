@@ -9,7 +9,7 @@ from flask_swagger import swagger
 from sqlalchemy import or_, and_
 from api.utils import APIException, generate_sitemap
 from api.models import (db, Models, Configurations, Fleet, Prices, Projects, Assignations, Budgets, Roles, Countries,
-                    Nationalities, States, Employees, Airports, Inflight, Duties, Flights, Hotels, Rosters, Salary_Prices,
+                    Nationalities, Int_Codes, States, Languages, Employees, Airports, Inflight, Duties, Flights, Hotels, Rosters, Salary_Prices,
                     Bank_Details, Payslips, Documents, Visibility, Departments)
 from api.routes import api
 from api.admin import setup_admin
@@ -581,6 +581,18 @@ def getCountries():
         return jsonify({'msg': 'Country not found'}), 404
     return jsonify(country.serialize()), 200
 
+@app.route('/api/int_code', methods=['GET'])
+def get_int_code():
+    id = request.args.get('id')
+    if id is None:
+        int_codes = Int_Codes.query.all()
+        serialized_int_codes = list(map(lambda int_code: int_code.serialize(), int_codes))
+        return jsonify(serialized_int_codes), 200
+    int_code = Int_Codes.query.filter_by(id=id).first()
+    if int_code is None:
+        return jsonify({'msg': 'International Code not found'}), 404
+    return jsonify(int_code.serialize()), 200
+
 
 @app.route('/api/nationalities', methods=['GET'])
 @cross_origin(supports_credentials=True)
@@ -594,6 +606,17 @@ def getNationalities():
     serialized_countries = [nationality.serialize() for nationality in nationalities]
     return jsonify(serialized_countries), 200
 
+@app.route('/api/languages', methods=['GET'])
+def get_languages():
+    id = request.args.get('id')
+    if id is None:
+        languages = Languages.query.all()
+        serialized_languages = list(map(lambda language: language.serialize(), languages))
+        return jsonify(serialized_languages), 200
+    language = Languages.query.filter_by(id=id).first()
+    if language is None:
+        return jsonify({'msg': 'Language not found'}), 404
+    return jsonify(language.serialize()), 200
 
 @app.route('/api/states', methods=['GET'])
 def getStates():
