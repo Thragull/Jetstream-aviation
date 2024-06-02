@@ -174,6 +174,7 @@ class Countries(db.Model):
     __tablename__ = 'countries'
     id = db.Column(db.Integer, primary_key=True)
     country = db.Column(db.String(50), unique=True, nullable=False)
+    flag = db.Column(db.String(250), nullable=False)
 
     def __repr__(self):
         return f"{self.country}"
@@ -181,13 +182,15 @@ class Countries(db.Model):
     def serialize(self):
         return {
             "id": self.id,
-            "country": self.country
+            "country": self.country,
+            'flag': self.flag
         }
 
 class Nationalities(db.Model):
     __tablename__ = 'nationalities'
     id = db.Column(db.Integer, primary_key=True)
     nationality = db.Column(db.String(50), unique=True, nullable=False)
+    flag = db.Column(db.String(250), nullable=False)
 
     def __repr__(self):
         return f"{self.nationality}"
@@ -195,7 +198,40 @@ class Nationalities(db.Model):
     def serialize(self):
         return {
             "id": self.id,
-            "nationality": self.nationality
+            "nationality": self.nationality,
+            'flag': self.flag
+        }
+
+class Languages(db.Model):
+    __tablename__ = 'languages'
+    id = db.Column(db.Integer, primary_key=True)
+    language = db.Column(db.String(50), unique=True, nullable=False)
+    flag = db.Column(db.String(250), nullable=False)
+
+    def __repr__(self):
+        return f'{self.language}'
+    
+    def serialize(self):
+        return {
+            'id': self.id,
+            'language': self.language,
+            'flag': self.flag
+        }
+
+class Int_Code(db.Model):
+    __tablename__ = 'int_code'
+    id = db.Column(db.Integer, primary_key=True)
+    int_code = db.Column(db.String(5), unique=True, nullable=False)
+    flag = db.Column(db.String(250), nullable=False)
+
+    def __repr__(self):
+        return f'{self.int_code}'
+    
+    def serializa(self):
+        return {
+            'id': self.id,
+            'int_code': self.int_code,
+            'img': self.flag
         }
 
 class States(db.Model):
