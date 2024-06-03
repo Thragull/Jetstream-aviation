@@ -170,11 +170,28 @@ class Roles(db.Model):
             "role": self.role
         }
 
+class Flags(db.Model):
+    __tablename__ = 'flags'
+    id = db.Column(db.Integer, primary_key=True)
+    name = db.Column(db.String(50), unique=True, nullable=False)
+    flag = db.Column(db.String(250), unique=True, nullable=False)
+
+    def __repr__(self):
+        return f"{self.name}"
+    
+    def serialize(self):
+        return {
+            'id': self.id,
+            'name': self.name,
+            'flag':self.flag
+        }
+
 class Countries(db.Model):
     __tablename__ = 'countries'
     id = db.Column(db.Integer, primary_key=True)
     country = db.Column(db.String(50), unique=True, nullable=False)
-    flag = db.Column(db.String(250), nullable=False)
+    flag_id = db.Column(db.Integer, db.ForeignKey('flags.id'), nullable=False)
+    flag = db.relationship(Flags)
 
     def __repr__(self):
         return f"{self.country}"
@@ -183,14 +200,15 @@ class Countries(db.Model):
         return {
             "id": self.id,
             "country": self.country,
-            'flag': self.flag
+            'flag_id': self.flag_id
         }
 
 class Nationalities(db.Model):
     __tablename__ = 'nationalities'
     id = db.Column(db.Integer, primary_key=True)
     nationality = db.Column(db.String(50), unique=True, nullable=False)
-    flag = db.Column(db.String(250), nullable=False)
+    flag_id = db.Column(db.Integer, db.ForeignKey('flags.id'), nullable=False)
+    flag = db.relationship(Flags)
 
     def __repr__(self):
         return f"{self.nationality}"
@@ -199,14 +217,15 @@ class Nationalities(db.Model):
         return {
             "id": self.id,
             "nationality": self.nationality,
-            'flag': self.flag
+            'flag_id': self.flag_id
         }
 
 class Languages(db.Model):
     __tablename__ = 'languages'
     id = db.Column(db.Integer, primary_key=True)
     language = db.Column(db.String(50), unique=True, nullable=False)
-    flag = db.Column(db.String(250), nullable=False)
+    flag_id = db.Column(db.Integer, db.ForeignKey('flags.id'), nullable=False)
+    flag = db.relationship(Flags)
 
     def __repr__(self):
         return f'{self.language}'
@@ -215,14 +234,15 @@ class Languages(db.Model):
         return {
             'id': self.id,
             'language': self.language,
-            'flag': self.flag
+            'flag_id': self.flag_id
         }
 
-class Int_Codes(db.Model):
+class IntCodes(db.Model):
     __tablename__ = 'int_code'
     id = db.Column(db.Integer, primary_key=True)
     int_code = db.Column(db.String(5), unique=True, nullable=False)
-    flag = db.Column(db.String(250), nullable=False)
+    flag_id = db.Column(db.Integer, db.ForeignKey('flags.id'), nullable=False)
+    flag = db.relationship(Flags)
 
     def __repr__(self):
         return f'{self.int_code}'
@@ -231,7 +251,7 @@ class Int_Codes(db.Model):
         return {
             'id': self.id,
             'int_code': self.int_code,
-            'img': self.flag
+            'flag_id': self.flag_id
         }
 
 class States(db.Model):

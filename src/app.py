@@ -8,8 +8,8 @@ from flask_migrate import Migrate
 from flask_swagger import swagger
 from sqlalchemy import or_, and_
 from api.utils import APIException, generate_sitemap
-from api.models import (db, Models, Configurations, Fleet, Prices, Projects, Assignations, Budgets, Roles, Countries,
-                    Nationalities, Int_Codes, States, Languages, Employees, Airports, Inflight, Duties, Flights, Hotels, Rosters, Salary_Prices,
+from api.models import (db, Models, Configurations, Fleet, Prices, Projects, Assignations, Budgets, Roles, Flags, Countries,
+                    Nationalities, IntCodes, States, Languages, Employees, Airports, Inflight, Duties, Flights, Hotels, Rosters, Salary_Prices,
                     Bank_Details, Payslips, Documents, Visibility, Departments)
 from api.routes import api
 from api.admin import setup_admin
@@ -22,7 +22,7 @@ from flask_jwt_extended import get_jwt
 from flask_jwt_extended import unset_jwt_cookies
 from flask_bcrypt import Bcrypt
 from datetime import datetime, timedelta, timezone, time
-from api.dbfiller import insert_data, insert_data2, insert_data3
+from api.dbfiller import insert_data, insert_data2, insert_data3, insert_mandatory
 
 
 def calculate_check_in(hora):
@@ -585,10 +585,10 @@ def getCountries():
 def get_int_code():
     id = request.args.get('id')
     if id is None:
-        int_codes = Int_Codes.query.all()
+        int_codes = IntCodes.query.all()
         serialized_int_codes = list(map(lambda int_code: int_code.serialize(), int_codes))
         return jsonify(serialized_int_codes), 200
-    int_code = Int_Codes.query.filter_by(id=id).first()
+    int_code = IntCodes.query.filter_by(id=id).first()
     if int_code is None:
         return jsonify({'msg': 'International Code not found'}), 404
     return jsonify(int_code.serialize()), 200
@@ -1872,6 +1872,11 @@ def protected():
     current_user = get_jwt_identity() #Este método me devuelve la identidad con el que fue creado
     additional_claims = get_jwt()
     return jsonify(logged_in_as=current_user, additional_claims=additional_claims), 200
+
+@app.route('/api/dbfiller_mandatory', methods=['GET'])
+def dbfiller_mandatory():
+    insert_mandatory()
+    return jsonify({'msg': 'Mandatory fields completed'}), 201
 
 @app.route('/api/dbfiller', methods=['GET'])
 def dbfiller():
