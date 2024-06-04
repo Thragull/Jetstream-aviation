@@ -22,7 +22,7 @@ from flask_jwt_extended import get_jwt
 from flask_jwt_extended import unset_jwt_cookies
 from flask_bcrypt import Bcrypt
 from datetime import datetime, timedelta, timezone, time
-from api.dbfiller import insert_data, insert_data2, insert_data3, insert_mandatory
+from api.dbfiller import insert_data, insert_data2, insert_data3, insert_mandatory, compare_flags
 
 
 def calculate_check_in(hora):
@@ -1892,6 +1892,11 @@ def dbfiller2():
 def dbfiller3():
     insert_data3()
     return jsonify({'msg': "Funciona3"}), 201
+
+@app.route('/api/prueba', methods=['GET'])
+def prueba():
+    compare_flags()
+    return jsonify({'msg': 'correctly executed'}), 200
 
 # this only runs if `$ python src/main.py` is executed
 if __name__ == '__main__':
