@@ -574,20 +574,20 @@ def getCountries():
     id = request.args.get('id')
     if id is None:
         countries = Countries.query.all()
-        serialized_countries = list(map(lambda country: country.serialize(), countries))
-        return jsonify(serialized_countries), 200
+        serialize_countries = list(map(lambda country: country.serialize(), countries))
+        return jsonify(serialize_countries), 200
     country = Countries.query.filter_by(id=id).first()
     if country is None:
         return jsonify({'msg': 'Country not found'}), 404
     return jsonify(country.serialize()), 200
 
-@app.route('/api/int_code', methods=['GET'])
+@app.route('/api/int_codes', methods=['GET'])
 def get_int_code():
     id = request.args.get('id')
     if id is None:
         int_codes = IntCodes.query.all()
-        serialized_int_codes = list(map(lambda int_code: int_code.serialize(), int_codes))
-        return jsonify(serialized_int_codes), 200
+        serialize_int_codes = list(map(lambda int_code: int_code.serialize(), int_codes))
+        return jsonify(serialize_int_codes), 200
     int_code = IntCodes.query.filter_by(id=id).first()
     if int_code is None:
         return jsonify({'msg': 'International Code not found'}), 404
@@ -595,16 +595,16 @@ def get_int_code():
 
 
 @app.route('/api/nationalities', methods=['GET'])
-@cross_origin(supports_credentials=True)
-def getNationalities():
+def get_nationalities():
     id = request.args.get('id')
     if id is None:
         nationalities = Nationalities.query.all()
-        serialized_countries = [nationality.serialize() for nationality in nationalities]
-        return jsonify(serialized_countries), 200
-    nationalities = Nationalities.query.filter_by(id=id).all()
-    serialized_countries = [nationality.serialize() for nationality in nationalities]
-    return jsonify(serialized_countries), 200
+        serialized_nationalities = list(map(lambda nationality: nationality.serialize(), nationalities))
+        return jsonify(serialized_nationalities), 200
+    nationality = Nationalities.query.filter_by(id=id).first()
+    if nationality is None:
+        return jsonify({'msg': 'Nationality not found'}), 404
+    return jsonify(nationality.serialize()), 200
 
 @app.route('/api/languages', methods=['GET'])
 def get_languages():

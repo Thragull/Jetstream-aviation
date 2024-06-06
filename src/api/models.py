@@ -198,9 +198,9 @@ class Countries(db.Model):
     
     def serialize(self):
         return {
-            "id": self.id,
-            "country": self.country,
-            'flag_id': self.flag_id
+            'id': self.id,
+            'country': self.country,
+            'flag': self.flag.flag
         }
 
 class Nationalities(db.Model):
@@ -215,9 +215,9 @@ class Nationalities(db.Model):
     
     def serialize(self):
         return {
-            "id": self.id,
-            "nationality": self.nationality,
-            'flag_id': self.flag_id
+            'id': self.id,
+            'nationality': self.nationality,
+            'flag': self.flag.flag
         }
 
 class Languages(db.Model):
@@ -234,7 +234,7 @@ class Languages(db.Model):
         return {
             'id': self.id,
             'language': self.language,
-            'flag_id': self.flag_id
+            'flag': self.flag.flag
         }
 
 class IntCodes(db.Model):
@@ -247,11 +247,11 @@ class IntCodes(db.Model):
     def __repr__(self):
         return f'{self.int_code}'
     
-    def serializa(self):
+    def serialize(self):
         return {
             'id': self.id,
             'int_code': self.int_code,
-            'flag_id': self.flag_id
+            'flag': self.flag.flag
         }
 
 class States(db.Model):
