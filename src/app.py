@@ -22,7 +22,7 @@ from flask_jwt_extended import get_jwt
 from flask_jwt_extended import unset_jwt_cookies
 from flask_bcrypt import Bcrypt
 from datetime import datetime, timedelta, timezone, time
-from api.dbfiller import insert_data, insert_data2, insert_data3, insert_mandatory, compare_flags
+from api.dbfiller import insert_data, insert_data2, insert_data3, insert_mandatory, insert_mandatory2, insert_mandatory3, insert_mandatory4, insert_mandatory5
 
 
 def calculate_check_in(hora):
@@ -1878,6 +1878,26 @@ def dbfiller_mandatory():
     insert_mandatory()
     return jsonify({'msg': 'Mandatory fields completed'}), 201
 
+@app.route('/api/dbfiller_mandatory2', methods=['GET'])
+def dbfiller_mandatory2():
+    insert_mandatory2()
+    return jsonify({'msg': 'Mandatory fields completed'}), 201
+
+@app.route('/api/dbfiller_mandatory3', methods=['GET'])
+def dbfiller_mandatory3():
+    insert_mandatory3()
+    return jsonify({'msg': 'Mandatory fields completed'}), 201
+
+@app.route('/api/dbfiller_mandatory4', methods=['GET'])
+def dbfiller_mandatory4():
+    insert_mandatory4()
+    return jsonify({'msg': 'Mandatory fields completed'}), 201
+
+@app.route('/api/dbfiller_mandatory5', methods=['GET'])
+def dbfiller_mandatory5():
+    insert_mandatory5()
+    return jsonify({'msg': 'Mandatory fields completed'}), 201
+
 @app.route('/api/dbfiller', methods=['GET'])
 def dbfiller():
     insert_data()
@@ -1892,11 +1912,6 @@ def dbfiller2():
 def dbfiller3():
     insert_data3()
     return jsonify({'msg': "Funciona3"}), 201
-
-@app.route('/api/prueba', methods=['GET'])
-def prueba():
-    compare_flags()
-    return jsonify({'msg': 'correctly executed'}), 200
 
 # this only runs if `$ python src/main.py` is executed
 if __name__ == '__main__':

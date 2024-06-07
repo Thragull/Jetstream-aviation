@@ -1424,7 +1424,7 @@ states = [
     {"country": "Comoros", "state": "Grande Comore"},
     {"country": "Comoros", "state": "Mohéli"},
     
-        {"country": "Congo (Congo-Brazzaville)", "state": "Bouenza"},
+    {"country": "Congo (Congo-Brazzaville)", "state": "Bouenza"},
     {"country": "Congo (Congo-Brazzaville)", "state": "Cuvette"},
     {"country": "Congo (Congo-Brazzaville)", "state": "Cuvette-Ouest"},
     {"country": "Congo (Congo-Brazzaville)", "state": "Kouilou"},
@@ -1489,8 +1489,10 @@ states = [
     {"country": "Cyprus", "state": "Larnaca"},
     {"country": "Cyprus", "state": "Limassol"},
     {"country": "Cyprus", "state": "Nicosia"},
-    {"country": "Cyprus", "state": "Paphos"},
-    
+    {"country": "Cyprus", "state": "Paphos"}
+]
+
+states2=[    
     {"country": "Czechia (Czech Republic)", "state": "Central Bohemian"},
     {"country": "Czechia (Czech Republic)", "state": "Hradec Králové"},
     {"country": "Czechia (Czech Republic)", "state": "Karlovy Vary"},
@@ -2463,7 +2465,9 @@ states = [
     {"country": "Latvia", "state": "Viļaka"},
     {"country": "Latvia", "state": "Viļāni"},
     {"country": "Latvia", "state": "Zilupe"},
+]
 
+states3 = [
     {"country": "Lebanon", "state": "Aakkar"},
     {"country": "Lebanon", "state": "Baalbek-Hermel"},
     {"country": "Lebanon", "state": "Beirut"},
@@ -3486,7 +3490,9 @@ states = [
     {"country": "South Africa", "state": "North West"},
     {"country": "South Africa", "state": "Northern Cape"},
     {"country": "South Africa", "state": "Western Cape"},
+]
 
+states4=[
     {"country": "South Korea", "state": "Busan"},
     {"country": "South Korea", "state": "Chungbuk"},
     {"country": "South Korea", "state": "Chungnam"},
@@ -5895,7 +5901,7 @@ def insert_nationalities():
         nationality_token.flag_id = flag.id
         db.session.add(nationality_token)
         db.session.commit()
-        print("List of Nationalities succesfully created")
+    print("List of Nationalities succesfully created")
 
 def insert_languages():
     print('Creating list of languages')
@@ -5908,7 +5914,7 @@ def insert_languages():
         db.session.commit()
     print(' List of Languages succesfully created')
 
-def insert_worldwide_states():
+def insert_states():
     print("Creating list of States around the World")
     for state in states:
         state_token=States()
@@ -5917,7 +5923,40 @@ def insert_worldwide_states():
         state_token.state= state["state"]
         db.session.add(state_token)
         db.session.commit()
-        print("{} from {} added to DataBase".format(state["state"], state["country"]))
+    print("List of States succesfully created")
+
+def insert_states2():
+    print("Creating 2nd list of States around the World")
+    for state in states2:
+        state_token=States()
+        country = Countries.query.filter_by(country=state["country"]).first()
+        state_token.country_id = country.id
+        state_token.state= state["state"]
+        db.session.add(state_token)
+        db.session.commit()
+    print("2nd List of States succesfully created")
+
+def insert_states3():
+    print("Creating 3rd list of States around the World")
+    for state in states3:
+        state_token=States()
+        country = Countries.query.filter_by(country=state["country"]).first()
+        state_token.country_id = country.id
+        state_token.state= state["state"]
+        db.session.add(state_token)
+        db.session.commit()
+    print("3rd List of States succesfully created")
+
+def insert_states4():
+    print("Creating 4th list of States around the World")
+    for state in states4:
+        state_token=States()
+        country = Countries.query.filter_by(country=state["country"]).first()
+        state_token.country_id = country.id
+        state_token.state= state["state"]
+        db.session.add(state_token)
+        db.session.commit()
+    print("4th List of States succesfully created")
 
 def insert_airports():
     print("Creating lists of Airports")
@@ -6099,6 +6138,17 @@ def insert_mandatory():
     insert_nationalities()
     insert_int_codes()
 
+def insert_mandatory2():
+    insert_states()
+
+def insert_mandatory3():
+    insert_states2()
+
+def insert_mandatory4():
+    insert_states3()
+
+def insert_mandatory5():
+    insert_states4()
 
 def insert_data():
     insert_models()
@@ -6107,17 +6157,16 @@ def insert_data():
     insert_plane_prices()
     insert_roles()
     insert_departments()
-    insert_countries()
     
 def insert_data2():
-    insert_nationalities()
-    insert_worldwide_states()
     insert_airports()
-    insert_hotels()
-    insert_employees()
 
 def insert_data3():
+    insert_hotels()
+    insert_employees()
     insert_inflight_details()
     insert_duties()
     insert_salary_prices()
     insert_bank_details()
+
+    
