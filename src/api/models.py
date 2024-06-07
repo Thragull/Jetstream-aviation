@@ -170,32 +170,88 @@ class Roles(db.Model):
             "role": self.role
         }
 
+class Flags(db.Model):
+    __tablename__ = 'flags'
+    id = db.Column(db.Integer, primary_key=True)
+    name = db.Column(db.String(50), unique=True, nullable=False)
+    flag = db.Column(db.String(250), unique=True, nullable=False)
+
+    def __repr__(self):
+        return f"{self.name}"
+    
+    def serialize(self):
+        return {
+            'id': self.id,
+            'name': self.name,
+            'flag':self.flag
+        }
+
 class Countries(db.Model):
     __tablename__ = 'countries'
     id = db.Column(db.Integer, primary_key=True)
     country = db.Column(db.String(50), unique=True, nullable=False)
+    flag_id = db.Column(db.Integer, db.ForeignKey('flags.id'), nullable=False)
+    flag = db.relationship(Flags)
 
     def __repr__(self):
         return f"{self.country}"
     
     def serialize(self):
         return {
-            "id": self.id,
-            "country": self.country
+            'id': self.id,
+            'country': self.country,
+            'flag': self.flag.flag
         }
 
 class Nationalities(db.Model):
     __tablename__ = 'nationalities'
     id = db.Column(db.Integer, primary_key=True)
     nationality = db.Column(db.String(50), unique=True, nullable=False)
+    flag_id = db.Column(db.Integer, db.ForeignKey('flags.id'), nullable=False)
+    flag = db.relationship(Flags)
 
     def __repr__(self):
         return f"{self.nationality}"
     
     def serialize(self):
         return {
-            "id": self.id,
-            "nationality": self.nationality
+            'id': self.id,
+            'nationality': self.nationality,
+            'flag': self.flag.flag
+        }
+
+class Languages(db.Model):
+    __tablename__ = 'languages'
+    id = db.Column(db.Integer, primary_key=True)
+    language = db.Column(db.String(50), unique=True, nullable=False)
+    flag_id = db.Column(db.Integer, db.ForeignKey('flags.id'), nullable=False)
+    flag = db.relationship(Flags)
+
+    def __repr__(self):
+        return f'{self.language}'
+    
+    def serialize(self):
+        return {
+            'id': self.id,
+            'language': self.language,
+            'flag': self.flag.flag
+        }
+
+class IntCodes(db.Model):
+    __tablename__ = 'int_code'
+    id = db.Column(db.Integer, primary_key=True)
+    int_code = db.Column(db.String(5), unique=True, nullable=False)
+    flag_id = db.Column(db.Integer, db.ForeignKey('flags.id'), nullable=False)
+    flag = db.relationship(Flags)
+
+    def __repr__(self):
+        return f'{self.int_code}'
+    
+    def serialize(self):
+        return {
+            'id': self.id,
+            'int_code': self.int_code,
+            'flag': self.flag.flag
         }
 
 class States(db.Model):

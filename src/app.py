@@ -8,8 +8,8 @@ from flask_migrate import Migrate
 from flask_swagger import swagger
 from sqlalchemy import or_, and_
 from api.utils import APIException, generate_sitemap
-from api.models import (db, Models, Configurations, Fleet, Prices, Projects, Assignations, Budgets, Roles, Countries,
-                    Nationalities, States, Employees, Airports, Inflight, Duties, Flights, Hotels, Rosters, Salary_Prices,
+from api.models import (db, Models, Configurations, Fleet, Prices, Projects, Assignations, Budgets, Roles, Flags, Countries,
+                    Nationalities, IntCodes, States, Languages, Employees, Airports, Inflight, Duties, Flights, Hotels, Rosters, Salary_Prices,
                     Bank_Details, Payslips, Documents, Visibility, Departments)
 from api.routes import api
 from api.admin import setup_admin
@@ -22,7 +22,7 @@ from flask_jwt_extended import get_jwt
 from flask_jwt_extended import unset_jwt_cookies
 from flask_bcrypt import Bcrypt
 from datetime import datetime, timedelta, timezone, time
-from api.dbfiller import insert_data, insert_data2, insert_data3
+from api.dbfiller import insert_data, insert_data2, insert_data3, insert_mandatory, compare_flags
 
 
 def calculate_check_in(hora):
@@ -574,26 +574,49 @@ def getCountries():
     id = request.args.get('id')
     if id is None:
         countries = Countries.query.all()
-        serialized_countries = list(map(lambda country: country.serialize(), countries))
-        return jsonify(serialized_countries), 200
+        serialize_countries = list(map(lambda country: country.serialize(), countries))
+        return jsonify(serialize_countries), 200
     country = Countries.query.filter_by(id=id).first()
     if country is None:
         return jsonify({'msg': 'Country not found'}), 404
     return jsonify(country.serialize()), 200
 
+@app.route('/api/int_codes', methods=['GET'])
+def get_int_code():
+    id = request.args.get('id')
+    if id is None:
+        int_codes = IntCodes.query.all()
+        serialize_int_codes = list(map(lambda int_code: int_code.serialize(), int_codes))
+        return jsonify(serialize_int_codes), 200
+    int_code = IntCodes.query.filter_by(id=id).first()
+    if int_code is None:
+        return jsonify({'msg': 'International Code not found'}), 404
+    return jsonify(int_code.serialize()), 200
+
 
 @app.route('/api/nationalities', methods=['GET'])
-@cross_origin(supports_credentials=True)
-def getNationalities():
+def get_nationalities():
     id = request.args.get('id')
     if id is None:
         nationalities = Nationalities.query.all()
-        serialized_countries = [nationality.serialize() for nationality in nationalities]
-        return jsonify(serialized_countries), 200
-    nationalities = Nationalities.query.filter_by(id=id).all()
-    serialized_countries = [nationality.serialize() for nationality in nationalities]
-    return jsonify(serialized_countries), 200
+        serialized_nationalities = list(map(lambda nationality: nationality.serialize(), nationalities))
+        return jsonify(serialized_nationalities), 200
+    nationality = Nationalities.query.filter_by(id=id).first()
+    if nationality is None:
+        return jsonify({'msg': 'Nationality not found'}), 404
+    return jsonify(nationality.serialize()), 200
 
+@app.route('/api/languages', methods=['GET'])
+def get_languages():
+    id = request.args.get('id')
+    if id is None:
+        languages = Languages.query.all()
+        serialized_languages = list(map(lambda language: language.serialize(), languages))
+        return jsonify(serialized_languages), 200
+    language = Languages.query.filter_by(id=id).first()
+    if language is None:
+        return jsonify({'msg': 'Language not found'}), 404
+    return jsonify(language.serialize()), 200
 
 @app.route('/api/states', methods=['GET'])
 def getStates():
@@ -1850,6 +1873,11 @@ def protected():
     additional_claims = get_jwt()
     return jsonify(logged_in_as=current_user, additional_claims=additional_claims), 200
 
+@app.route('/api/dbfiller_mandatory', methods=['GET'])
+def dbfiller_mandatory():
+    insert_mandatory()
+    return jsonify({'msg': 'Mandatory fields completed'}), 201
+
 @app.route('/api/dbfiller', methods=['GET'])
 def dbfiller():
     insert_data()
@@ -1864,6 +1892,11 @@ def dbfiller2():
 def dbfiller3():
     insert_data3()
     return jsonify({'msg': "Funciona3"}), 201
+
+@app.route('/api/prueba', methods=['GET'])
+def prueba():
+    compare_flags()
+    return jsonify({'msg': 'correctly executed'}), 200
 
 # this only runs if `$ python src/main.py` is executed
 if __name__ == '__main__':
