@@ -162,14 +162,11 @@ const getState = ({ getStore, getActions, setStore }) => {
 				}
 			},
 			getCountries: async () => {
-				let allCountries = [];
 				try {
 					const resp = await fetch(
 						process.env.BACKEND_URL + "/api/countries")
 					const data = await resp.json()
-					allCountries = data;
-					console.log(allCountries)
-					return allCountries;
+					return data;
 				} catch (error) {
 					console.log(error)
 				}
@@ -180,13 +177,58 @@ const getState = ({ getStore, getActions, setStore }) => {
 						process.env.BACKEND_URL + `/api/countries?id=${country_id}`
 					)
 					const data = await resp.json()
-					const country = data[0].country
-					console.log(country)
-					return country
+					return data
 				} catch(error) {
 					console.log(error)
 				}
 
+			},
+			getStates: async (countryId) => {
+				try {
+					const resp = await fetch(`${process.env.BACKEND_URL}/api/states?country_id=${countryId}`, {
+						method: 'GET',
+						headers: {
+							'Content-Type': 'application/json'
+						}
+
+					});
+					const data = await resp.json();
+					return data;
+				} catch (error) {
+					console.log(error);
+				}
+			},
+			getStateById: async (stateId) => {
+				let state
+				try {
+					const resp = await fetch(process.env.BACKEND_URL + `/api/states?id=${stateId}`)
+					const data = await resp.json()
+					state = data[0].state
+					return state; 
+				} catch (error) {
+					console.log(error)
+				}
+			},
+			getNationalities: async () => {
+				let allNationalities
+				try {
+					const resp = await fetch(process.env.BACKEND_URL + `/api/nationalities`)
+					const data = await resp.json()
+					allNationalities = data
+					return allNationalities
+				} catch (error) {
+					console.log(error)
+					
+				}
+			}, 
+			getNationalityById: async (nationality_id) => {
+				try {
+					const resp = await fetch(process.env.BACKEND_URL + `/api/nationalities?id=${nationality_id}`)
+					const data = await resp.json()
+					return data[0].nationality
+				} catch (error) {
+					console.log(error)
+				}
 			},
 			getAirports: async() => {
 				try {
@@ -232,53 +274,6 @@ const getState = ({ getStore, getActions, setStore }) => {
 					const data = await resp.json()
 					console.log(data)
 					return data
-				} catch (error) {
-					console.log(error)
-				}
-			},
-			getStates: async (countryId) => {
-				try {
-					const resp = await fetch(`${process.env.BACKEND_URL}/api/states?country_id=${countryId}`, {
-						method: 'GET',
-						headers: {
-							'Content-Type': 'application/json'
-						}
-
-					});
-					const data = await resp.json();
-					return data;
-				} catch (error) {
-					console.log(error);
-				}
-			},
-			getStateById: async (stateId) => {
-				let state
-				try {
-					const resp = await fetch(process.env.BACKEND_URL + `/api/states?id=${stateId}`)
-					const data = await resp.json()
-					state = data[0].state
-					return state; 
-				} catch (error) {
-					console.log(error)
-				}
-			},
-			getNationalities: async () => {
-				let allNationalities
-				try {
-					const resp = await fetch(process.env.BACKEND_URL + `/api/nationalities`)
-					const data = await resp.json()
-					allNationalities = data
-					return allNationalities
-				} catch (error) {
-					console.log(error)
-					
-				}
-			}, 
-			getNationalityById: async (nationality_id) => {
-				try {
-					const resp = await fetch(process.env.BACKEND_URL + `/api/nationalities?id=${nationality_id}`)
-					const data = await resp.json()
-					return data[0].nationality
 				} catch (error) {
 					console.log(error)
 				}

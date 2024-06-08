@@ -19,6 +19,7 @@ import LoginPage from "./pages/LoginPage";
 import Welcome from "./component/Welcome";
 import Budgets from "./component/Budgets/Budgets";
 import EditBudget from "./component/Budgets/EditBudget";
+import Test from "./component/Form/Test";
 
 
 
@@ -49,6 +50,7 @@ const Layout = () => {
             <Route element={<Services />} path="/services" />
             <Route element={<Welcome />} path="/welcome" />
             <Route element={<LoginPage/>} path="/login" />
+            <Route element={<Test/>} path="/test" />
           </Routes>
           {/*<Footer />*/}
         </ScrollToTop>

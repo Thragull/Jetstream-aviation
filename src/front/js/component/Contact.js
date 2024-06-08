@@ -165,7 +165,7 @@ const Contact = () => {
             </div>
             <div className="mb-3 col-3">
             <label for="Model" className="form-label">Models</label>
-              <select if="Model" className="form-select" aria-label="Model"
+              <select id="Model" className="form-select" aria-label="Model"
               onChange={(element) => {setModel(element.target.value)}}>
                 <option selected>Select a model</option>
                 {models.map((item) =>{ return(<option key={item.id} value={item.id}>{item.model}</option>)})}
