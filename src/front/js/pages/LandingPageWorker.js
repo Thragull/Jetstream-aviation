@@ -99,8 +99,24 @@ export const LandingPageWorker = () => {
                             </Link>
                         </div>
                     </div>
-                    <div className="main-content">
-                        {renderComponent()}
+                    <div className="content-container">
+                        <div className="side-sections">
+                            <div className="section">
+                                <h3>Duty / Hoy</h3>
+                                {/* Contenido para Duty / Hoy */}
+                            </div>
+                            <div className="section">
+                                <h3>Documentos sin leer</h3>
+                                {/* Contenido para Documentos sin leer */}
+                            </div>
+                            <div className="section">
+                                <h3>Otras opciones</h3>
+                                {/* Contenido para Otras opciones */}
+                            </div>
+                        </div>
+                        <div className="main-content">
+                            {renderComponent()}
+                        </div>
                     </div>
                 </>
             }
