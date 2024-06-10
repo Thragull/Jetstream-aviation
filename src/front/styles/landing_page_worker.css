@@ -73,11 +73,12 @@
 }
 
 .logout {
-    background-color: #dc3545;
+    color: #e46471;
 }
 
 .logout:hover {
     background-color: #c82333;
+    color: inherit;
 }
 
 .content-container {

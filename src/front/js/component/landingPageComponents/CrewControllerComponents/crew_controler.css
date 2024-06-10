@@ -1,0 +1,21 @@
+.create-button {
+    background-color: #174A83;
+    border: none;
+    color: white;
+    padding: 12px 24px;
+    text-align: center;
+    text-decoration: none;
+    display: inline-block;
+    font-size: 20px;
+    cursor: pointer;
+    border-radius: 8px;
+    box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
+    transition: all 0.3s ease;
+    font-weight: bold;
+}
+
+.create-button:hover {
+    background-color: #7cb9e8;
+    box-shadow: 0 8px 16px rgba(0, 0, 0, 0.2);
+    color: #174A83;
+}
