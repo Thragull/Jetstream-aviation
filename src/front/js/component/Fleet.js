@@ -1,51 +1,57 @@
-import React from "react";
+import React, { useState } from "react";
 import Navbar from "./Navbar";
 import Plane from "./Plane";
-import A320Img from "../../img/A320Img.jpg";
 import { Footer } from "./footer";
+import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
+import { faChevronLeft, faChevronRight } from "@fortawesome/free-solid-svg-icons";
+import "../../styles/Fleet.css";
+
+import IMG1 from "../../img/A320.png";
+import IMG2 from "../../img/A321.png";
+import IMG3 from "../../img/A330.png";
+import IMG4 from "../../img/A350.png";
+import IMG5 from "../../img/B737.png";
+import IMG6 from "../../img/B777.png";
+import IMG7 from "../../img/B787.png";
 
 const Fleet = () => {
-  let fleetInfo = [
-    {
-      title: "Airbus A320",
-      text: "x2",
-      imgSrc:
-        "https://res.cloudinary.com/dhwe9frkd/image/upload/v1713201260/samples/JetStream/A320Img_yhjrg9.jpg",
-    },
-    { title: "Airbus A321", text: "x2", imgSrc: "https://res.cloudinary.com/dhwe9frkd/image/upload/v1713201851/samples/JetStream/A321_ras1af.jpg" },
-    { title: "Airbus A330", text: "x2", imgSrc: "https://res.cloudinary.com/dhwe9frkd/image/upload/v1713201266/samples/JetStream/A330Img_alcwcm.jpg" },
-    { title: "Airbus A350", text: "x2", imgSrc: "https://res.cloudinary.com/dhwe9frkd/image/upload/v1713201270/samples/JetStream/A350Img_l1bxjk.jpg" },
-    { title: "Boeing B737", text: "x2", imgSrc: "https://res.cloudinary.com/dhwe9frkd/image/upload/v1713201273/samples/JetStream/B737Img_ux5pvn.jpg" },
-    { title: "Boeing B777", text: "x4", imgSrc: "https://res.cloudinary.com/dhwe9frkd/image/upload/v1713201279/samples/JetStream/B777Img_iyj7da.jpg" },
-    { title: "Boeing B787", text: "x4", imgSrc: "https://res.cloudinary.com/dhwe9frkd/image/upload/v1713201277/samples/JetStream/B787Img_bar9qe.jpg" },
+  const [currentIndex, setCurrentIndex] = useState(0);
+
+  const fleetInfo = [
+      { title: "Airbus A320", text: "x2", imgSrc: IMG1 },
+      { title: "Airbus A321", text: "x2", imgSrc: IMG2 },
+      { title: "Airbus A330", text: "x2", imgSrc: IMG3 },
+      { title: "Airbus A350", text: "x2", imgSrc: IMG4 },
+      { title: "Boeing B737", text: "x2", imgSrc: IMG5 },
+      { title: "Boeing B777", text: "x4", imgSrc: IMG6 },
+      { title: "Boeing B787", text: "x4", imgSrc: IMG7 },
   ];
+
+  const handlePrevClick = () => {
+    setCurrentIndex((prevIndex) => (prevIndex === 0 ? fleetInfo.length - 1 : prevIndex - 1));
+  };
+
+  const handleNextClick = () => {
+    setCurrentIndex((prevIndex) => (prevIndex === fleetInfo.length - 1 ? 0 : prevIndex + 1));
+  };
+
   return (
     <div>
-      <div>
-        <Navbar />
-      </div>
-      <div className="FleetCards row ">
-
-        {fleetInfo.map((value, index) => {
-          return (
-            <div className="col-4">
-              <Plane
-              key={index}
-              title={value.title}
-              text={value.text}
-              imgSrc={value.imgSrc}
-            />
-            </div>
-          );
-        })}
-        {/* <Navbar/>
-      <Plane title="Airbus A320" text="x2" />
-      <Plane title="Airbus A321" text="x2" />
-      <Plane title="Airbus A330" text="x2"/>
-      <Plane title="Airbus A350" text="x2"/>
-      <Plane title="Boeing 737" text="x2"/>
-      <Plane title="Boeing 777" text="x4"/>
-      <Plane title="Boeing 787" text="x4"/> */}
+      <Navbar />
+      <div className="container-fleet">
+        <div className="fleet-cards">
+          <button className="arrow left-arrow" onClick={handlePrevClick}>
+            <FontAwesomeIcon icon={faChevronLeft} />
+          </button>
+          <Plane
+            title={fleetInfo[currentIndex].title}
+            text={fleetInfo[currentIndex].text}
+            imgSrc={fleetInfo[currentIndex].imgSrc}
+          />
+          <button className="arrow right-arrow" onClick={handleNextClick}>
+            <FontAwesomeIcon icon={faChevronRight} />
+          </button>
+        </div>
       </div>
       <Footer />
     </div>
@@ -53,11 +59,3 @@ const Fleet = () => {
 };
 
 export default Fleet;
-
-// https://asset.cloudinary.com/dhwe9frkd/8af75816aaa6b0737d52accbf97a236f (B777)
-// https://asset.cloudinary.com/dhwe9frkd/5672727edd80076632f57d0d6534a1a8 (B787)
-// https://asset.cloudinary.com/dhwe9frkd/04ee07bcb0754769eb10c7ecafdc126e (B737)
-// https://asset.cloudinary.com/dhwe9frkd/7a8afebe3bee2e3ecaa14638b43743b0 (A350)
-// https://asset.cloudinary.com/dhwe9frkd/ca739168a805ecf39cd0ddce3a009cb8 (A330)
-// https://asset.cloudinary.com/dhwe9frkd/ca739168a805ecf39cd0ddce3a009cb8 (A320)
-// https://asset.cloudinary.com/dhwe9frkd/a1bd1298d7454735b6903521c9bb67b9 (A321)

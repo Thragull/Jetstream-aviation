@@ -1,13 +1,86 @@
-#modalHeader{
-    background-color: #7CB9E8;
+.page-contact {
+  min-height: 100vh;
 }
-#modalFooter{
-    background-color: #7CB9E8;
+
+.container {
+  background-color: #f8f9fa;
+  padding: 3rem;
+  border-radius: 10px;
+  box-shadow: 0px 0px 10px rgba(0, 0, 0, 0.1);
+  margin-top: 6rem;
+  margin-bottom: 6rem;
 }
-#budgetForm{
-    margin-top: 20vh;
-    margin-left: 5vw;
+
+.form-label {
+  font-weight: bold;
 }
-#Switch{
-    margin-top: 40px
+
+.form-control {
+  border-radius: 5px;
 }
+
+.btn-secondary {
+  background-color: #174a83;
+  border-color: #174a83;
+  color: #fff;
+  padding: 8px 16px;
+  text-align: center;
+  text-decoration: none;
+  display: inline-block;
+  font-size: 20px;
+  cursor: pointer;
+  border-radius: 8px;
+  box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
+  transition: all 0.3s ease;
+  font-weight: bold;
+}
+
+.btn-secondary:hover {
+  background-color: #7cb9e8;
+  border-color: #7cb9e8;
+  color: #174a83;
+}
+
+.modal-content {
+  border-radius: 10px;
+}
+
+.modal-header {
+  background-color: #7cb9e8;
+  border-bottom: none;
+}
+
+.modal-title {
+  color: #fff;
+}
+
+.modal-body {
+  background-color: #fff;
+}
+
+.modal-footer {
+  background-color: #7cb9e8;
+  border-top: none;
+}
+
+#Switch {
+  margin-top: 20px;
+}
+
+@media (max-width: 768px) {
+  .container {
+    padding: 15px;
+  }
+
+  .row > .col-12,
+  .row > .col-12.col-md-6,
+  .row > .col-12.col-md-4,
+  .row > .col-12.col-md-3,
+  .row > .col-12.col-md-1 {
+    margin-bottom: 1rem;
+  }
+
+  .form-check {
+    margin-top: 1rem;
+  }
+ }

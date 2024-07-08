@@ -1,12 +1,63 @@
-.tab{
-    padding-top: 3vh;
-    padding-right: 4vh;
-    padding-left: 4vh;
-    padding-bottom: 3vh;
-    border-top-right-radius: 10px;
-    border-bottom-right-radius: 10px;
-    border-top-left-radius: 10px;
-    border-bottom-left-radius: 10px;
-    margin-bottom: 2vh;
+.profile-container {
+    padding: 0;
+    width: 100%;
+    margin: 0 auto;
+}
 
+.tab-container {
+    display: flex;
+    justify-content: space-between;
+    margin-bottom: 30px;
+}
+
+.tab {
+    padding: 15px 30px;
+    cursor: pointer;
+    font-size: 15px;
+    transition: background-color 0.3s, color 0.3s;
+}
+
+.tab.active {
+    background-color: #4CAF50;
+    color: white;
+}
+
+.info-row {
+    margin-bottom: 10px;
+}
+
+.info-row b {
+    color: #174A83;
+}
+
+.info-row span {
+    font-size: 12px;
+    color: #555;
+}
+
+.edit-button-container {
+    margin-top: 15px;
+    text-align: center;
+}
+
+.edit-button {
+    background-color: #174A83;
+    border: none;
+    color: white;
+    padding: 12px 24px;
+    text-align: center;
+    text-decoration: none;
+    display: inline-block;
+    font-size: 20px;
+    cursor: pointer;
+    border-radius: 8px;
+    box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
+    transition: all 0.3s ease;
+    font-weight: bold;
+}
+
+.edit-button:hover {
+    background-color: #7cb9e8;
+    box-shadow: 0 8px 16px rgba(0, 0, 0, 0.2);
+    color: #174A83;
 }
