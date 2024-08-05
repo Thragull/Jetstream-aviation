@@ -163,12 +163,15 @@ const getState = ({ getStore, getActions, setStore }) => {
 			},
 			getCountries: async () => {
 				try {
-					const resp = await fetch(
-						process.env.BACKEND_URL + "/api/countries")
-					const data = await resp.json()
-					return data;
+					const resp = await fetch(process.env.BACKEND_URL + "/api/countries");
+					const data = await resp.json();
+					return data.map(country => ({
+						id: country.id,
+						country: country.country,
+						flag: country.flag
+					}));
 				} catch (error) {
-					console.log(error)
+					console.log(error);
 				}
 			},
 			getCountryById: async (country_id) => {
@@ -190,10 +193,12 @@ const getState = ({ getStore, getActions, setStore }) => {
 						headers: {
 							'Content-Type': 'application/json'
 						}
-
 					});
 					const data = await resp.json();
-					return data;
+					return data.map(state => ({
+						id: state.id,
+						state: state.state
+					}));
 				} catch (error) {
 					console.log(error);
 				}
@@ -210,12 +215,14 @@ const getState = ({ getStore, getActions, setStore }) => {
 				}
 			},
 			getNationalities: async () => {
-				let allNationalities
 				try {
-					const resp = await fetch(process.env.BACKEND_URL + `/api/nationalities`)
-					const data = await resp.json()
-					allNationalities = data
-					return allNationalities
+					const resp = await fetch(process.env.BACKEND_URL + `/api/nationalities`);
+					const data = await resp.json();
+					return data.map(nationality => ({
+						id: nationality.id,
+						nationality: nationality.nationality,
+						flag: nationality.flag
+					}))
 				} catch (error) {
 					console.log(error)
 					
@@ -228,6 +235,50 @@ const getState = ({ getStore, getActions, setStore }) => {
 					return data[0].nationality
 				} catch (error) {
 					console.log(error)
+				}
+			},
+			getIntCodes: async () => {
+				try {
+					const resp = await fetch(process.env.BACKEND_URL + `/api/int_codes`);
+					const data = await resp.json();
+					return data.map(intCode => ({
+						id: intCode.id,
+						intCode: intCode.int_code,
+						flag: intCode.flag
+					}));
+				} catch (error) {
+					console.log(error);
+				}
+			},
+			getIntCodeById: async (intCode_id) => {
+				try {
+					const resp = await fetch(process.env.BACKEND_URL + `/api/int_codes?id=${intCode_id}`)
+					const data = await resp.json();
+					return data[0].intCodes;
+				} catch (error) {
+					console.log(error);
+				}
+			},
+			getLanguages: async () => {
+				try {
+					const resp = await fetch(process.env.BACKEND_URL + `/api/languages`);
+					const data = await resp.json();
+					return data.map(language => ({
+						id: language.id,
+						language: language.language,
+						flag: language.flag
+					}));
+				} catch (error) {
+					console.log(error);
+				}
+			},
+			getLanguageById: async (language_id) => {
+				try {
+					const resp = await fetch(process.env.BACKEND_URL + `/api/languages?id=${language_id}`)
+					const data = await resp.json();
+					return data[0].languages;
+				} catch (error) {
+					console.log(error);
 				}
 			},
 			getAirports: async() => {

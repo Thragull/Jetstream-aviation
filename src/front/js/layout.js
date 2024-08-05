@@ -19,7 +19,7 @@ import LoginPage from "./pages/LoginPage";
 import Welcome from "./component/Welcome";
 import Budgets from "./component/Budgets/Budgets";
 import EditBudget from "./component/Budgets/EditBudget";
-import Test from "./component/Form/Test";
+import Test from "./component/FormComponents/Test";
 
 
 
