@@ -287,7 +287,7 @@ flags = [
     {'name': 'Uruguay', 'flag': 'https://upload.wikimedia.org/wikipedia/commons/f/fe/Flag_of_Uruguay.svg'},
     {'name': 'Uzbekistan', 'flag': 'https://upload.wikimedia.org/wikipedia/commons/8/84/Flag_of_Uzbekistan.svg'},
     {'name': 'Vanuatu', 'flag': 'https://upload.wikimedia.org/wikipedia/commons/b/bc/Flag_of_Vanuatu.svg'},
-    {'name': 'Vatican City', 'flag': 'https://upload.wikimedia.org/wikipedia/commons/3/39/Flag_of_the_Vatican_City_%282023%E2%80%93present%29.svg'},
+    {'name': 'Vatican City', 'flag': 'https://upload.wikimedia.org/wikipedia/commons/b/b3/Flag_of_Vatican_City_%282023%E2%80%93present%29.svg'},
     {'name': 'Venezuela', 'flag': 'https://upload.wikimedia.org/wikipedia/commons/0/06/Flag_of_Venezuela.svg'},
     {'name': 'Vietnam', 'flag': 'https://upload.wikimedia.org/wikipedia/commons/2/21/Flag_of_Vietnam.svg'},
     {'name': 'Yemen', 'flag': 'https://upload.wikimedia.org/wikipedia/commons/8/89/Flag_of_Yemen.svg'},

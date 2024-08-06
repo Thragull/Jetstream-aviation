@@ -5,6 +5,7 @@ import Navbar from "./Navbar";
 import "../../styles/Contact.css"
 import { Modal } from "react-bootstrap";
 import { Footer } from "./footer";
+import IntCodeSelector from "./FormComponents/IntCodeSelector";
 
 const Contact = () => {
 
@@ -16,6 +17,7 @@ const Contact = () => {
   const [surname, setSurname] = useState("")
   const [business, setBusiness] = useState("")
   const [email, setEmail] = useState("")
+  const [intCode, setIntCode] = useState(null);
   const [phone, setPhone] = useState(0)
   const [startDate, setStartDate] = useState(new Date())
   const [endDate, setEndDate] = useState(new Date())
@@ -56,6 +58,10 @@ const Contact = () => {
       .then((data) => { setUnitaryPrice(data[0].price) })
       .catch((err) => err)
   }
+
+  const handleIntCodeChange = async (intCode) => {
+    setSelectedIntCode(intCode);
+  };
 
   const submitBudget = () => {
     getPriceForSelection();
@@ -128,7 +134,7 @@ const Contact = () => {
               </div>
             </div>
             <div className="row">
-              <div className="mb-3 col-12 col-md-4">
+              <div className="mb-3 col-12 col-md-3">
                 <label htmlFor="ClientBusiness" className="form-label">Business</label>
                 <input required type="text" className="form-control" id="ClientBusiness" value={business}
                   onChange={(element) => { setBusiness(element.target.value) }} />
@@ -138,10 +144,14 @@ const Contact = () => {
                 <input required type="email" className="form-control" id="ClientEmail" value={email}
                   onChange={(element) => { setEmail(element.target.value) }} />
               </div>
-              <div className="mb-3 col-12 col-md-4">
-                <label htmlFor="ClientPhone" className="form-label">Phone</label>
-                <input required type="number" className="form-control" id="ClientPhone" value={phone}
-                  onChange={(element) => { setPhone(element.target.value) }} />
+              <div className="mb-3 col-3 col-md-2">
+                <label for="IntCode" className="form-label">Int Code</label>
+                <IntCodeSelector required id="IntCode" onIntCodeChange={handleIntCodeChange} />
+              </div>
+              <div className="mb-3 col-9 col-md-3">
+                <label for="ClientPhone" className="form-label">Phone</label>
+                <input required type="number" className="form-control" id="ClientPhone"  value={phone}
+                  onChange={(element) => {setPhone(element.target.value)}}/>
               </div>
             </div>
             <div className="row">

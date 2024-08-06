@@ -1,0 +1,11 @@
+.intCode-option {
+    display: flex;
+    align-items: center;
+}
+
+.intCode-flag {
+    width: 1.5rem;
+    height: 1rem;
+    border-radius: .2rem;
+    margin-right: 1rem;
+}

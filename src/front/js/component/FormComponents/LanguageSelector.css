@@ -1,0 +1,11 @@
+.language-option {
+    display: flex;
+    align-items: center;
+}
+
+.language-flag {
+    width: 1.5rem;
+    height: 1rem;
+    border-radius: .2rem;
+    margin-right: 1rem;
+}
