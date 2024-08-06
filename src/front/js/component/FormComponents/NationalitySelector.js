@@ -62,7 +62,7 @@ const NationalitySelector = ({ onNationalityChange }) => {
             getOptionValue={option => option.id}
             formatOptionLabel={formatOptionLabel}
             onChange={handleChange}
-            placeholder="Select a nationality..."
+            placeholder="Nationality"
             isSearchable
             styles={customStyles}
         />

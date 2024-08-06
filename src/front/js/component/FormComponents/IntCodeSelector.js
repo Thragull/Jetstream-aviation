@@ -62,7 +62,7 @@ const IntCodeSelector = ({ onIntCodeChange }) => {
             getOptionValue={option => option.id}
             formatOptionLabel={formatOptionLabel}
             onChange={handleChange}
-            placeholder="Select an international code..."
+            placeholder="Int Code"
             isSearchable
             styles={customStyles}
         />

@@ -56,7 +56,7 @@ const StateSelector = ({ countryId, onStateChange }) => {
             getOptionLabel={option => option.state}
             getOptionValue={option => option.id}
             onChange={handleChange}
-            placeholder="Select a state..."
+            placeholder="State/Province"
             isSearchable
             styles={customStyles}
         />

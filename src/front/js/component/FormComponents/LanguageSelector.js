@@ -62,7 +62,7 @@ const LanguageSelector = ({ onLanguageChange }) => {
             getOptionValue={option => option.id}
             formatOptionLabel={formatOptionLabel}
             onChange={handleChange}
-            placeholder="Select a language..."
+            placeholder="Language"
             isSearchable
             styles={customStyles}
         />
