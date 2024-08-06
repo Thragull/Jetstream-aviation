@@ -1,17 +1,162 @@
-@media (min-width: 2600px){
-.FleetCards {
-    margin-top: 390px;
-}}
-@media (max-width: 2600px){
-    .FleetCards {
-        margin-top: 200px;
-    }}
-@media (max-width: 2400px){
-    .FleetCards {
-        margin-top: 200px;
-    }}
+.container-fleet {
+    padding: 7rem;
+    font-family: 'Montserrat', sans-serif;
+    color: #174A83;
+    position: relative;
+    min-height: 80vh;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+}
 
-@media (max-width: 2000px){
-    .FleetCards {
-        margin-top: 180px;
-    }}
+.fleet-cards {
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    width: 50rem;
+    position: relative;
+}
+
+.arrow {
+    background: none;
+    border: none;
+    font-size: 3rem;
+    color: #174A83;
+    cursor: pointer;
+    user-select: none;
+    position: absolute;
+    top: 50%;
+    transform: translateY(-50%);
+    z-index: 10;
+}
+
+.left-arrow {
+    left: -3.5rem;
+}
+
+.right-arrow {
+    right: -3.5rem;
+}
+
+.plane-card {
+    width: 100%;
+    min-height: 30rem;
+    perspective: 1000px;
+}
+
+.card {
+    border: none;
+    border-radius: 10px;
+    background: transparent;
+}
+
+.card-img-top {
+    width: 100%;
+    height: 30rem;
+    object-fit: contain;
+    border-top-left-radius: 10px;
+    border-top-right-radius: 10px;
+    filter: drop-shadow(0 20px 10px rgba(0, 0, 0, 0.7));
+    transition: transform 0.3s ease-in-out;
+}
+
+.card-img-top:hover {
+    transform: scale(1.05);
+}
+
+.card-body {
+    background-color: transparent;
+    border-bottom-left-radius: 10px;
+    border-bottom-right-radius: 10px;
+    padding: 20px;
+    backface-visibility: hidden;
+}
+
+.card-title {
+    font-size: 1.5rem;
+    margin-bottom: 10px;
+    font-weight: bold;
+}
+
+.card-text {
+    font-size: 1.2rem;
+}
+
+@media (max-width: 850px) {
+    .fleet-cards {
+        width: 33rem;
+    }
+
+    .left-arrow {
+        left: -2.5rem;
+    }
+
+    .right-arrow {
+        right: -2.5rem;
+    }
+
+    .plane-card {
+        width: 100%;
+        min-height: 27rem;
+    }
+
+    .card-img-top {
+        height: 22rem;
+    }
+
+    .card-body {
+        padding: 20px;
+    }
+
+    .card-title {
+        font-size: 1.2rem;
+        margin-bottom: 10px;
+        font-weight: bold;
+    }
+
+    .card-text {
+        font-size: 1rem;
+    }
+}
+
+@media (max-width: 665px) {
+    .fleet-cards {
+        width: 18rem;
+    }
+
+    .left-arrow {
+        left: -2.5rem;
+    }
+
+    .right-arrow {
+        right: -2.5rem;
+    }
+
+    .plane-card {
+        width: 100%;
+        min-height: 15rem;
+    }
+
+    .card-img-top {
+        height: 12rem;
+    }
+
+    .card-body {
+        padding: 20px;
+    }
+
+    .card-title {
+        font-size: 1rem;
+        margin-bottom: 5px;
+        font-weight: bold;
+    }
+
+    .card-text {
+        font-size: 0.8rem;
+    }
+
+    .container-fleet {
+        padding: 2rem;
+        min-height: 50vh;
+    }
+}
